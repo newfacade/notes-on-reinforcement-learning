@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>What is Reinforcement Learning? &#8212; My sample book</title>
+    <title>Deep Q-Learning &#8212; My sample book</title>
   
   
   
@@ -63,10 +63,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '01-intro';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '09-deep-q-learning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Reinforcement Learning Framework" href="02-frame.html" />
+    <link rel="next" title="Deep Q-Learning with Pytorch" href="10-dqn-torch.html" />
+    <link rel="prev" title="Q-learning" href="08-q-learning.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -141,7 +144,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="01-intro.html">
   
   
   
@@ -161,13 +164,13 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
                     What is Reinforcement Learning?
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
@@ -175,7 +178,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Deep Q-Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 </ul>
@@ -249,7 +252,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F01-intro.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F09-deep-q-learning.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -279,7 +282,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/01-intro.ipynb" target="_blank"
+      <li><a href="_sources/09-deep-q-learning.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -361,7 +364,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>What is Reinforcement Learning?</h1>
+    <h1>Deep Q-Learning</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,8 +374,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-deep-q-learning-algorithm">The Deep Q-Learning Algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-replay">Experience Replay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-q-target">Fixed Q-Target</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-q-learning-variants">Deep Q-Learning Variants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-dqn">Double DQN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dueling-dqn">Dueling DQN</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -384,36 +395,94 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="what-is-reinforcement-learning">
-<h1>What is Reinforcement Learning?<a class="headerlink" href="#what-is-reinforcement-learning" title="Permalink to this heading">#</a></h1>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>To understand Reinforcement Learning, let’s start with the big picture.</p>
-</div>
-<section id="the-big-picture">
-<h2>The big picture<a class="headerlink" href="#the-big-picture" title="Permalink to this heading">#</a></h2>
-<p>The idea behind Reinforcement Learning is that an agent (an AI) will learn from the environment by interacting with it (through trial and error) and receiving rewards (negative or positive) as feedback for performing actions.</p>
-<p>Learning from interactions with the environment comes from our natural experiences.</p>
-<p>For instance, imagine putting your little brother in front of a video game he never played, giving him a controller, and leaving him alone.</p>
-<p><img alt="" src="_images/intro1.jpeg" /></p>
-<p>Your brother will interact with the environment (the video game) by pressing the right button (action). He got a coin, that’s a +1 reward. It’s positive, he just understood that in this game he must get the coins.</p>
-<p><img alt="" src="_images/intro2.jpeg" /></p>
-<p>But then, he presses the right button again and he touches an enemy. He just died, so that’s a -1 reward.</p>
-<p><img alt="" src="_images/intro3.jpeg" /></p>
-<p>By interacting with his environment through trial and error, your little brother understands that he needs to get coins in this environment but avoid the enemies. Without any supervision, the child will get better and better at playing the game.</p>
-<p>That’s how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
-</section>
-<section id="a-formal-definition">
-<h2>A formal definition<a class="headerlink" href="#a-formal-definition" title="Permalink to this heading">#</a></h2>
-<p>We can now make a formal definition:</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="deep-q-learning">
+<h1>Deep Q-Learning<a class="headerlink" href="#deep-q-learning" title="Permalink to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
+<p>Q-Learning is a tabular method. This becomes a problem if the states and actions spaces are not small enough to be represented efficiently by arrays and tables.<br>
+If the state space is gigantic, the best idea is to approximate the Q-values using a parametrized Q-function <span class="math notranslate nohighlight">\(Q_{\theta}(s, a)\)</span>.<br>
+Deep Q-Learning uses a neural network that takes a state and outputs one approximate Q-Value for each possible action.</p>
 </div>
-<p>But how does Reinforcement Learning work?</p>
+<p><img alt="" src="_images/deep-q1.jpeg" /></p>
+<section id="the-deep-q-learning-algorithm">
+<h2>The Deep Q-Learning Algorithm<a class="headerlink" href="#the-deep-q-learning-algorithm" title="Permalink to this heading">#</a></h2>
+<p>Instead of updating the Q-value of a state-action pair directly as we have done with Q-Learning. In Deep Q-Learning, we create a loss function that compares our Q-value prediction and the Q-target and uses gradient descent to update the weights of our Deep Q-Network to approximate our Q-values better.</p>
+<div class="proof algorithm admonition" id="my-algorithm">
+<p class="admonition-title"><span class="caption-number">Algorithm 1 </span> (Deep Q-Learning)</p>
+<section class="algorithm-content" id="proof-content">
+<p>Initialize replay memory <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to capacity <span class="math notranslate nohighlight">\(N\)</span><br>
+Initialize action-value function <span class="math notranslate nohighlight">\(Q\)</span> with random weights <span class="math notranslate nohighlight">\(\theta\)</span><br>
+Initialize target action-value function with weights <span class="math notranslate nohighlight">\(\theta^{-}=\theta\)</span><br></p>
+<p><strong>for</strong> episode <span class="math notranslate nohighlight">\(= 1, M\)</span> <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Initialise state <span class="math notranslate nohighlight">\(s_1\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><strong>for</strong> <span class="math notranslate nohighlight">\(t= 1, T\)</span> <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>With probability <span class="math notranslate nohighlight">\(\epsilon\)</span> select a random action <span class="math notranslate nohighlight">\(a_{t}\)</span> otherwise select <span class="math notranslate nohighlight">\(a_{t} = \arg\max_{a}Q(s_t, a; \theta^{-})\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Execute action <span class="math notranslate nohighlight">\(a_{t}\)</span> in emulator and observe reward <span class="math notranslate nohighlight">\(r_{t+1}\)</span> and new state <span class="math notranslate nohighlight">\(s_{t+1}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Store transition <span class="math notranslate nohighlight">\((s_{t},a_{t},r_{t+1},s_{t+1})\)</span> in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Sample random minibatch of transitions <span class="math notranslate nohighlight">\((s_{i},a_{i},r_{i+1},s_{i+1})\)</span> from <span class="math notranslate nohighlight">\(\mathcal{D}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(y_{i} = r_{i+1} + \gamma \max_{a}Q(s_{i+1},a; \theta^{-})\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Perform a gradient descent step on <span class="math notranslate nohighlight">\((y_i − Q(s_{i} , a_{i} ; \theta))^2\)</span> with respect to <span class="math notranslate nohighlight">\(\theta\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Every <span class="math notranslate nohighlight">\(C\)</span> steps reset <span class="math notranslate nohighlight">\(\theta^{-}=\theta\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><strong>end for</strong><br>
+<strong>end for</strong></p>
 </section>
-<div class="toctree-wrapper compound">
-</div>
+</div><p>The Deep Q-Learning training algorithm has two phases:</p>
+<ol class="arabic simple">
+<li><p>Sampling: we perform actions and store the observed experience tuples in a replay memory.</p></li>
+<li><p>Training: Select a small batch of tuples randomly and learn from this batch using a gradient descent update step.</p></li>
+</ol>
+<p>Deep Q-Learning training might suffer from instability, mainly because of combining a non-linear Q-value function (Neural Network) and bootstrapping (when we update targets with existing estimates and not an actual complete return). To help us stabilize the training, we implement two different solutions:</p>
+<ol class="arabic simple">
+<li><p>Experience Replay to make more efficient use of experiences.</p></li>
+<li><p>Fixed Q-Target to stabilize the training.</p></li>
+</ol>
+<section id="experience-replay">
+<h3>Experience Replay<a class="headerlink" href="#experience-replay" title="Permalink to this heading">#</a></h3>
+<p>Experience Replay in Deep Q-Learning has two functions:</p>
+<ol class="arabic">
+<li><p>Make more efficient use of the experiences during the training. We use a replay buffer that saves experience samples that we can reuse during the training. This allows the agent to learn from the same experiences multiple times.</p></li>
+<li><p>Avoid forgetting previous experiences and reduce the correlation between experiences.</p>
+<p>The problem we get if we give sequential samples of experiences to our neural network is that it tends to forget the previous experiences as it gets new experiences. The solution is to create a Replay Buffer that stores experience tuples while interacting with the environment and then sample a small batch of tuples.</p>
+<p>By randomly sampling the experiences, we remove correlation in the observation sequences and avoid action values from oscillating or diverging catastrophically.</p>
+</li>
+</ol>
+</section>
+<section id="fixed-q-target">
+<h3>Fixed Q-Target<a class="headerlink" href="#fixed-q-target" title="Permalink to this heading">#</a></h3>
+<p>When we want to calculate the TD error (aka the loss), we calculate the difference between the TD target (Q-Target) and the current Q-value (estimation of Q).</p>
+<p>However, the problem is that we are using the same parameters (weights) for estimating the TD target and the Q-value. Consequently, there is a significant correlation between the TD target and the parameters we are changing.</p>
+<p>Therefore, at every step of training, both our Q-values and the target values shift. We’re getting closer to our target, but the target is also moving. It’s like chasing a moving target! This can lead to significant oscillation in training.</p>
+<p>It’s like if you were a cowboy (the Q estimation) and you wanted to catch a cow (the Q-target). Your goal is to get closer (reduce the error).</p>
+<p><img alt="" src="_images/deep-q3.jpeg" /></p>
+<p>At each time step, you’re trying to approach the cow, which also moves at each time step (because you use the same parameters).</p>
+<p><img alt="" src="_images/deep-q4.jpeg" /></p>
+<p><img alt="" src="_images/deep-q5.jpeg" /></p>
+<p>Instead, we:</p>
+<ul class="simple">
+<li><p>Use a separate network with fixed parameters for estimating the TD Target</p></li>
+<li><p>Copy the parameters from our Deep Q-Network every <span class="math notranslate nohighlight">\(C\)</span> steps to update the target network.</p></li>
+</ul>
+</section>
+</section>
+<section id="deep-q-learning-variants">
+<h2>Deep Q-Learning Variants<a class="headerlink" href="#deep-q-learning-variants" title="Permalink to this heading">#</a></h2>
+<p>Let’s look at a few variants of the Deep Q-Learning algorithm that can further stabilize and speed up training.</p>
+<section id="double-dqn">
+<h3>Double DQN<a class="headerlink" href="#double-dqn" title="Permalink to this heading">#</a></h3>
+<p>Remember how we calculate the TD Target:</p>
+<p><img alt="" src="_images/TD-1.jpeg" /></p>
+<p>We face a simple problem by calculating the TD target: how are we sure that the best action for the next state is the action with the highest Q-value? We know that the accuracy of Q-values depends on what action we tried and what neighboring states we explored.</p>
+<p>Consequently, we don’t have enough information about the best action to take at the beginning of the training. Therefore, taking the maximum Q-value (which is noisy) as the best action to take can lead to false positives. If non-optimal actions are regularly given a higher Q value than the optimal best action, the learning will be complicated.</p>
+<p>The solution is: when we compute the Q target, we use two networks to decouple the action selection from the target Q-value generation. We:</p>
+<ul class="simple">
+<li><p>Use our DQN network to select the best action to take for the next state.</p></li>
+<li><p>Use our Target network to calculate the target Q-value of taking that action at the next state.</p></li>
+</ul>
+</section>
+<section id="dueling-dqn">
+<h3>Dueling DQN<a class="headerlink" href="#dueling-dqn" title="Permalink to this heading">#</a></h3>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -446,12 +515,21 @@ document.write(`
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="08-q-learning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Q-learning</p>
+      </div>
+    </a>
     <a class="right-next"
-       href="02-frame.html"
+       href="10-dqn-torch.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The Reinforcement Learning Framework</p>
+        <p class="prev-next-title">Deep Q-Learning with Pytorch</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -470,8 +548,16 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-deep-q-learning-algorithm">The Deep Q-Learning Algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-replay">Experience Replay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-q-target">Fixed Q-Target</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-q-learning-variants">Deep Q-Learning Variants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-dqn">Double DQN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dueling-dqn">Dueling DQN</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

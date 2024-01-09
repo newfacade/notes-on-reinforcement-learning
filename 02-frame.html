@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>What is Reinforcement Learning? &#8212; My sample book</title>
+    <title>The Reinforcement Learning Framework &#8212; My sample book</title>
   
   
   
@@ -63,10 +63,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '01-intro';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '02-frame';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Reinforcement Learning Framework" href="02-frame.html" />
+    <link rel="next" title="Two main approaches for solving RL problems" href="03-approach.html" />
+    <link rel="prev" title="What is Reinforcement Learning?" href="01-intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -141,7 +144,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="01-intro.html">
   
   
   
@@ -161,14 +164,14 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
                     What is Reinforcement Learning?
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Reinforcement Learning Framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
@@ -249,7 +252,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F01-intro.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F02-frame.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -279,7 +282,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/01-intro.ipynb" target="_blank"
+      <li><a href="_sources/02-frame.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -361,7 +364,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>What is Reinforcement Learning?</h1>
+    <h1>The Reinforcement Learning Framework</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,8 +374,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rl-process">The RL Process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reward-hypothesis-the-central-idea-of-reinforcement-learning">The reward hypothesis: the central idea of Reinforcement Learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observations-states-space">Observations/States Space</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#action-space">Action Space</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-and-return">Reward and Return</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formalism">Formalism</a></li>
 </ul>
             </nav>
         </div>
@@ -384,36 +391,80 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="what-is-reinforcement-learning">
-<h1>What is Reinforcement Learning?<a class="headerlink" href="#what-is-reinforcement-learning" title="Permalink to this heading">#</a></h1>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>To understand Reinforcement Learning, let’s start with the big picture.</p>
-</div>
-<section id="the-big-picture">
-<h2>The big picture<a class="headerlink" href="#the-big-picture" title="Permalink to this heading">#</a></h2>
-<p>The idea behind Reinforcement Learning is that an agent (an AI) will learn from the environment by interacting with it (through trial and error) and receiving rewards (negative or positive) as feedback for performing actions.</p>
-<p>Learning from interactions with the environment comes from our natural experiences.</p>
-<p>For instance, imagine putting your little brother in front of a video game he never played, giving him a controller, and leaving him alone.</p>
-<p><img alt="" src="_images/intro1.jpeg" /></p>
-<p>Your brother will interact with the environment (the video game) by pressing the right button (action). He got a coin, that’s a +1 reward. It’s positive, he just understood that in this game he must get the coins.</p>
-<p><img alt="" src="_images/intro2.jpeg" /></p>
-<p>But then, he presses the right button again and he touches an enemy. He just died, so that’s a -1 reward.</p>
-<p><img alt="" src="_images/intro3.jpeg" /></p>
-<p>By interacting with his environment through trial and error, your little brother understands that he needs to get coins in this environment but avoid the enemies. Without any supervision, the child will get better and better at playing the game.</p>
-<p>That’s how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="the-reinforcement-learning-framework">
+<h1>The Reinforcement Learning Framework<a class="headerlink" href="#the-reinforcement-learning-framework" title="Permalink to this heading">#</a></h1>
+<section id="the-rl-process">
+<h2>The RL Process<a class="headerlink" href="#the-rl-process" title="Permalink to this heading">#</a></h2>
+<p><img alt="" src="_images/frame1.jpeg" /></p>
+<p>To understand the RL process, let’s imagine an agent learning to play a platform game:</p>
+<p><img alt="" src="_images/frame2.jpeg" /></p>
+<ul class="simple">
+<li><p>Our Agent receives state <span class="math notranslate nohighlight">\(S_{0}\)</span> from the Environment — we receive the first frame of our game (Environment).</p></li>
+<li><p>Based on that state <span class="math notranslate nohighlight">\(S_{0}\)</span>, the Agent takes action <span class="math notranslate nohighlight">\(A_{0}\)</span> — our Agent will move to the right.</p></li>
+<li><p>The environment goes to a new state <span class="math notranslate nohighlight">\(S_{1}\)</span> — new frame.</p></li>
+<li><p>The environment gives some reward <span class="math notranslate nohighlight">\(R_{1}\)</span> to the Agent — we’re not dead (Positive Reward +1).</p></li>
+</ul>
+<p>This RL loop outputs a sequence of state, action, reward and next state.</p>
 </section>
-<section id="a-formal-definition">
-<h2>A formal definition<a class="headerlink" href="#a-formal-definition" title="Permalink to this heading">#</a></h2>
-<p>We can now make a formal definition:</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
-</div>
-<p>But how does Reinforcement Learning work?</p>
+<section id="the-reward-hypothesis-the-central-idea-of-reinforcement-learning">
+<h2>The reward hypothesis: the central idea of Reinforcement Learning<a class="headerlink" href="#the-reward-hypothesis-the-central-idea-of-reinforcement-learning" title="Permalink to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> Why is the goal of the agent to maximize the expected return?</p>
+<p>Because RL is based on the reward hypothesis, which is that all goals can be described as the maximization of the expected return (expected cumulative reward).</p>
 </section>
-<div class="toctree-wrapper compound">
+<section id="observations-states-space">
+<h2>Observations/States Space<a class="headerlink" href="#observations-states-space" title="Permalink to this heading">#</a></h2>
+<p>Observations/States are the information our agent gets from the environment. In the case of a video game, it can be a frame (a screenshot). In the case of the trading agent, it can be the value of a certain stock, etc.</p>
+<p>There is a differentiation to make between observation and state, however:</p>
+<ul>
+<li><p>State <span class="math notranslate nohighlight">\(s\)</span>: is a complete description of the state of the world (there is no hidden information). In a fully observed environment.</p>
+<p><img alt="" src="_images/frame4.jpeg" /></p>
+<p>In a chess game, we have access to the whole board information, so we receive a state from the environment. In other words, the environment is fully observed.</p>
+</li>
+<li><p>Observation <span class="math notranslate nohighlight">\(o\)</span>: is a partial description of the state. In a partially observed environment.</p>
+<p><img alt="" src="_images/frame5.jpeg" /></p>
+<p>In Super Mario Bros, we only see the part of the level close to the player, so we receive an observation.</p>
+</li>
+</ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>In this course, we use the term “state” to denote both state and observation, but we will make the distinction in implementations.</p>
 </div>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
+<p>The Action space is the set of all possible actions in an environment. The actions can come from a discrete or continuous space:</p>
+<ul class="simple">
+<li><p>Discrete space: the number of possible actions is finite. Again, in Super Mario Bros, we have a finite set of actions since we have only 4 directions.</p></li>
+<li><p>Continuous space: the number of possible actions is infinite. A Self Driving Car agent has an infinite number of possible actions since it can turn left 20°, 21,1°, 21,2°, turn right 20°, etc.</p></li>
+</ul>
+</section>
+<section id="reward-and-return">
+<h2>Reward and Return<a class="headerlink" href="#reward-and-return" title="Permalink to this heading">#</a></h2>
+<p>The reward function <span class="math notranslate nohighlight">\(R\)</span> is critically important in reinforcement learning. It depends on the current state of the world, the action just taken, and the next state of the world:</p>
+<div class="math notranslate nohighlight">
+\[r_{t+1} = R(s_{t}, a_{t}, s_{t+1})\]</div>
+<p>although frequently this is simplified to just a dependence on the current state, <span class="math notranslate nohighlight">\(r_{t+1} = R(s_t)\)</span>, or state-action pair <span class="math notranslate nohighlight">\(r_{t+1} = R(s_t,a_t)\)</span>.</p>
+<p>The goal of the agent is to maximize some notion of cumulative reward over a trajectory, but this actually can mean a few things. We’ll notate all of these cases with <span class="math notranslate nohighlight">\(R(\tau)\)</span>, and it will either be clear from context which case we mean, or it won’t matter (because the same equations will apply to all cases).</p>
+<p>One kind of return is the finite-horizon undiscounted return, which is just the sum of rewards obtained in a fixed window of steps:</p>
+<div class="math notranslate nohighlight">
+\[R(\tau) = \sum_{t=1}^T r_t\]</div>
+<p>Another kind of return is the infinite-horizon discounted return, which is the sum of all rewards ever obtained by the agent, but discounted by how far off in the future they’re obtained. This formulation of reward includes a discount factor <span class="math notranslate nohighlight">\(\gamma \in (0,1)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[R(\tau) = \sum_{t=1}^{\infty} \gamma^t r_t\]</div>
+<p>Why would we ever want a discount factor, though? Don’t we just want to get all rewards? We do, but the discount factor is both intuitively appealing and mathematically convenient. On an intuitive level: cash now is better than cash later. Mathematically: an infinite-horizon sum of rewards may not converge to a finite value, and is hard to deal with in equations. But with a discount factor and under reasonable conditions, the infinite sum converges.</p>
+</section>
+<section id="formalism">
+<h2>Formalism<a class="headerlink" href="#formalism" title="Permalink to this heading">#</a></h2>
+<p>So far, we’ve discussed the agent’s environment in an informal way, but if you try to go digging through the literature, you’re likely to run into the standard mathematical formalism for this setting: Markov Decision Processes (MDPs). An MDP is a 5-tuple, <span class="math notranslate nohighlight">\(\langle S, A, R, P, \rho_0 \rangle\)</span>, where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(S\)</span> is the set of all valid states,</p></li>
+<li><p><span class="math notranslate nohighlight">\(A\)</span> is the set of all valid actions,</p></li>
+<li><p><span class="math notranslate nohighlight">\(R : S \times A \times S \to \mathbb{R}\)</span> is the reward function, with <span class="math notranslate nohighlight">\(r_{t+1} = R(s_t, a_t, s_{t+1})\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(P : S \times A \to \mathcal{P}(S)\)</span> is the transition probability function, with <span class="math notranslate nohighlight">\(P(s'|s,a)\)</span> being the probability of transitioning into state <span class="math notranslate nohighlight">\(s'\)</span> if you start in state <span class="math notranslate nohighlight">\(s\)</span> and take action <span class="math notranslate nohighlight">\(a\)</span>,</p></li>
+<li><p>and <span class="math notranslate nohighlight">\(\rho_0\)</span> is the starting state distribution.</p></li>
+</ul>
+<p>The name Markov Decision Process refers to the fact that the system obeys the Markov property: transitions only depend on the most recent state and action, and no prior history.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -446,12 +497,21 @@ document.write(`
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="01-intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">What is Reinforcement Learning?</p>
+      </div>
+    </a>
     <a class="right-next"
-       href="02-frame.html"
+       href="03-approach.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The Reinforcement Learning Framework</p>
+        <p class="prev-next-title">Two main approaches for solving RL problems</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -470,8 +530,12 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rl-process">The RL Process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reward-hypothesis-the-central-idea-of-reinforcement-learning">The reward hypothesis: the central idea of Reinforcement Learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observations-states-space">Observations/States Space</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#action-space">Action Space</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-and-return">Reward and Return</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formalism">Formalism</a></li>
 </ul>
   </nav></div>
 

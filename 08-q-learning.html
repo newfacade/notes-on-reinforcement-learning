@@ -68,8 +68,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = '08-q-learning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Deep Q-learning" href="09-dqn.html" />
-    <link rel="prev" title="Temporal-Difference methods" href="07-td.html" />
+    <link rel="next" title="Deep Q-Learning" href="09-deep-q-learning.html" />
+    <link rel="prev" title="Monte Carlo vs Temporal Difference Learning" href="07-monte-carlo-td.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -166,23 +166,21 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="01-intro.html">
-                    Introduction
+                    What is Reinforcement Learning?
                 </a>
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="02-mdp.html">Markov Decision Process</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-bellman.html">State values and Bellman equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-bellman-optimal.html">Optimal Policies and Bellman Optimality Equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-iteration.html">Value iteration and policy iteration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-monte-carlo.html">Monte Carlo Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="07-td.html">Temporal-Difference methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Q-learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-dqn.html">Deep Q-learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10-policy.html">Policy Gradient</a></li>
-<li class="toctree-l1"><a class="reference internal" href="11-a2c.html">Advantage Actor-Critic (A2C)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="12-trpo.html">Trust Region Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 </ul>
 
     </div>
@@ -393,30 +391,38 @@ document.write(`
 <h1>Q-learning<a class="headerlink" href="#q-learning" title="Permalink to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Recall that Sarsa can only estimate the action values of a given policy, and it must be combined with a policy improvement step to  nd optimal policies.<br>
-In contrast, Q-learning can directly estimate optimal action values and  nd
+<p>Recall that Sarsa can only estimate the action values of a given policy, and it must be combined with a policy improvement step to find optimal policies.<br>
+By contrast, Q-learning can directly estimate optimal action values and find
 optimal policies.</p>
 </div>
 <section id="the-q-learning-algorithm">
 <h2>The Q-Learning algorithm<a class="headerlink" href="#the-q-learning-algorithm" title="Permalink to this heading">#</a></h2>
-<p>The Q-learning algorithm is:</p>
+<p><strong>Step 1: We initialize the Q-table</strong></p>
+<p><img alt="" src="_images/Q-learning-1.jpeg" /></p>
+<p><strong>Step 2: Choose an action using the epsilon-greedy strategy</strong></p>
+<p><img alt="" src="_images/Q-learning-2.jpeg" /></p>
+<p>The epsilon-greedy strategy is a policy that handles the exploration/exploitation trade-off. The idea is that:</p>
+<ul class="simple">
+<li><p>With probability <span class="math notranslate nohighlight">\(1-\epsilon\)</span> : we do exploitation (our agent selects the action with the highest state-action pair value).</p></li>
+<li><p>With probability <span class="math notranslate nohighlight">\(\epsilon\)</span> : we do exploration (trying random action).</p></li>
+</ul>
+<p>At the beginning of the training, the probability of doing exploration will be huge since <span class="math notranslate nohighlight">\(\epsilon\)</span> is very high, so most of the time, we’ll explore. But as the training goes on, and consequently our Q-table gets better and better in its estimations, we progressively reduce the epsilon value since we will need less and less exploration and more exploitation.</p>
+<p><strong>Step 3: Perform action <span class="math notranslate nohighlight">\(A_{t}\)</span>, get reward <span class="math notranslate nohighlight">\(R_{t+1}\)</span> and next state <span class="math notranslate nohighlight">\(S_{t+1}\)</span></strong></p>
+<p><strong>Step 4: Update <span class="math notranslate nohighlight">\(Q(S_t, A_t)\)</span></strong></p>
+<p>Remember that in TD Learning, we update our value function after one step of the interaction.</p>
+<p>In Q-learning, to produce our TD target, we used the immediate reward <span class="math notranslate nohighlight">\(R_{t+1}\)</span> plus the discounted value of the next state, computed by finding the action that maximizes the current Q-function at the next state.</p>
+<p><img alt="" src="_images/Q-learning-4.jpeg" /></p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Q-learning is a stochastic approximation algorithm for solving the Bellman optimality equation expressed in terms of action values:</p>
 <div class="math notranslate nohighlight">
-\[
-q(s_{t},a_{t}) \gets q(s_{t},a_{t}) + \alpha\left[(r_{t+1} + \gamma \max_{a}q(s_{t+1},a)) - q(s_{t},a_{t})\right]
-\]</div>
-<p>The expression of Q-learning is similar to that of Sarsa. They are different only
-in terms of their TD targets: the TD target of Q-learning is <span class="math notranslate nohighlight">\(r_{t+1} + \gamma \max_{a}q(s_{t+1},a)\)</span>
-whereas that of Sarsa is <span class="math notranslate nohighlight">\(r_{t+1} + \gamma q(s_{t+1},a_{t+1})\)</span>.</p>
-<p>Q-learning is a stochastic approximation algorithm for solving the following
-equation:</p>
-<div class="math notranslate nohighlight">
-\[q(s, a) = \mathbb{E}\left[R_{t+1} + \gamma\max_{a}q(S_{t+1}, a)|S_{t}=s, A_{t}=a\right]\]</div>
-<p>This is the Bellman optimality equation expressed in terms of action values.</p>
+\[Q(s, a) = \mathbb{E}\left[R_{t+1} + \gamma\max_{a}Q(S_{t+1}, a)|S_{t}=s, A_{t}=a\right]\]</div>
+</div>
 </section>
 <section id="off-policy-vs-on-policy">
 <h2>Off-policy vs On-policy<a class="headerlink" href="#off-policy-vs-on-policy" title="Permalink to this heading">#</a></h2>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>What makes Q-learning special compared to the other TD algorithms is that
 Q-learning is off-policy while the others are on-policy.</p>
 </div>
@@ -424,17 +430,18 @@ Q-learning is off-policy while the others are on-policy.</p>
 policy. The behavior policy is the one used to generate experience samples. The target
 policy is the one that is constantly updated to converge to an optimal policy. When the
 behavior policy is the same as the target policy, such a learning process is called on-policy.
-Otherwise, when they are di erent, the learning process is called off-policy.</p>
-<ul class="simple">
-<li><p>Sarsa is on-policy. The samples required by Sarsa in every iteration include <span class="math notranslate nohighlight">\((s_t, a_t, r_{t+1}, s_{t+1}, a_{t+1})\)</span>. How
-these samples are generated is illustrated below:
-$<span class="math notranslate nohighlight">\(s_{t},a_{t}\overset{\text{model}}{\longrightarrow}r_{t+1},s_{t+1}\overset{\pi}{\longrightarrow}a_{t+1}\)</span><span class="math notranslate nohighlight">\(
-\)</span>a_{t+1}<span class="math notranslate nohighlight">\( is dependent on the target policy \)</span>\pi$.</p></li>
-<li><p>Q-learning is off-policy. The samples required by Q-learning in every iteration is <span class="math notranslate nohighlight">\((s_t, a_t, r_{t+1}, s_{t+1})\)</span>.
-How these samples are generated is illustrated below:
-$<span class="math notranslate nohighlight">\(s_{t},a_{t}\overset{\text{model}}{\longrightarrow}r_{t+1},s_{t+1}\)</span><span class="math notranslate nohighlight">\(
-the estimation of the optimal action value of \)</span>(s_t, a_t)<span class="math notranslate nohighlight">\( does
-not involve \)</span>\pi$ and we can use any policy to generate samples.</p></li>
+Otherwise, when they are different, the learning process is called off-policy.</p>
+<ul>
+<li><p>Sarsa is on-policy. The samples required by Sarsa in every iteration include <span class="math notranslate nohighlight">\((S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})\)</span>. How these samples are generated is illustrated below:</p>
+<div class="math notranslate nohighlight">
+\[S_{t},A_{t}\overset{\text{enviroment}}{\longrightarrow}R_{t+1},S_{t+1}\overset{\pi}{\longrightarrow}A_{t+1}\]</div>
+<p><span class="math notranslate nohighlight">\(A_{t+1}\)</span> is dependent on the target policy <span class="math notranslate nohighlight">\(\pi\)</span>.</p>
+</li>
+<li><p>Q-learning is off-policy. The samples required by Q-learning in every iteration is <span class="math notranslate nohighlight">\((S_t, A_t, R_{t+1}, S_{t+1})\)</span>. How these samples are generated is illustrated below:</p>
+<div class="math notranslate nohighlight">
+\[S_{t},A_{t}\overset{\text{enviroment}}{\longrightarrow}R_{t+1},S_{t+1}\]</div>
+<p>the estimation of the optimal action value of <span class="math notranslate nohighlight">\((S_t, A_t)\)</span> does not involve <span class="math notranslate nohighlight">\(\pi\)</span> and we can use any policy to generate samples.</p>
+</li>
 </ul>
 </section>
 </section>
@@ -470,20 +477,20 @@ not involve \)</span>\pi$ and we can use any policy to generate samples.</p></li
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="07-td.html"
+       href="07-monte-carlo-td.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Temporal-Difference methods</p>
+        <p class="prev-next-title">Monte Carlo vs Temporal Difference Learning</p>
       </div>
     </a>
     <a class="right-next"
-       href="09-dqn.html"
+       href="09-deep-q-learning.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Deep Q-learning</p>
+        <p class="prev-next-title">Deep Q-Learning</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>What is Reinforcement Learning? &#8212; My sample book</title>
+    <title>Dynamic Programming &#8212; My sample book</title>
   
   
   
@@ -63,10 +63,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '01-intro';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '06-dynamic';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The Reinforcement Learning Framework" href="02-frame.html" />
+    <link rel="next" title="Monte Carlo vs Temporal Difference Learning" href="07-monte-carlo-td.html" />
+    <link rel="prev" title="The Bellman Optimality Equation" href="05-bellman-optimal.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -141,7 +144,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="01-intro.html">
   
   
   
@@ -161,18 +164,18 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
                     What is Reinforcement Learning?
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
@@ -249,7 +252,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F01-intro.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F06-dynamic.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -279,7 +282,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/01-intro.ipynb" target="_blank"
+      <li><a href="_sources/06-dynamic.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -361,7 +364,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>What is Reinforcement Learning?</h1>
+    <h1>Dynamic Programming</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,8 +374,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation">Policy Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-improvement">Policy Improvement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">Policy Iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">Value Iteration</a></li>
 </ul>
             </nav>
         </div>
@@ -384,36 +389,106 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="what-is-reinforcement-learning">
-<h1>What is Reinforcement Learning?<a class="headerlink" href="#what-is-reinforcement-learning" title="Permalink to this heading">#</a></h1>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>To understand Reinforcement Learning, let’s start with the big picture.</p>
-</div>
-<section id="the-big-picture">
-<h2>The big picture<a class="headerlink" href="#the-big-picture" title="Permalink to this heading">#</a></h2>
-<p>The idea behind Reinforcement Learning is that an agent (an AI) will learn from the environment by interacting with it (through trial and error) and receiving rewards (negative or positive) as feedback for performing actions.</p>
-<p>Learning from interactions with the environment comes from our natural experiences.</p>
-<p>For instance, imagine putting your little brother in front of a video game he never played, giving him a controller, and leaving him alone.</p>
-<p><img alt="" src="_images/intro1.jpeg" /></p>
-<p>Your brother will interact with the environment (the video game) by pressing the right button (action). He got a coin, that’s a +1 reward. It’s positive, he just understood that in this game he must get the coins.</p>
-<p><img alt="" src="_images/intro2.jpeg" /></p>
-<p>But then, he presses the right button again and he touches an enemy. He just died, so that’s a -1 reward.</p>
-<p><img alt="" src="_images/intro3.jpeg" /></p>
-<p>By interacting with his environment through trial and error, your little brother understands that he needs to get coins in this environment but avoid the enemies. Without any supervision, the child will get better and better at playing the game.</p>
-<p>That’s how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
-</section>
-<section id="a-formal-definition">
-<h2>A formal definition<a class="headerlink" href="#a-formal-definition" title="Permalink to this heading">#</a></h2>
-<p>We can now make a formal definition:</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="dynamic-programming">
+<h1>Dynamic Programming<a class="headerlink" href="#dynamic-programming" title="Permalink to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
+<p>The term dynamic programming (DP) refers to a collection of algorithms that can be
+used to compute optimal policies given a perfect model of the environment as a Markov
+decision process (MDP). Classical DP algorithms are of limited utility in reinforcement
+learning both because of their assumption of a perfect model and because of their great
+computational expense, but they are still important theoretically. DP provides an essential
+foundation for the understanding of the methods presented in the rest of this book. In
+fact, all of these methods can be viewed as attempts to achieve much the same e↵ect as
+DP, only with less computation and without assuming a perfect model of the environment.</p>
 </div>
-<p>But how does Reinforcement Learning work?</p>
+<section id="policy-evaluation">
+<h2>Policy Evaluation<a class="headerlink" href="#policy-evaluation" title="Permalink to this heading">#</a></h2>
+<p>First we consider how to compute the state-value function <span class="math notranslate nohighlight">\(V_{\pi}\)</span> for an arbitrary policy <span class="math notranslate nohighlight">\(\pi\)</span>. This is called policy evaluation in the DP literature. Recall the Bellman equation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+V_{\pi}(s) &amp;= \mathbb{E}_{\pi}[R_{t+1} + \gamma V_{\pi}(S_{t+1})|S_{t}=s]\\
+&amp;= \sum_{a}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V_{\pi}(s')\right]
+\end{aligned}
+\end{split}\]</div>
+<p>If the environment’s dynamics are completely known, then it is a system of <span class="math notranslate nohighlight">\(|S|\)</span> linear equations in <span class="math notranslate nohighlight">\(|S|\)</span> unknowns. In principle, its solution is a straightforward computation. For our purposes, iterative solution methods
+are most suitable. The initial approximation, <span class="math notranslate nohighlight">\(V_{0}\)</span>, is chosen arbitrarily, and each successive approximation is obtained by using the Bellman equation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+V_{k+1}(s) &amp;= \mathbb{E}_{\pi}[R_{t+1} + \gamma V_{k}(S_{t+1})|S_{t}=s]\\
+&amp;= \sum_{a}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V_{k}(s')\right]
+\end{aligned}
+\end{split}\]</div>
+<p>Clearly, <span class="math notranslate nohighlight">\(V_{k} = V_{\pi}\)</span> is a fixed point for this update rule. Indeed, the sequence <span class="math notranslate nohighlight">\(\{V_{k}\}\)</span> can be shown in general to converge to <span class="math notranslate nohighlight">\(V_{\pi}\)</span> as <span class="math notranslate nohighlight">\(k\to\infty\)</span>.</p>
 </section>
-<div class="toctree-wrapper compound">
+<section id="policy-improvement">
+<h2>Policy Improvement<a class="headerlink" href="#policy-improvement" title="Permalink to this heading">#</a></h2>
+<p>Our reason for computing the value function for a policy is to help find better policies. Suppose we have determined the value function <span class="math notranslate nohighlight">\(V_{\pi}\)</span> for an arbitrary deterministic policy <span class="math notranslate nohighlight">\(\pi\)</span>. For some state <span class="math notranslate nohighlight">\(s\)</span> we would like to know whether or not we should change the policy
+to deterministically choose an action <span class="math notranslate nohighlight">\(a\ne \pi(s)\)</span>.</p>
+<div class="proof theorem admonition" id="theorem-0">
+<p class="admonition-title"><span class="caption-number">Theorem 5 </span> (Policy improvement theorem)</p>
+<section class="theorem-content" id="proof-content">
+<p>Let <span class="math notranslate nohighlight">\(\pi\)</span> and <span class="math notranslate nohighlight">\(\pi'\)</span> be any pair of deterministic policies such that, for all <span class="math notranslate nohighlight">\(s\in\mathcal{S}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[Q_{\pi}(s, \pi'(s)) \ge V_{\pi}(s)\]</div>
+<p>Then the policy <span class="math notranslate nohighlight">\(\pi'\)</span> must be as good as, or better than, <span class="math notranslate nohighlight">\(\pi\)</span>.</p>
+</section>
+</div><div class="proof admonition" id="proof">
+<p>Proof. The idea behind the proof of the policy improvement theorem is easy to understand, we keep expanding the <span class="math notranslate nohighlight">\(Q_{\pi}\)</span> side and reapplying the inequality:</p>
+<p><span class="math notranslate nohighlight">\(
+\begin{aligned}
+V_{\pi}(s) &amp;\le Q_{\pi}(s, \pi'(s)) \\
+&amp;=\mathbb{E}_{\pi}[R_{t+1} + \gamma V_{\pi}(S_{t+1})|S_{t}=s,A_{t}=\pi'(s)]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1} + \gamma V_{\pi}(S_{t+1})|S_{t}=s]\\
+&amp;\le\mathbb{E}_{\pi'}[R_{t+1} + \gamma Q_{\pi}(S_{t+1},\pi'(S_{t+1}))|S_{t}=s]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1} + \gamma \mathbb{E}[R_{t+2}+\gamma V_{\pi}(S_{t+2})|S_{t+1},A_{t+1}=\pi'(S_{t+1})]|S_{t}=s]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^{2}V_{\pi}(S_{t+2})|S_{t}=s]\\
+&amp;\le\mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \gamma^{3}V_{\pi}(S_{t+3})|S_{t}=s]\\
+&amp;\vdots\\
+&amp;\le\mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \gamma^{3}R_{t+4}+\dots|S_{t}=s]\\
+&amp;=V_{\pi'}(s)
+\end{aligned}
+\)</span></p>
 </div>
+<p>Given a deterministic policy <span class="math notranslate nohighlight">\(\pi\)</span>, consider the new greedy policy <span class="math notranslate nohighlight">\(\pi'\)</span> given by</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\pi'(s) := \arg\max_{a}Q_{\pi}(s, a)
+\end{aligned}
+\]</div>
+<p>The process of making a new policy that improves on an original policy, by making it greedy with respect to the value function of
+the original policy, is called policy improvement. Suppose the new greedy policy, <span class="math notranslate nohighlight">\(\pi'\)</span>, is as good as, but not better than, the old policy <span class="math notranslate nohighlight">\(\pi\)</span>. Then <span class="math notranslate nohighlight">\(V_{\pi}=V_{\pi'}\)</span>, the Bellman optimality equations are satisfied, and therefore, <span class="math notranslate nohighlight">\(V_{\pi'}\)</span> must be <span class="math notranslate nohighlight">\(V_{\ast}\)</span>, and both <span class="math notranslate nohighlight">\(\pi\)</span> and <span class="math notranslate nohighlight">\(\pi'\)</span> must be optimal policies..</p>
+<p>So far we have considered the special case of deterministic policies. In the general case, a stochastic policy <span class="math notranslate nohighlight">\(\pi\)</span> specifies probabilities, <span class="math notranslate nohighlight">\(\pi(a|s)\)</span>, for taking each action, <span class="math notranslate nohighlight">\(a\)</span>, in each state, <span class="math notranslate nohighlight">\(s\)</span>. The policy improvement theorem carries through as stated for the stochastic case.</p>
+</section>
+<section id="policy-iteration">
+<h2>Policy Iteration<a class="headerlink" href="#policy-iteration" title="Permalink to this heading">#</a></h2>
+<p>Once a policy, <span class="math notranslate nohighlight">\(\pi\)</span>, has been improved using <span class="math notranslate nohighlight">\(V_{\pi}\)</span> to yield a better policy, <span class="math notranslate nohighlight">\(\pi'\)</span>, we can then
+compute <span class="math notranslate nohighlight">\(V_{\pi'}\)</span> and improve it again to yield an even better <span class="math notranslate nohighlight">\(\pi''\)</span>. We can thus obtain a
+sequence of monotonically improving policies and value functions:</p>
+<div class="math notranslate nohighlight">
+\[
+\pi_{0}\overset{E}{\longrightarrow} V_{\pi_{0}}\overset{I}{\longrightarrow} \pi_{1}\overset{E}{\longrightarrow} V_{\pi_{1}}\overset{I}{\longrightarrow} \dots
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\overset{E}{\longrightarrow}\)</span> denotes a policy evaluation and <span class="math notranslate nohighlight">\(\overset{I}{\longrightarrow}\)</span> denotes a policy improvement. Each
+policy is guaranteed to be a strict improvement over the previous one (unless it is already
+optimal). This process must converge to an optimal policy and optimal value function.</p>
+</section>
+<section id="value-iteration">
+<h2>Value Iteration<a class="headerlink" href="#value-iteration" title="Permalink to this heading">#</a></h2>
+<p>One drawback to policy iteration is that each of its iterations involves policy evaluation, which may itself be a iterative computation.</p>
+<p>In fact, the policy evaluation step of policy iteration can be truncated in several ways without losing the convergence guarantees of policy iteration. One important special case is when policy evaluation is stopped after just one update of each state. This algorithm is called value iteration. It can be written as a particularly simple update
+operation that combines the policy improvement and truncated policy evaluation steps:</p>
+<div class="math notranslate nohighlight">
+\[
+V_{k+1}(s) := \max_{a}\mathbb{E}[R_{t+1} + \gamma V_{k}(S_{t+1})|S_{t}=s,A_{t}=a]
+\]</div>
+<p>Another way of understanding value iteration is by reference to the Bellman optimality
+equation. Note that value iteration is obtained simply by turning the Bellman
+optimality equation into an update rule.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -446,12 +521,21 @@ document.write(`
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="05-bellman-optimal.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">The Bellman Optimality Equation</p>
+      </div>
+    </a>
     <a class="right-next"
-       href="02-frame.html"
+       href="07-monte-carlo-td.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The Reinforcement Learning Framework</p>
+        <p class="prev-next-title">Monte Carlo vs Temporal Difference Learning</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -470,8 +554,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-big-picture">The big picture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-formal-definition">A formal definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation">Policy Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-improvement">Policy Improvement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">Policy Iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">Value Iteration</a></li>
 </ul>
   </nav></div>
 

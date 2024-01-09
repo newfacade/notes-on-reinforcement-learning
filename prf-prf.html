@@ -168,23 +168,21 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="01-intro.html">
-                    Introduction
+                    What is Reinforcement Learning?
                 </a>
             </li>
         </ul>
         <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="02-mdp.html">Markov Decision Process</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-bellman.html">State values and Bellman equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-bellman-optimal.html">Optimal Policies and Bellman Optimality Equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-iteration.html">Value iteration and policy iteration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-monte-carlo.html">Monte Carlo Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="07-td.html">Temporal-Difference methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-dqn.html">Deep Q-learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10-policy.html">Policy Gradient</a></li>
-<li class="toctree-l1"><a class="reference internal" href="11-a2c.html">Advantage Actor-Critic (A2C)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="12-trpo.html">Trust Region Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 </ul>
 
     </div>
@@ -336,19 +334,29 @@ document.write(`
    <h1>Proof Index</h1>
 
    <div class="modindex-jumpbox">
+   <a href="#cap-my-algorithm"><strong>my-algorithm</strong></a> | 
    <a href="#cap-theorem-0"><strong>theorem-0</strong></a> | 
    <a href="#cap-theorem-1"><strong>theorem-1</strong></a> | 
-   <a href="#cap-theorem-2"><strong>theorem-2</strong></a>
+   <a href="#cap-theorem-2"><strong>theorem-2</strong></a> | 
+   <a href="#cap-theorem-3"><strong>theorem-3</strong></a>
    </div>
 
    <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-my-algorithm"><td></td><td>
+       <strong>my-algorithm</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="09-deep-q-learning.html#my-algorithm"><code class="xref">my-algorithm</code></a> <em>(09-deep-q-learning)</em></td><td>
+       <em>algorithm</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-theorem-0"><td></td><td>
        <strong>theorem-0</strong></td><td></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="04-bellman-optimal.html#theorem-0"><code class="xref">theorem-0</code></a> <em>(04-bellman-optimal)</em></td><td>
+       <a href="06-dynamic.html#theorem-0"><code class="xref">theorem-0</code></a> <em>(06-dynamic)</em></td><td>
        <em>theorem</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-theorem-1"><td></td><td>
@@ -356,7 +364,7 @@ document.write(`
      <tr>
        <td></td>
        <td>
-       <a href="04-bellman-optimal.html#theorem-1"><code class="xref">theorem-1</code></a> <em>(04-bellman-optimal)</em></td><td>
+       <a href="05-bellman-optimal.html#theorem-1"><code class="xref">theorem-1</code></a> <em>(05-bellman-optimal)</em></td><td>
        <em>theorem</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-theorem-2"><td></td><td>
@@ -364,7 +372,15 @@ document.write(`
      <tr>
        <td></td>
        <td>
-       <a href="04-bellman-optimal.html#theorem-2"><code class="xref">theorem-2</code></a> <em>(04-bellman-optimal)</em></td><td>
+       <a href="05-bellman-optimal.html#theorem-2"><code class="xref">theorem-2</code></a> <em>(05-bellman-optimal)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-theorem-3"><td></td><td>
+       <strong>theorem-3</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="05-bellman-optimal.html#theorem-3"><code class="xref">theorem-3</code></a> <em>(05-bellman-optimal)</em></td><td>
        <em>theorem</em></td></tr>
    </table>
 
