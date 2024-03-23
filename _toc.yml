@@ -1,0 +1,18 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: 01-intro
+chapters:
+- file: 02-frame
+- file: 03-approach
+- file: 04-bellman
+- file: 05-bellman-optimal
+- file: 06-dynamic
+- file: 07-monte-carlo-td
+- file: 08-q-learning
+- file: 09-deep-q-learning
+- file: 10-dqn-torch
+- file: 11-policy
+- file: 12-actor-critic
+- file: 13-ppo

@@ -1,0 +1,612 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Deep Q-Learning &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '09-deep-q-learning';</script>
+    <link rel="shortcut icon" href="_static/github.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deep Q-Learning with Pytorch" href="10-dqn-torch.html" />
+    <link rel="prev" title="Q-learning" href="08-q-learning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="01-intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/shuishen-min.jpeg" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/shuishen-min.jpeg" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
+                    What is Reinforcement Learning?
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Deep Q-Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-ppo.html">Proximal Policy Optimization</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F09-deep-q-learning.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/09-deep-q-learning.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Deep Q-Learning</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-deep-q-learning-algorithm">The Deep Q-Learning Algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-replay">Experience Replay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-q-target">Fixed Q-Target</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-q-learning-variants">Deep Q-Learning Variants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-dqn">Double DQN</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="deep-q-learning">
+<h1>Deep Q-Learning<a class="headerlink" href="#deep-q-learning" title="Permalink to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Q-Learning is a tabular method. This becomes a problem if the states and actions spaces are not small enough to be represented efficiently by arrays and tables.<br>
+If the state space is gigantic, the best idea is to approximate the Q-values using a parametrized Q-function <span class="math notranslate nohighlight">\(Q_{\theta}(s, a)\)</span>.<br>
+Deep Q-Learning uses a neural network that takes a state and outputs one approximate Q-Value for each possible action.</p>
+</div>
+<p><img alt="" src="_images/deep-q1.jpeg" /></p>
+<section id="the-deep-q-learning-algorithm">
+<h2>The Deep Q-Learning Algorithm<a class="headerlink" href="#the-deep-q-learning-algorithm" title="Permalink to this heading">#</a></h2>
+<p>Instead of updating the Q-value of a state-action pair directly as we have done with Q-Learning. In Deep Q-Learning, we create a loss function that compares our Q-value prediction and the Q-target and uses gradient descent to update the weights of our Deep Q-Network to approximate our Q-values better.</p>
+<div class="proof algorithm admonition" id="my-algorithm">
+<p class="admonition-title"><span class="caption-number">Algorithm 1 </span> (Deep Q-Learning)</p>
+<section class="algorithm-content" id="proof-content">
+<p>Initialize replay memory <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to capacity <span class="math notranslate nohighlight">\(N\)</span><br>
+Initialize action-value function <span class="math notranslate nohighlight">\(Q\)</span> with random weights <span class="math notranslate nohighlight">\(\theta\)</span><br>
+Initialize target action-value function with weights <span class="math notranslate nohighlight">\(\theta^{-}=\theta\)</span><br></p>
+<p><strong>for</strong> episode <span class="math notranslate nohighlight">\(= 1, M\)</span> <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Initialise state <span class="math notranslate nohighlight">\(s_1\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><strong>for</strong> <span class="math notranslate nohighlight">\(t= 1, T\)</span> <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>With probability <span class="math notranslate nohighlight">\(\epsilon\)</span> select a random action <span class="math notranslate nohighlight">\(a_{t}\)</span> otherwise select <span class="math notranslate nohighlight">\(a_{t} = \arg\max_{a}Q(s_t, a; \theta^{-})\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Execute action <span class="math notranslate nohighlight">\(a_{t}\)</span> in emulator and observe reward <span class="math notranslate nohighlight">\(r_{t+1}\)</span> and new state <span class="math notranslate nohighlight">\(s_{t+1}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Store transition <span class="math notranslate nohighlight">\((s_{t},a_{t},r_{t+1},s_{t+1})\)</span> in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Sample random minibatch of transitions <span class="math notranslate nohighlight">\((s_{i},a_{i},r_{i+1},s_{i+1})\)</span> from <span class="math notranslate nohighlight">\(\mathcal{D}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(y_{i} = r_{i+1} + \gamma \max_{a}Q(s_{i+1},a; \theta^{-})\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Perform a gradient descent step on <span class="math notranslate nohighlight">\((y_i − Q(s_{i} , a_{i} ; \theta))^2\)</span> with respect to <span class="math notranslate nohighlight">\(\theta\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>Every <span class="math notranslate nohighlight">\(C\)</span> steps reset <span class="math notranslate nohighlight">\(\theta^{-}=\theta\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><strong>end for</strong><br>
+<strong>end for</strong></p>
+</section>
+</div><p>The Deep Q-Learning training algorithm has two phases:</p>
+<ol class="arabic simple">
+<li><p>Sampling: we perform actions and store the observed experience tuples in a replay memory.</p></li>
+<li><p>Training: Select a small batch of tuples randomly and learn from this batch using a gradient descent update step.</p></li>
+</ol>
+<p>Deep Q-Learning training might suffer from instability, mainly because of combining a non-linear Q-value function (Neural Network) and bootstrapping (when we update targets with existing estimates and not an actual complete return). To help us stabilize the training, we implement two different solutions:</p>
+<ol class="arabic simple">
+<li><p>Experience Replay to make more efficient use of experiences.</p></li>
+<li><p>Fixed Q-Target to stabilize the training.</p></li>
+</ol>
+<section id="experience-replay">
+<h3>Experience Replay<a class="headerlink" href="#experience-replay" title="Permalink to this heading">#</a></h3>
+<p>Experience Replay in Deep Q-Learning has two functions:</p>
+<ol class="arabic">
+<li><p>Make more efficient use of the experiences during the training. We use a replay buffer that saves experience samples that we can reuse during the training. This allows the agent to learn from the same experiences multiple times.</p></li>
+<li><p>Avoid forgetting previous experiences and reduce the correlation between experiences.</p>
+<p>The problem we get if we give sequential samples of experiences to our neural network is that it tends to forget the previous experiences as it gets new experiences. The solution is to create a Replay Buffer that stores experience tuples while interacting with the environment and then sample a small batch of tuples.</p>
+<p>By randomly sampling the experiences, we remove correlation in the observation sequences and avoid action values from oscillating or diverging catastrophically.</p>
+</li>
+</ol>
+</section>
+<section id="fixed-q-target">
+<h3>Fixed Q-Target<a class="headerlink" href="#fixed-q-target" title="Permalink to this heading">#</a></h3>
+<p>When we want to calculate the TD error (aka the loss), we calculate the difference between the TD target (Q-Target) and the current Q-value (estimation of Q).</p>
+<p>However, the problem is that we are using the same parameters (weights) for estimating the TD target and the Q-value. Consequently, there is a significant correlation between the TD target and the parameters we are changing.</p>
+<p>Therefore, at every step of training, both our Q-values and the target values shift. We’re getting closer to our target, but the target is also moving. It’s like chasing a moving target! This can lead to significant oscillation in training.</p>
+<p>It’s like if you were a cowboy (the Q estimation) and you wanted to catch a cow (the Q-target). Your goal is to get closer (reduce the error).</p>
+<p><img alt="" src="_images/deep-q3.jpeg" /></p>
+<p>At each time step, you’re trying to approach the cow, which also moves at each time step (because you use the same parameters).</p>
+<p><img alt="" src="_images/deep-q4.jpeg" /></p>
+<p><img alt="" src="_images/deep-q5.jpeg" /></p>
+<p>Instead, we:</p>
+<ul class="simple">
+<li><p>Use a separate network with fixed parameters for estimating the TD Target</p></li>
+<li><p>Copy the parameters from our Deep Q-Network every <span class="math notranslate nohighlight">\(C\)</span> steps to update the target network.</p></li>
+</ul>
+</section>
+</section>
+<section id="deep-q-learning-variants">
+<h2>Deep Q-Learning Variants<a class="headerlink" href="#deep-q-learning-variants" title="Permalink to this heading">#</a></h2>
+<p>Let’s look at a few variants of the Deep Q-Learning algorithm that can further stabilize and speed up training.</p>
+<section id="double-dqn">
+<h3>Double DQN<a class="headerlink" href="#double-dqn" title="Permalink to this heading">#</a></h3>
+<p>Remember how we calculate the TD Target:</p>
+<p><img alt="" src="_images/TD-1.jpeg" /></p>
+<p>We face a simple problem by calculating the TD target: how are we sure that the best action for the next state is the action with the highest Q-value? We know that the accuracy of Q-values depends on what action we tried and what neighboring states we explored.</p>
+<p>Consequently, we don’t have enough information about the best action to take at the beginning of the training. Therefore, taking the maximum Q-value (which is noisy) as the best action to take can lead to false positives. If non-optimal actions are regularly given a higher Q value than the optimal best action, the learning will be complicated.</p>
+<p>The solution is: when we compute the Q target, we use two networks to decouple the action selection from the target Q-value generation. We:</p>
+<ul class="simple">
+<li><p>Use our DQN network to select the best action to take for the next state.</p></li>
+<li><p>Use our Target network to calculate the target Q-value of taking that action at the next state.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="08-q-learning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Q-learning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="10-dqn-torch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Deep Q-Learning with Pytorch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-deep-q-learning-algorithm">The Deep Q-Learning Algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-replay">Experience Replay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-q-target">Fixed Q-Target</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-q-learning-variants">Deep Q-Learning Variants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-dqn">Double DQN</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
