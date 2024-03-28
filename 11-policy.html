@@ -381,6 +381,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantages-and-disadvantages-of-policy-gradient-methods">The advantages and disadvantages of policy-gradient methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-theorem">The Policy Gradient Theorem</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-algorithm-monte-carlo-reinforce">The Reinforce algorithm (Monte Carlo Reinforce)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -470,6 +477,206 @@ document.write(`
 <li><p>Otherwise, it will push down the probabilities of the (state, action) combinations.</p></li>
 </ul>
 </section>
+<section id="pytorch-example">
+<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Permalink to this heading">#</a></h2>
+<section id="policy-network">
+<h3>Policy network<a class="headerlink" href="#policy-network" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+<span class="k">class</span> <span class="nc">Policy</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MLP&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Policy</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affine1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affine2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved_log_probs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">action_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">action_scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">policy</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>*<code class="docutils literal notranslate"><span class="pre">self.saved_log_probs</span></code> saves <span class="math notranslate nohighlight">\(\left[\pi_{\theta}(a_{0}|s_{0}), \pi_{\theta}(a_{1}|s_{1}),\dots,\pi_{\theta}(a_{T}|s_{T})\right]\)</span></p>
+<p>*<code class="docutils literal notranslate"><span class="pre">self.rewards</span></code> saves <span class="math notranslate nohighlight">\(\left[r_{0},r_{1},\dots,r_{T}\right]\)</span></p>
+</section>
+<section id="env">
+<h3>Env<a class="headerlink" href="#env" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([ 0.00118216,  0.04504637, -0.03558404,  0.04486495], dtype=float32),
+ {})
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="one-episode">
+<h3>One episode<a class="headerlink" href="#one-episode" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Categorical</span>
+
+<span class="k">def</span> <span class="nf">select_action</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+    <span class="n">policy</span><span class="o">.</span><span class="n">saved_log_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">action</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.99</span>
+
+<span class="k">def</span> <span class="nf">finish_episode</span><span class="p">():</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">policy_loss</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">returns</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">rewards</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">R</span>
+        <span class="n">returns</span><span class="o">.</span><span class="n">appendleft</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">returns</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+    <span class="n">returns</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span> <span class="o">-</span> <span class="n">returns</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">log_prob</span><span class="p">,</span> <span class="n">R</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">saved_log_probs</span><span class="p">,</span> <span class="n">returns</span><span class="p">):</span>
+        <span class="n">policy_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">log_prob</span> <span class="o">*</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">policy_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">policy_loss</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">policy_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">policy</span><span class="o">.</span><span class="n">rewards</span><span class="p">[:]</span>
+    <span class="k">del</span> <span class="n">policy</span><span class="o">.</span><span class="n">saved_log_probs</span><span class="p">[:]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">returns</span></code> = <span class="math notranslate nohighlight">\(\left[R_{0}, R_{1}, \dots, R_{T}\right]\)</span> where <span class="math notranslate nohighlight">\(R_{t} = r_{t} + \gamma r_{t+1} + \gamma^{2}r_{t+2} + \dots\)</span></p>
+<p><code class="docutils literal notranslate"><span class="pre">policy_loss</span></code> = <span class="math notranslate nohighlight">\(\sum_{i=0}^{T}-\log\pi_{\theta}(a_{t}|s_{t})R_{t}\)</span></p>
+</section>
+<section id="main-loop">
+<h3>Main loop<a class="headerlink" href="#main-loop" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">running_reward</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">for</span> <span class="n">i_episode</span> <span class="ow">in</span> <span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">state</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">ep_reward</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">):</span>  <span class="c1"># Don&#39;t infinite loop while learning</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">select_action</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+            <span class="n">policy</span><span class="o">.</span><span class="n">rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
+            <span class="n">ep_reward</span> <span class="o">+=</span> <span class="n">reward</span>
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">running_reward</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">ep_reward</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">*</span> <span class="n">running_reward</span>
+        <span class="n">finish_episode</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">i_episode</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Episode </span><span class="si">{}</span><span class="se">\t</span><span class="s1">Last reward: </span><span class="si">{:.2f}</span><span class="se">\t</span><span class="s1">Average reward: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                  <span class="n">i_episode</span><span class="p">,</span> <span class="n">ep_reward</span><span class="p">,</span> <span class="n">running_reward</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">running_reward</span> <span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">reward_threshold</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solved! Running reward is now </span><span class="si">{}</span><span class="s2"> and &quot;</span>
+                  <span class="s2">&quot;the last episode runs to </span><span class="si">{}</span><span class="s2"> time steps!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">running_reward</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+            <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Episode 10	Last reward: 12.00	Average reward: 15.65
+Episode 20	Last reward: 30.00	Average reward: 21.50
+Episode 30	Last reward: 57.00	Average reward: 26.75
+Episode 40	Last reward: 34.00	Average reward: 34.43
+Episode 50	Last reward: 70.00	Average reward: 55.36
+Episode 60	Last reward: 72.00	Average reward: 103.52
+Episode 70	Last reward: 132.00	Average reward: 119.66
+Episode 80	Last reward: 140.00	Average reward: 117.84
+Episode 90	Last reward: 27.00	Average reward: 96.78
+Episode 100	Last reward: 12.00	Average reward: 76.47
+Episode 110	Last reward: 103.00	Average reward: 81.30
+Episode 120	Last reward: 105.00	Average reward: 77.09
+Episode 130	Last reward: 93.00	Average reward: 83.25
+Episode 140	Last reward: 128.00	Average reward: 107.52
+Episode 150	Last reward: 180.00	Average reward: 155.75
+Episode 160	Last reward: 483.00	Average reward: 219.93
+Episode 170	Last reward: 62.00	Average reward: 200.44
+Episode 180	Last reward: 192.00	Average reward: 196.48
+Episode 190	Last reward: 808.00	Average reward: 209.19
+Episode 200	Last reward: 541.00	Average reward: 226.06
+Episode 210	Last reward: 140.00	Average reward: 353.07
+Episode 220	Last reward: 114.00	Average reward: 266.01
+Episode 230	Last reward: 89.00	Average reward: 200.81
+Episode 240	Last reward: 98.00	Average reward: 161.05
+Episode 250	Last reward: 97.00	Average reward: 132.33
+Episode 260	Last reward: 132.00	Average reward: 124.33
+Episode 270	Last reward: 116.00	Average reward: 118.33
+Episode 280	Last reward: 135.00	Average reward: 115.04
+Episode 290	Last reward: 111.00	Average reward: 114.01
+Episode 300	Last reward: 106.00	Average reward: 106.63
+Episode 310	Last reward: 61.00	Average reward: 94.67
+Episode 320	Last reward: 40.00	Average reward: 80.34
+Episode 330	Last reward: 102.00	Average reward: 76.40
+Episode 340	Last reward: 72.00	Average reward: 83.75
+Episode 350	Last reward: 52.00	Average reward: 79.89
+Episode 360	Last reward: 100.00	Average reward: 77.80
+Episode 370	Last reward: 73.00	Average reward: 75.90
+Episode 380	Last reward: 93.00	Average reward: 76.13
+Episode 390	Last reward: 112.00	Average reward: 84.90
+Episode 400	Last reward: 204.00	Average reward: 125.94
+Episode 410	Last reward: 155.00	Average reward: 167.30
+Episode 420	Last reward: 123.00	Average reward: 169.36
+Episode 430	Last reward: 237.00	Average reward: 181.22
+Solved! Running reward is now 861.854364362971 and the last episode runs to 9999 time steps!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -539,6 +746,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantages-and-disadvantages-of-policy-gradient-methods">The advantages and disadvantages of policy-gradient methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-theorem">The Policy Gradient Theorem</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-algorithm-monte-carlo-reinforce">The Reinforce algorithm (Monte Carlo Reinforce)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
