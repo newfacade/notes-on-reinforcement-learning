@@ -384,6 +384,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-advantage-in-actor-critic-a2c">Adding Advantage in Actor-Critic (A2C)</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -468,6 +475,246 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 <p><img alt="" src="_images/ac6.jpeg" /></p>
 </section>
 </section>
+<section id="pytorch-example">
+<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Permalink to this heading">#</a></h2>
+<section id="model">
+<h3>Model<a class="headerlink" href="#model" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+
+<span class="k">class</span> <span class="nc">Policy</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    implements both actor and critic in one model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Policy</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affine1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+
+        <span class="c1"># actor&#39;s layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># critic&#39;s layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># action &amp; reward buffer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved_actions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        forward of both actor and critic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">affine1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+        <span class="c1"># actor: choses action to take from state s_t</span>
+        <span class="c1"># by returning probability of each action</span>
+        <span class="n">action_prob</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_head</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># critic: evaluates being in the state s_t</span>
+        <span class="n">state_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># return values for both actor and critic as a tuple of 2 values:</span>
+        <span class="c1"># 1. a list with the probability of each action over the action space</span>
+        <span class="c1"># 2. the value from state s_t</span>
+        <span class="k">return</span> <span class="n">action_prob</span><span class="p">,</span> <span class="n">state_values</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="env">
+<h3>Env<a class="headerlink" href="#env" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([-0.02383879, -0.02015088,  0.03142257, -0.04080841], dtype=float32),
+ {})
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="one-episode">
+<h3>One episode<a class="headerlink" href="#one-episode" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Categorical</span>
+
+<span class="n">SavedAction</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SavedAction&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;log_prob&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">select_action</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">probs</span><span class="p">,</span> <span class="n">state_value</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="c1"># create a categorical distribution over the list of probabilities of actions</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+
+    <span class="c1"># and sample an action using the distribution</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+
+    <span class="c1"># save to action buffer</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">saved_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SavedAction</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action</span><span class="p">),</span> <span class="n">state_value</span><span class="p">))</span>
+
+    <span class="c1"># the action to take (left or right)</span>
+    <span class="k">return</span> <span class="n">action</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">finish_episode</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Training code. Calculates actor and critic loss and performs backprop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">saved_actions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">saved_actions</span>
+    <span class="n">policy_losses</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># list to save actor (policy) loss</span>
+    <span class="n">value_losses</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># list to save critic (value) loss</span>
+    <span class="n">returns</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># list to save the true values</span>
+
+    <span class="c1"># calculate the true value using rewards returned from the environment</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">rewards</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="c1"># calculate the discounted value</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="mf">0.99</span> <span class="o">*</span> <span class="n">R</span>
+        <span class="n">returns</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+    <span class="n">returns</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+    <span class="n">returns</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span> <span class="o">-</span> <span class="n">returns</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">log_prob</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">R</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">saved_actions</span><span class="p">,</span> <span class="n">returns</span><span class="p">):</span>
+        <span class="n">advantage</span> <span class="o">=</span> <span class="n">R</span> <span class="o">-</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="c1"># calculate actor (policy) loss</span>
+        <span class="n">policy_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">log_prob</span> <span class="o">*</span> <span class="n">advantage</span><span class="p">)</span>
+
+        <span class="c1"># calculate critic (value) loss using L1 smooth loss</span>
+        <span class="n">value_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">smooth_l1_loss</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">R</span><span class="p">])))</span>
+
+    <span class="c1"># reset gradients</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+    <span class="c1"># sum up all the values of policy_losses and value_losses</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">policy_losses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">value_losses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="c1"># perform backprop</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+    <span class="c1"># reset rewards and action buffer</span>
+    <span class="k">del</span> <span class="n">model</span><span class="o">.</span><span class="n">rewards</span><span class="p">[:]</span>
+    <span class="k">del</span> <span class="n">model</span><span class="o">.</span><span class="n">saved_actions</span><span class="p">[:]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">returns</span></code> = <span class="math notranslate nohighlight">\(\left[R_{0}, R_{1}, \dots, R_{T}\right]\)</span> where <span class="math notranslate nohighlight">\(R_{t} = r_{t} + \gamma r_{t+1} + \gamma^{2}r_{t+2} + \dots\)</span></p>
+<p><code class="docutils literal notranslate"><span class="pre">policy_loss</span></code> = <span class="math notranslate nohighlight">\(\sum_{i=0}^{T}-\log\pi_{\theta}(a_{t}|s_{t})(R_{t} - \hat{V}_{w}(s_{t}))\)</span></p>
+<p><code class="docutils literal notranslate"><span class="pre">value_loss</span></code> = <span class="math notranslate nohighlight">\(\sum_{i=0}^{T}|R_{t} - \hat{V}_{w}(s_{t})|\)</span></p>
+</section>
+<section id="main-loop">
+<h3>Main loop<a class="headerlink" href="#main-loop" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">running_reward</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># run infinitely many episodes</span>
+    <span class="k">for</span> <span class="n">i_episode</span> <span class="ow">in</span> <span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="c1"># reset environment and episode reward</span>
+        <span class="n">state</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">ep_reward</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># for each episode, only run 9999 steps so that we don&#39;t</span>
+        <span class="c1"># infinite loop while learning</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">):</span>
+
+            <span class="c1"># select action from policy</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">select_action</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+            <span class="c1"># take the action</span>
+            <span class="n">state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="n">model</span><span class="o">.</span><span class="n">rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
+            <span class="n">ep_reward</span> <span class="o">+=</span> <span class="n">reward</span>
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="c1"># update cumulative reward</span>
+        <span class="n">running_reward</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">ep_reward</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">*</span> <span class="n">running_reward</span>
+
+        <span class="c1"># perform backprop</span>
+        <span class="n">finish_episode</span><span class="p">()</span>
+
+        <span class="c1"># log results</span>
+        <span class="k">if</span> <span class="n">i_episode</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Episode </span><span class="si">{}</span><span class="se">\t</span><span class="s1">Last reward: </span><span class="si">{:.2f}</span><span class="se">\t</span><span class="s1">Average reward: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                  <span class="n">i_episode</span><span class="p">,</span> <span class="n">ep_reward</span><span class="p">,</span> <span class="n">running_reward</span><span class="p">))</span>
+
+        <span class="c1"># check if we have &quot;solved&quot; the cart pole problem</span>
+        <span class="k">if</span> <span class="n">running_reward</span> <span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">reward_threshold</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solved! Running reward is now </span><span class="si">{}</span><span class="s2"> and &quot;</span>
+                  <span class="s2">&quot;the last episode runs to </span><span class="si">{}</span><span class="s2"> time steps!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">running_reward</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+            <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Episode 10	Last reward: 12.00	Average reward: 13.41
+Episode 20	Last reward: 10.00	Average reward: 11.82
+Episode 30	Last reward: 10.00	Average reward: 11.44
+Episode 40	Last reward: 10.00	Average reward: 12.48
+Episode 50	Last reward: 29.00	Average reward: 13.10
+Episode 60	Last reward: 22.00	Average reward: 14.30
+Episode 70	Last reward: 42.00	Average reward: 20.13
+Episode 80	Last reward: 87.00	Average reward: 64.19
+Episode 90	Last reward: 130.00	Average reward: 71.48
+Episode 100	Last reward: 1857.00	Average reward: 195.87
+Episode 110	Last reward: 26.00	Average reward: 173.51
+Episode 120	Last reward: 179.00	Average reward: 164.31
+Episode 130	Last reward: 239.00	Average reward: 178.51
+Solved! Running reward is now 815.4286146729273 and the last episode runs to 9999 time steps!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -538,6 +785,13 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reducing-variance-with-actor-critic-methods">Reducing variance with Actor-Critic methods</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-actor-critic-process">The Actor-Critic Process</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-advantage-in-actor-critic-a2c">Adding Advantage in Actor-Critic (A2C)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
 </li>
 </ul>
