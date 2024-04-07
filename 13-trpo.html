@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>The Bellman Optimality Equation &#8212; My sample book</title>
+    <title>TRPO &#8212; My sample book</title>
   
   
   
@@ -65,12 +65,12 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '05-bellman-optimal';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '13-trpo';</script>
     <link rel="shortcut icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dynamic Programming" href="06-dynamic.html" />
-    <link rel="prev" title="The Bellman Equation" href="04-bellman.html" />
+    <link rel="next" title="Generalized Advantage Estimation" href="14-gae.html" />
+    <link rel="prev" title="Actor-Critic Methods" href="12-actor-critic.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -175,7 +175,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
@@ -183,7 +183,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
@@ -262,7 +262,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F05-bellman-optimal.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F13-trpo.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -292,7 +292,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/05-bellman-optimal.ipynb" target="_blank"
+      <li><a href="_sources/13-trpo.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -374,7 +374,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>The Bellman Optimality Equation</h1>
+    <h1>TRPO</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -384,11 +384,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-optimality-equation">Bellman optimality equation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contraction-mapping-theorem">Contraction mapping theorem</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-an-optimal-policy-from-the-boe">Solving an optimal policy from the BOE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-action-value">Optimal action-value</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-forms-of-bellman-optimality-equation">Other forms of Bellman Optimality Equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
 </ul>
             </nav>
         </div>
@@ -400,175 +399,145 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="the-bellman-optimality-equation">
-<h1>The Bellman Optimality Equation<a class="headerlink" href="#the-bellman-optimality-equation" title="Permalink to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="trpo">
+<h1>TRPO<a class="headerlink" href="#trpo" title="Permalink to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The ultimate goal of reinforcement learning is to seek optimal policies. It is, therefore,
-necessary to define what optimal policies are.<br></p>
+<p>TRPO updates policies by taking the largest step possible to improve performance, while satisfying a special constraint on how close the new and old policies are allowed to be.</p>
 </div>
-<p>Partial ordering between policies:</p>
+<section id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Permalink to this heading">#</a></h2>
+<p>Consider an infinite-horizon discounted Markov decision
+process (MDP), defined by the tuple <span class="math notranslate nohighlight">\((\mathcal{S}, \mathcal{A}, P, r, \rho_{0},\gamma)\)</span> where <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> is a finite set of states, <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is a finite set of actions, <span class="math notranslate nohighlight">\(P: \mathcal{S}\times\mathcal{A}\times\mathcal{A}\to\mathbb{R}\)</span> is the transition probability distriarbution, <span class="math notranslate nohighlight">\(r:\mathcal{S}\to\mathbb{R}\)</span> is the reward function (difference from our previous setting), <span class="math notranslate nohighlight">\(\rho_{0}:\mathcal{S}\to\mathbb{R}\)</span> is
+the distribution of the initial state <span class="math notranslate nohighlight">\(s_{0}\)</span>, <span class="math notranslate nohighlight">\(\gamma\in(0, 1)\)</span> is the
+discount factor.</p>
+<p>Let <span class="math notranslate nohighlight">\(\pi\)</span> denote a stochastic policy <span class="math notranslate nohighlight">\(\pi:\mathcal{S}\times\mathcal{A}\to[0, 1]\)</span>, and let <span class="math notranslate nohighlight">\(\eta(\pi)\)</span> denote its expected discounted reward:</p>
 <div class="math notranslate nohighlight">
-\[\pi_{1} \ge \pi_{2} \Leftrightarrow V_{\pi_1}(s) \ge V_{\pi_2}(s)\quad \forall s\in\mathcal{S}\]</div>
-<p>Some policies are not comparable!</p>
-<p>Optimal policy and optimal state-value function:</p>
+\[\eta(\pi) = \mathbb{E}_{s_0,a_0,\dots}\left[\sum_{t=0}^{\infty}\gamma^{t}r(s_{t})\right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_0\sim\rho_0(s_0)\)</span>, <span class="math notranslate nohighlight">\(a_t\sim\pi(a_t|s_t)\)</span>, <span class="math notranslate nohighlight">\(s_{t+1}\sim P(s_{t+1}|s_{t}, a_{t})\)</span>. Let <span class="math notranslate nohighlight">\(A_{\pi}(s, a) = Q_{\pi}(s, a) - V_{\pi}(s)\)</span></p>
+<p>The following useful identity expresses the expected return
+of another policy <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> in terms of the advantage over <span class="math notranslate nohighlight">\(\pi\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[V^{\ast}(s) := \max_{\pi}V_{\pi}(s) = V_{\pi^{\ast}}(s)\quad\forall s\in\mathcal{S}\]</div>
-<p><span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> is a policy whose value function is the maximum out of all policy simultaneously for all states.</p>
-<p><span class="math notranslate nohighlight">\(V^{\ast}(s)\)</span> shows the maximum expected discounted return that one can
-achieve from state <span class="math notranslate nohighlight">\(s\)</span> with optimal play.</p>
-<p>This definition leads to many questions:</p>
-<ul class="simple">
-<li><p>Existence: Does the optimal policy exist?</p></li>
-<li><p>Uniqueness: Is the optimal policy unique?</p></li>
-<li><p>Algorithm: How to obtain the optimal policy and the optimal state values?</p></li>
-</ul>
-<section id="bellman-optimality-equation">
-<h2>Bellman optimality equation<a class="headerlink" href="#bellman-optimality-equation" title="Permalink to this heading">#</a></h2>
-<p>Bellman optimality equation (BOE):</p>
+\[\eta(\tilde{\pi}) = \eta(\pi) + \mathbb{E}_{s_0,a_0,\dots\sim\tilde{\pi}}\left[\sum_{t=0}^{\infty}\gamma^{t}A_{\pi}(s_t,a_t)\right]\]</div>
+<p>Let <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> be the discounted visitation frequencies:</p>
+<div class="math notranslate nohighlight">
+\[\rho_{\pi}(s) = P(s_0=s) + \gamma P(s_1=s) + \gamma^{2}P(s_2=s) + \dots\]</div>
+<p>We can rewrite Equation with a sum over states instead
+of timesteps:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\eta(\tilde{\pi}) &amp;= \eta(\pi) + \sum_{t=0}^{\infty}\sum_{s}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)\gamma^{t}A_{\pi}(s, a) \\
+&amp;= \eta(\pi) + \sum_{s}\sum_{t=0}^{\infty}\gamma^{t}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a) \\
+&amp;= \eta(\pi) + \sum_{s}\rho_{\tilde{\pi}}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)
+\end{aligned}
+\end{split}\]</div>
+<p>This equation implies that any policy update <span class="math notranslate nohighlight">\(\pi\to\tilde{\pi}\)</span> that
+has a nonnegative expected advantage at every state <span class="math notranslate nohighlight">\(s\)</span> is guaranteed to increase
+the policy performance <span class="math notranslate nohighlight">\(\rho\)</span>. However, the complex dependency of <span class="math notranslate nohighlight">\(rho_{\tilde{\pi}}(s)\)</span> on <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> makes it difficult to optimize directly.
+Instead, we introduce the following local approximation
+to <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[L_{\pi}(\tilde{\pi}) = \eta{\pi} + \sum_{s}\rho_{\pi}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)\]</div>
+<p>Note that <span class="math notranslate nohighlight">\(L_{\pi}\)</span> uses the visitation frequency <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> rather than <span class="math notranslate nohighlight">\(\rho_{\tilde{\pi}}\)</span>. If we have a parameterized policy <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span>, where <span class="math notranslate nohighlight">\(\pi_{\theta}(a|s)\)</span> is a differentiable function
+of the parameter vector <span class="math notranslate nohighlight">\(\theta\)</span>, then <span class="math notranslate nohighlight">\(L_{\pi}\)</span> matches <span class="math notranslate nohighlight">\(\eta\)</span> to first order:</p>
+<div class="math notranslate nohighlight">
+\[L_{\pi_{\theta_{0}}}(\pi_{\theta_{0}}) = \eta(\pi_{\theta_{0}})\]</div>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}L_{\pi_{\theta_0}}(\pi_{\theta_0})|_{\theta=\theta_0} = \nabla_{\theta}\eta(\pi_{\theta_{0}})|_{\theta=\theta_0}\]</div>
+<p>It implies that a sufficiently small step that improves <span class="math notranslate nohighlight">\(L_{\pi_{\theta_{\text{old}}}}\)</span> will also improve <span class="math notranslate nohighlight">\(\eta\)</span>, but does not give
+us any guidance on how big of a step to take.</p>
+</section>
+<section id="monotonic-improvement-guarantee">
+<h2>Monotonic Improvement Guarantee<a class="headerlink" href="#monotonic-improvement-guarantee" title="Permalink to this heading">#</a></h2>
+<p>To address the above issue, the author proposed
+a policy updating scheme, for which they could provide explicit lower bounds
+on the improvement of <span class="math notranslate nohighlight">\(\eta\)</span>. Let <span class="math notranslate nohighlight">\(\pi_{\text{old}}\)</span> denote the current policy, denote total variation divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q) = \frac{1}{2}\sum_{i}|p_{i} - q_{i}|\)</span>, define a distance measure between <span class="math notranslate nohighlight">\(\pi\)</span> and <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[
-v(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)v(s')\right]
+D_{\text{TV}}^{\max}(\pi, \tilde{\pi}) = \max_{s}D_{\text{TV}}(\pi(\cdot|s)\left|\right|\tilde{\pi}(\cdot|s))
 \]</div>
-<p>Matrix form:</p>
+<p><strong>Theorem 1.</strong> Let <span class="math notranslate nohighlight">\(\alpha=D_{\text{TV}}^{\max}(\pi_{\text{old}}, \pi_{\text{new}})\)</span>. Then the following
+bound holds:</p>
 <div class="math notranslate nohighlight">
-\[v=\underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v) = f(v)\]</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>BOE is a equation with unknown variable <span class="math notranslate nohighlight">\(v\)</span>.</p>
-</div>
+\[\eta(\pi_{\text{new}})\ge L_{\pi_{\text{old}}}(\pi_{\text{new}}) - \frac{4\epsilon\gamma}{(1-\gamma)^2}\alpha^{2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\epsilon=\max_{s,a}|A_{\pi_{\text{old}}}(s, a)|\)</span>.</p>
+<p>Next, we note the following relationship between the total
+variation divergence and the KL divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q)^{2}\le D_{\text{KL}}(p\|q)\)</span>. Let <span class="math notranslate nohighlight">\(D_{\text{KL}}^{\max}(\pi,\tilde{\pi}) = \max_{s}D_{\text{KL}}(\pi(\cdot|s)\|\tilde{\pi}(\cdot|s))\)</span>, the following bounds the follows directly:</p>
+<div class="math notranslate nohighlight">
+\[\eta(\tilde{\pi})\ge L_{\pi}(\tilde{\pi}) - CD_{\text{KL}}^{\max}(\pi,\tilde{\pi}),\]</div>
+<div class="math notranslate nohighlight">
+\[\text{  where  }\  C=\frac{4\epsilon\gamma}{(1-\gamma)^2}.\]</div>
+<p><strong>Algorithm 1</strong> describes an approximate policy iteration
+scheme based on the policy improvement bound above. Note that for now, we assume exact evaluation of
+the advantage values <span class="math notranslate nohighlight">\(A_{\pi}\)</span>.</p>
+<hr class="docutils" />
+<p>Initialize <span class="math notranslate nohighlight">\(\pi_{0}\)</span><br>
+<strong>for</strong> <span class="math notranslate nohighlight">\(i=0,1,2,\dots\)</span> until convergence <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Compute all advantage values <span class="math notranslate nohighlight">\(A_{\pi_{i}}(s, a)\)</span>.<br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Solve the constrained optimization problem<br>
+<span class="math notranslate nohighlight">\(\quad \pi_{i+1} = \arg\max_{\pi}\left[L_{\pi_{i}}(\pi) - CD_{\text{KL}}^{\max}(\pi_{i}, \pi)\right]\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>where <span class="math notranslate nohighlight">\(C = 4\epsilon\gamma/(1-\gamma)^{2}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>and <span class="math notranslate nohighlight">\(L_{\pi_{i}}(\pi) = \eta(\pi_{i}) + \sum_{s}\rho_{\pi_{i}}(s)\sum_{a}\pi(a|s)A_{\pi_{i}}(s,a)\)</span><br>
+<strong>end for</strong></p>
+<hr class="docutils" />
+<p>This algorithm is a type of minorization-maximization (MM) algorithm, which is guaranteed
+to generate a monotonically improving sequence of policies. Trust region policy optimization, which we propose in the
+following section, is an approximation to Algorithm 1.</p>
 </section>
-<section id="contraction-mapping-theorem">
-<h2>Contraction mapping theorem<a class="headerlink" href="#contraction-mapping-theorem" title="Permalink to this heading">#</a></h2>
-<p><em>Definition</em>. Let <span class="math notranslate nohighlight">\((X, d)\)</span> be a metric space. Then a map <span class="math notranslate nohighlight">\(T: X\to X\)</span> is called a contraction mapping on <span class="math notranslate nohighlight">\(X\)</span> if there exists <span class="math notranslate nohighlight">\(q\in[0,1)\)</span> such that</p>
+<section id="optimization-of-parameterized-policies">
+<h2>Optimization of Parameterized Policies<a class="headerlink" href="#optimization-of-parameterized-policies" title="Permalink to this heading">#</a></h2>
+<p>The preceding section showed that <span class="math notranslate nohighlight">\(\eta(\theta) \ge L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\)</span>, with equality at <span class="math notranslate nohighlight">\(\theta_{\text{old}}=\theta\)</span>. Thus, by performing
+the following maximization, we are guaranteed to
+improve the true objective <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[d(Tx, Ty)\le qd(x, y)\]</div>
-<p>for all <span class="math notranslate nohighlight">\(x, y\in X\)</span>.</p>
-<div class="proof theorem admonition" id="theorem-0">
-<p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Banach fixed-point theorem)</p>
-<section class="theorem-content" id="proof-content">
-<p>Let <span class="math notranslate nohighlight">\((X, d)\)</span> be a non-empty complete metric space with a contraction mapping <span class="math notranslate nohighlight">\(T: X\to X\)</span>. Then <span class="math notranslate nohighlight">\(T\)</span> admits a unique fixed-point <span class="math notranslate nohighlight">\(x^{\ast}\)</span> in <span class="math notranslate nohighlight">\(X\)</span> (i.e. <span class="math notranslate nohighlight">\(T(x^{\ast})=x^{\ast}\)</span>). Furthermore, <span class="math notranslate nohighlight">\(x^{\ast}\)</span> can be found as follows: start with an arbitrary element <span class="math notranslate nohighlight">\(x_{0}\in X\)</span> and define a sequence <span class="math notranslate nohighlight">\(\{x_{n}\}_{n\in\mathbb{N}}\)</span> by <span class="math notranslate nohighlight">\(x_{n}=T(x_{n-1})\)</span> for <span class="math notranslate nohighlight">\(n\ge 1\)</span>. Then <span class="math notranslate nohighlight">\(\lim_{n\to\infty}x_{n}=x^{\ast}\)</span>.</p>
+\[\underset{\theta}{\text{maximize}}\left[L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\right].\]</div>
+<p>In practice, if we used the penalty coefficient C recommended
+by the theory above, the step sizes would be very
+small. One way to take larger steps in a robust way is to use
+a constraint on the KL divergence between the new policy
+and the old policy, i.e., a trust region constraint:</p>
+<div class="math notranslate nohighlight">
+\[\underset{\theta}{\text{maximize}}L_{\theta_{\text{old}}}(\theta)\]</div>
+<div class="math notranslate nohighlight">
+\[\text{subject to  }D_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
+<p>This problem imposes a constraint that the KL divergence
+is bounded at every point in the state space. While it is
+motivated by the theory, this problem is impractical to solve
+due to the large number of constraints. Instead, we can use
+a heuristic approximation which considers the average KL
+divergence:</p>
+<div class="math notranslate nohighlight">
+\[\bar{D}_{\text{KL}}^{\rho}(\theta_1, \theta_2) :=\mathbb{E}_{s\sim\rho}\left[D_{\text{KL}}(\pi_{\theta_1}(\cdot|s)\left|\right|\pi_{\theta_2}(\cdot|s))\right]\]</div>
 </section>
-</div><div class="proof admonition" id="proof">
-<p>Proof. Omit.</p>
-</div>
-<div class="proof theorem admonition" id="theorem-1">
-<p class="admonition-title"><span class="caption-number">Theorem 2 </span></p>
-<section class="theorem-content" id="proof-content">
-<p>The function <span class="math notranslate nohighlight">\(f(v) = \underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v)\)</span> is a contraction mapping. In particular, for any <span class="math notranslate nohighlight">\(v_{1},v_{2}\in\mathbb{R}^{|\mathcal{S}|}\)</span>, it holds that</p>
+<section id="sample-based-estimation">
+<h2>Sample-Based Estimation<a class="headerlink" href="#sample-based-estimation" title="Permalink to this heading">#</a></h2>
+<p>This section describes how the objective and constraint
+functions can be approximated using Monte Carlo
+simulation. We seek to solve the following optimization problem, obtained
+by expanding <span class="math notranslate nohighlight">\(L_{\theta_{\text{old}}}\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[\|f(v_{1}) - f(v_{2})\|_{\infty} \le \gamma\|v_{1}-v_{2}\|_{\infty},\]</div>
-<p>where <span class="math notranslate nohighlight">\(\gamma\in(0, 1)\)</span> is the discounted rate, and <span class="math notranslate nohighlight">\(\|\cdot\|_{\infty}\)</span> is the maximum norm, which is the
-maximum absolute value of the elements of a vector.</p>
-</section>
-</div><div class="proof admonition" id="proof">
-<p>Proof. Consider any two vectors <span class="math notranslate nohighlight">\(v_{1},v_{2}\in\mathbb{R}^{|\mathcal{S}|}\)</span>, and suppose that <span class="math notranslate nohighlight">\(\pi_{1}^{\ast} = \arg\max_{\pi}(r_{\pi}+ \gamma P_{\pi}v_{1})\)</span> and <span class="math notranslate nohighlight">\(\pi_{2}^{\ast} = \arg\max_{\pi}(r_{\pi}+ \gamma P_{\pi}v_{2})\)</span>. Then</p>
+\[\underset{\theta}{\text{maximize}}\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a)\]</div>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{split}
-f(v_{1}) &amp;= \underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v_{1}) = r_{\pi_{1}^{\ast}}+ \gamma P_{\pi_{1}^{\ast}}v_{1} \ge r_{\pi_{2}^{\ast}}+ \gamma P_{\pi_{2}^{\ast}}v_{1} \\
-f(v_{2}) &amp;= \underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v_{2}) = r_{\pi_{2}^{\ast}}+ \gamma P_{\pi_{2}^{\ast}}v_{2} \ge r_{\pi_{1}^{\ast}}+ \gamma P_{\pi_{1}^{\ast}}v_{2}
-\end{split}\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\ge\)</span> is an elementwise comparison. As a result,</p>
+\[\text{subject to  }\bar{D}_{\text{KL}}^{\rho_{\theta_{\text{old}}}}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
+<ul>
+<li><p>We first replace <span class="math notranslate nohighlight">\(\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)[\dots]\)</span> in the objective by the expectation <span class="math notranslate nohighlight">\(\frac{1}{1-\gamma}\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}[\dots]\)</span></p></li>
+<li><p>Next, we
+replace the sum over the actions by an importance sampling
+estimator. Using <span class="math notranslate nohighlight">\(q\)</span> to denote the sampling distribution, the
+contribution of a single <span class="math notranslate nohighlight">\(s_{n}\)</span> to the loss function is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{split}
-f(v_{1}) - f(v_{2}) &amp;= r_{\pi_{1}^{\ast}}+ \gamma P_{\pi_{1}^{\ast}}v_{1} - (r_{\pi_{2}^{\ast}}+ \gamma P_{\pi_{2}^{\ast}}v_{2}) \\ 
-&amp;\le r_{\pi_{1}^{\ast}}+ \gamma P_{\pi_{1}^{\ast}}v_{1} - (r_{\pi_{1}^{\ast}}+ \gamma P_{\pi_{1}^{\ast}}v_{2}) \\
-&amp;= \gamma P_{\pi_{1}^{\ast}}(v_{1} - v_{2}).
-\end{split}\end{split}\]</div>
-<p>Similarly, it can be shown that <span class="math notranslate nohighlight">\(f(v_{2}) - f(v_{1}) \le \gamma P_{\pi_{2}^{\ast}}(v_{2} - v_{1})\)</span>. Define</p>
+\[\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a) = \mathbb{E}_{a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
+</li>
+</ul>
+<p>Our optimization problem is exactly
+equivalent to the following one:</p>
 <div class="math notranslate nohighlight">
-\[z = \max\{ |\gamma P_{\pi_{1}^{\ast}}(v_{1} - v_{2})|, |\gamma P_{\pi_{2}^{\ast}}(v_{1} - v_{2})|\} \in\mathbb{R}^{|\mathcal{S}|}.\]</div>
-<p>It then follows that</p>
+\[\underset{\theta}{\text{maximize}}\ \mathbb{E}_{s\sim\rho_{\theta_{\text{old}}},a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
 <div class="math notranslate nohighlight">
-\[\|f(v_{1}) - f(v_{2})\|_{\infty} \le \|z\|_{\infty}.\]</div>
-<p>On the other hand, suppose <span class="math notranslate nohighlight">\(z_{i}\)</span> is the <span class="math notranslate nohighlight">\(i\)</span>-th entry of <span class="math notranslate nohighlight">\(z\)</span>, and <span class="math notranslate nohighlight">\(p_{i}^{T}\)</span> and <span class="math notranslate nohighlight">\(q_{i}^{T}\)</span> are the <span class="math notranslate nohighlight">\(i\)</span>-th row of <span class="math notranslate nohighlight">\(P_{\pi_{1}^{\ast}}\)</span> and <span class="math notranslate nohighlight">\(P_{\pi_{2}^{\ast}}\)</span>, then</p>
-<div class="math notranslate nohighlight">
-\[z_{i} = \max\{\gamma|p_{i}^{T}(v_{1} - v_{2})|, \gamma|q_{i}^{T}(v_{1} - v_{2})|\}\]</div>
-<p>Since <span class="math notranslate nohighlight">\(p_{i}\)</span> is a vector with all nonnegative elements and the sum of the elements is
-equal to one, it follows that</p>
-<div class="math notranslate nohighlight">
-\[|p_{i}^{T}(v_{1} - v_{2})| \le p_{i}^{T}|(v_{1} - v_{2})| \le \|v_{1} - v_{2}\|_{\infty}\]</div>
-<p>Similarly, we have <span class="math notranslate nohighlight">\(|q_{i}^{T}(v_{1} - v_{2})| \le \|v_{1} - v_{2}\|_{\infty}\)</span>. Therefore</p>
-<div class="math notranslate nohighlight">
-\[\|z\|_{\infty} = \max_{i}|z_{i}| \le \gamma\|v_{1} - v_{2}\|_{\infty}.\]</div>
-</div>
-</section>
-<section id="solving-an-optimal-policy-from-the-boe">
-<h2>Solving an optimal policy from the BOE<a class="headerlink" href="#solving-an-optimal-policy-from-the-boe" title="Permalink to this heading">#</a></h2>
-<p>Now we have, For the BOE <span class="math notranslate nohighlight">\(v=f(v)=\max_{\pi}(r_{\pi}+ \gamma P_{\pi}v)\)</span>, there always exists a unique solution <span class="math notranslate nohighlight">\(v^{\ast}\)</span>.</p>
-<p>Once the value of <span class="math notranslate nohighlight">\(v^{\ast}\)</span> has been obtained, we can easily obtain <span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> by solving</p>
-<div class="math notranslate nohighlight">
-\[\pi^{\ast} = \arg\max_{\pi}(r_{\pi}+\gamma P_{\pi}v^{\ast}).\]</div>
-<div class="proof theorem admonition" id="theorem-2">
-<p class="admonition-title"><span class="caption-number">Theorem 3 </span></p>
-<section class="theorem-content" id="proof-content">
-<p>The solution <span class="math notranslate nohighlight">\(v^{\ast}\)</span> is the optimal state value, and <span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> is an optimal policy.</p>
-</section>
-</div><div class="proof admonition" id="proof">
-<p>Proof. For any policy <span class="math notranslate nohighlight">\(\pi\)</span>, it holds that</p>
-<div class="math notranslate nohighlight">
-\[v_{\pi} = r_{\pi} + \gamma P_{\pi}v_{\pi}\]</div>
-<p>Since</p>
-<div class="math notranslate nohighlight">
-\[v^{\ast} = \underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v^{\ast}) = r_{\pi^{\ast}} + \gamma P_{\pi^{\ast}}v^{\ast} \ge r_{\pi} + \gamma P_{\pi}v^{\ast}\]</div>
-<p>we have</p>
-<div class="math notranslate nohighlight">
-\[v^{\ast} - v_{\pi} \ge (r_{\pi} + \gamma P_{\pi}v^{\ast}) - (r_{\pi} + \gamma P_{\pi}v_{\pi}) = \gamma P_{\pi}(v^{\ast} - v_{\pi})\]</div>
-<p>Repeated applying the above inequality gives <span class="math notranslate nohighlight">\(v^{\ast} - v_{\pi} \ge \gamma P_{\pi}(v^{\ast} - v_{\pi}) \ge \gamma^{2} P_{\pi}^{2}(v^{\ast} - v_{\pi})\ge \dots\)</span>. It follows that</p>
-<div class="math notranslate nohighlight">
-\[v^{\ast} - v_{\pi} \ge \lim_{n\to\infty}\gamma^{n} P_{\pi}^{n}(v^{\ast} - v_{\pi})=0\]</div>
-</div>
-<p>Now we have:</p>
-<div class="math notranslate nohighlight">
-\[V^{\ast}(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\ast}(s')\right]\]</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Now, it is clear why we must study the BOE: its solution corresponds to optimal state
-values and optimal policies.<br></p>
-</div>
-</section>
-<section id="optimal-action-value">
-<h2>Optimal action-value<a class="headerlink" href="#optimal-action-value" title="Permalink to this heading">#</a></h2>
-<p>Definition of the optimal action-value:</p>
-<div class="math notranslate nohighlight">
-\[Q^{\ast}(s, a) = \max_{\pi}Q_{\pi}(s, a)\]</div>
-<p>It is easy to see from relation between V and Q function that:</p>
-<div class="math notranslate nohighlight">
-\[Q^{\ast}(s, a) := \sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
-<div class="proof theorem admonition" id="theorem-3">
-<p class="admonition-title"><span class="caption-number">Theorem 4 </span></p>
-<section class="theorem-content" id="proof-content">
-<p>For any <span class="math notranslate nohighlight">\(s\in\mathcal{S}\)</span>, the deterministic policy:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\pi_{\text{greedy}}(a|s) =
-\begin{cases}
-1,\quad &amp;a=\arg\max_{a'}Q^{\ast}(a',s)\\
-0,\quad &amp;\text{otherwise}
-\end{cases}\end{split}\]</div>
-<p>is an optimal policy for solving the BOE.</p>
-</section>
-</div><div class="proof admonition" id="proof">
-<p>Proof. While the matrix-vector form of the optimal policy is <span class="math notranslate nohighlight">\(\pi^{\ast} = \arg\max_{\pi}(r_{\pi}+\gamma P_{\pi}v^{\ast})\)</span>, its elementwise form is</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{aligned}
-\pi^{\ast}(s) &amp;= \arg\max_{\pi}\sum_{a}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right] \\
-&amp; = \arg\max_{\pi}\sum_{a}\pi(a|s)Q^{\ast}(s, a)
-\end{aligned}\end{split}\]</div>
-<p>It is clear that <span class="math notranslate nohighlight">\(\sum_{a}\pi(a|s)Q^{\ast}(s, a)\)</span> is maximized if <span class="math notranslate nohighlight">\(\pi(s)\)</span> selects the action with the greatest <span class="math notranslate nohighlight">\(Q^{\ast}(s, a)\)</span>.</p>
-</div>
-</section>
-<section id="other-forms-of-bellman-optimality-equation">
-<h2>Other forms of Bellman Optimality Equation<a class="headerlink" href="#other-forms-of-bellman-optimality-equation" title="Permalink to this heading">#</a></h2>
-<p>Since <span class="math notranslate nohighlight">\(Q^{\ast}\)</span> and <span class="math notranslate nohighlight">\(V^{\ast}\)</span> are both related to the optimal policy <span class="math notranslate nohighlight">\(\pi_{\text{greedy}}\)</span>, we can obtain:</p>
-<div class="math notranslate nohighlight">
-\[V^{\ast}(s) = \max_{a}Q^{\ast}(s, a)\]</div>
-<div class="math notranslate nohighlight">
-\[Q^{\ast}(s, a) = \sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
-<p>and</p>
-<div class="math notranslate nohighlight">
-\[V^{\ast}(s) = \max_{a}\sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
-<div class="math notranslate nohighlight">
-\[Q^{\ast}(s, a) = \sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma \max_{a'}Q^{\ast}(s', a')\right]\]</div>
+\[\text{subject to  }\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}\left[D_{\text{KL}}(\pi_{\theta_{\text{old}}}(\cdot|s)\left|\right|\pi_{\theta}(\cdot|s))\right] \le \delta.\]</div>
+<p>In the estimation procedure, we collect a sequence of
+states by sampling <span class="math notranslate nohighlight">\(s_0\sim\rho_0\)</span> and then simulating the policy <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}\)</span> for some number of timesteps to generate a trajectory <span class="math notranslate nohighlight">\(s_0,a_0,s_1,a_1,\dots,s_T,a_T\)</span>. Hence, <span class="math notranslate nohighlight">\(q(a|s)=\pi_{\theta_{\text{old}}}\)</span>.</p>
 </section>
 </section>
 
@@ -603,20 +572,20 @@ values and optimal policies.<br></p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="04-bellman.html"
+       href="12-actor-critic.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">The Bellman Equation</p>
+        <p class="prev-next-title">Actor-Critic Methods</p>
       </div>
     </a>
     <a class="right-next"
-       href="06-dynamic.html"
+       href="14-gae.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Dynamic Programming</p>
+        <p class="prev-next-title">Generalized Advantage Estimation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -635,11 +604,10 @@ values and optimal policies.<br></p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-optimality-equation">Bellman optimality equation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contraction-mapping-theorem">Contraction mapping theorem</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-an-optimal-policy-from-the-boe">Solving an optimal policy from the BOE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-action-value">Optimal action-value</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-forms-of-bellman-optimality-equation">Other forms of Bellman Optimality Equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
 </ul>
   </nav></div>
 
