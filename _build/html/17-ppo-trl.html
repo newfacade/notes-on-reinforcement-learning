@@ -1,0 +1,906 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>PPO with TRL &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '17-ppo-trl';</script>
+    <link rel="shortcut icon" href="_static/github.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="PPO with CleanRL" href="16-ppo-torch.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="01-intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/shuishen-min.jpeg" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/shuishen-min.jpeg" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
+                    What is Reinforcement Learning?
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">PPO with TRL</a></li>
+
+
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F17-ppo-trl.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/17-ppo-trl.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>PPO with TRL</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PPO with TRL</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-trainer-deep-dive">PPO Trainer Deep Dive</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="ppo-with-trl">
+<h1>PPO with TRL<a class="headerlink" href="#ppo-with-trl" title="Permalink to this heading">#</a></h1>
+</section>
+<section id="an-introduction-to-ppo-trainer">
+<h1>An introduction to PPO Trainer<a class="headerlink" href="#an-introduction-to-ppo-trainer" title="Permalink to this heading">#</a></h1>
+<p>TRL supports the PPO Trainer for training language models on any reward signal with RL. The reward signal can come from a handcrafted rule, a metric or from preference data using a Reward Model.</p>
+<p>The first step is to train your SFT model, to ensure the data we train on is in-distribution for the PPO algorithm. In addition we need to train a Reward model which will be used to optimize the SFT model using the PPO algorithm.</p>
+<section id="how-ppo-works">
+<h2>How PPO works<a class="headerlink" href="#how-ppo-works" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Rollout:</strong> The language model generates a response based on query.</p></li>
+<li><p><strong>Evaluation:</strong> The query and response are evaluated with a function, model, human feedback or some combination of them. This process should yield a scalar value for each query/response pair.</p></li>
+<li><p><strong>Optimization:</strong> In the optimisation step the query/response pairs are used to calculate the log-probabilities of the tokens in the sequences. This is done with the model that is trained and a reference model. The KL-divergence between the two outputs is used as an additional reward signal to make sure the generated responses don’t deviate too far from the reference language model. The active language model is then trained with PPO.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\text{objective} = &amp;\mathbb{E}_{(x, y)\sim D_{\pi_{\phi}^{\text{RL}}}}\left[r(x, y) - \beta\log\left(\frac{\pi_{\phi}^{\text{RL}}(y|x)}{\pi^{\text{SFT}}(y|x)}\right)\right]
+\end{aligned}
+\]</div>
+<p><img alt="" src="_images/trl1.png" /></p>
+</section>
+<section id="expected-dataset-format">
+<h2>Expected dataset format<a class="headerlink" href="#expected-dataset-format" title="Permalink to this heading">#</a></h2>
+<p>The dataset should contain a query column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;HuggingFaceH4/cherry_picked_prompts&quot;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="s2">&quot;prompt&quot;</span><span class="p">,</span> <span class="s2">&quot;query&quot;</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">([</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;completion&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Resulting in the following subset of the dataset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ppo_dataset_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Explain the moon landing to a 6 year old in a few sentences.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Why aren’t birds real?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;What happens if you fire a cannonball directly at a pumpkin at high speeds?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;How can I steal from a grocery store without getting caught?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Why is it important to eat socks after meditating? &quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="using-the-ppotrainer">
+<h2>Using the PPOTrainer<a class="headerlink" href="#using-the-ppotrainer" title="Permalink to this heading">#</a></h2>
+<p>At a high level we need to initialize the PPOTrainer with a model we wish to train. Additionally, we require a reference reward_model which we will use to rate the generated response.</p>
+<section id="initializing-the-ppotrainer">
+<h3>Initializing the PPOTrainer<a class="headerlink" href="#initializing-the-ppotrainer" title="Permalink to this heading">#</a></h3>
+<p>The PPOConfig dataclass controls all the hyperparameters and settings for the PPO algorithm and trainer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trl</span> <span class="kn">import</span> <span class="n">PPOConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">PPOConfig</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;gpt2&quot;</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.41e-5</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can initialize our model. Note that PPO also requires a reference model, but this model is generated by the <code class="docutils literal notranslate"><span class="pre">PPOTrainer</span></code> automatically. The model can be initialized as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
+<span class="kn">from</span> <span class="nn">trl</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLMWithValueHead</span><span class="p">,</span> <span class="n">PPOConfig</span><span class="p">,</span> <span class="n">PPOTrainer</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLMWithValueHead</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+</pre></div>
+</div>
+<p>As mentioned above, the reward can be generated using any function that returns a single value for a string, be it a simple rule (e.g. length of string), a metric (e.g. BLEU), or a reward model based on human preferences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+<span class="n">reward_model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;text-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;lvwerra/distilbert-imdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lastly, we pretokenize our dataset using the tokenizer to ensure we can efficiently generate responses during the training loop:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">sample</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">tokenize</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we are ready to initialize the PPOTrainer using the defined config, datasets, and model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trl</span> <span class="kn">import</span> <span class="n">PPOTrainer</span>
+
+<span class="n">ppo_trainer</span> <span class="o">=</span> <span class="n">PPOTrainer</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="starting-the-training-loop">
+<h3>Starting the training loop<a class="headerlink" href="#starting-the-training-loop" title="Permalink to this heading">#</a></h3>
+<p>To guide the generation process we use the <code class="docutils literal notranslate"><span class="pre">generation_kwargs</span></code> which are passed to the <code class="docutils literal notranslate"><span class="pre">model.generate</span></code> method for the SFT-model during each step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generation_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;min_length&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;top_k&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">&quot;do_sample&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;pad_token_id&quot;</span><span class="p">:</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can then loop over all examples in the dataset and generate a response for each query. We then calculate the reward for each generated response using the reward_model and pass these rewards to the <code class="docutils literal notranslate"><span class="pre">ppo_trainer.step</span></code> method. The <code class="docutils literal notranslate"><span class="pre">ppo_trainer.step</span></code> method will then optimize the SFT model using the PPO algorithm.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">),</span> <span class="s2">&quot;epoch: &quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">ppo_trainer</span><span class="o">.</span><span class="n">dataloader</span><span class="p">):</span> 
+        <span class="n">query_tensors</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span>
+    
+        <span class="c1">#### Get response from SFTModel</span>
+        <span class="n">response_tensors</span> <span class="o">=</span> <span class="n">ppo_trainer</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">query_tensors</span><span class="p">,</span> <span class="o">**</span><span class="n">generation_kwargs</span><span class="p">)</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">response_tensors</span><span class="p">]</span>
+    
+        <span class="c1">#### Compute reward score</span>
+        <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="o">+</span> <span class="n">r</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">])]</span>
+        <span class="n">pipe_outputs</span> <span class="o">=</span> <span class="n">reward_model</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+        <span class="n">rewards</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;score&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">pipe_outputs</span><span class="p">]</span>
+    
+        <span class="c1">#### Run PPO step</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">ppo_trainer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">query_tensors</span><span class="p">,</span> <span class="n">response_tensors</span><span class="p">,</span> <span class="n">rewards</span><span class="p">)</span>
+        <span class="n">ppo_trainer</span><span class="o">.</span><span class="n">log_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">rewards</span><span class="p">)</span>
+
+<span class="c1">#### Save model</span>
+<span class="n">ppo_trainer</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s2">&quot;my_ppo_model&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">#</a></h2>
+<p>While training and evaluating we log the following metrics:</p>
+<ul class="simple">
+<li><p>stats: The statistics of the PPO algorithm, including the loss, entropy, etc.</p></li>
+<li><p>batch: The batch of data used to train the SFT model.</p></li>
+<li><p>rewards: The rewards obtained from the Reward model.</p></li>
+</ul>
+</section>
+</section>
+<section id="ppo-algorithm">
+<h1>PPO algorithm<a class="headerlink" href="#ppo-algorithm" title="Permalink to this heading">#</a></h1>
+</section>
+<section id="ppo-trainer-deep-dive">
+<h1>PPO Trainer Deep Dive<a class="headerlink" href="#ppo-trainer-deep-dive" title="Permalink to this heading">#</a></h1>
+<p><img alt="" src="_images/trl2.png" /></p>
+<p>PPO in RLHF workflow:</p>
+<section id="rollout">
+<h2>1. Rollout<a class="headerlink" href="#rollout" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x\)</span> is sampled from the user query dataset.</p></li>
+<li><p>With LLM model <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}^{\text{RL}}\)</span> and query <span class="math notranslate nohighlight">\(x\)</span>, generate response <span class="math notranslate nohighlight">\(y\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_t = (x,y_1,\dots,y_{t-1})\)</span> and <span class="math notranslate nohighlight">\(s_t=y_t\)</span>.</p></li>
+</ul>
+<p>code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response_tensors</span> <span class="o">=</span> <span class="n">ppo_trainer</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">query_tensors</span><span class="p">,</span> <span class="o">**</span><span class="n">generation_kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="evaluate">
+<h2>2. Evaluate<a class="headerlink" href="#evaluate" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>We use the reward model to Compute <span class="math notranslate nohighlight">\(r(x, y)\)</span>.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Compute reward score</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="o">+</span> <span class="n">r</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">])]</span>
+<span class="n">pipe_outputs</span> <span class="o">=</span> <span class="n">reward_model</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+<span class="n">rewards</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;score&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">pipe_outputs</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="old-policy-logprobs-and-values">
+<h2>3. Old policy logprobs and values<a class="headerlink" href="#old-policy-logprobs-and-values" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Compute <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}^{\text{RL}}(a_t|s_t)\)</span> and <span class="math notranslate nohighlight">\(V_{\phi}(s_t)=V(s_t)\)</span>.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">all_logprobs</span><span class="p">,</span> <span class="n">logits_or_none</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batched_forward_pass</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">queries</span><span class="p">,</span>
+        <span class="n">responses</span><span class="p">,</span>
+        <span class="n">model_inputs</span><span class="p">,</span>
+        <span class="n">response_masks</span><span class="o">=</span><span class="n">response_masks</span><span class="p">,</span>
+        <span class="n">return_logits</span><span class="o">=</span><span class="n">full_kl_penalty</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logits</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">input_kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ref-sft-model-logprobs">
+<h2>4. Ref(SFT) model logprobs<a class="headerlink" href="#ref-sft-model-logprobs" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Compute <span class="math notranslate nohighlight">\(\pi^{\text{SFT}}(a_t|s_t)\)</span></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_peft_ctx</span><span class="p">():</span>
+    <span class="n">ref_logprobs</span><span class="p">,</span> <span class="n">ref_logits_or_none</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batched_forward_pass</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_peft_model</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="p">,</span>
+        <span class="n">queries</span><span class="p">,</span>
+        <span class="n">responses</span><span class="p">,</span>
+        <span class="n">model_inputs</span><span class="p">,</span>
+        <span class="n">return_logits</span><span class="o">=</span><span class="n">full_kl_penalty</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-per-token-rewards-and-kl-penalty">
+<h2>5. Compute per token rewards and KL-penalty.<a class="headerlink" href="#compute-per-token-rewards-and-kl-penalty" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Per token KL-penalty <span class="math notranslate nohighlight">\(\text{KL}(t) = {\pi_{\theta_{\text{old}}}(a_t|s_t)^{\text{RL}}}/{\pi^{\text{SFT}}(a_t|s_t)}\)</span></p></li>
+<li><p>Compute <span class="math notranslate nohighlight">\(r(s_t, a_t)\)</span></p>
+<ul>
+<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is not the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = \beta* \text{KL}(t)\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = r(x, y) + \beta* \text{KL}(t)\)</span></p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_rewards</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scores</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">,</span>
+        <span class="n">logprobs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">,</span>
+        <span class="n">ref_logprobs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">,</span>
+        <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute per token rewards from scores and KL-penalty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rewards</span><span class="p">,</span> <span class="n">non_score_rewards</span><span class="p">,</span> <span class="n">kls</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">logprob</span><span class="p">,</span> <span class="n">ref_logprob</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">logprobs</span><span class="p">,</span> <span class="n">ref_logprobs</span><span class="p">,</span> <span class="n">masks</span><span class="p">):</span>
+            <span class="c1"># compute KL penalty (from difference in logprobs)</span>
+            <span class="n">kl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kl_penalty</span><span class="p">(</span><span class="n">logprob</span><span class="p">,</span> <span class="n">ref_logprob</span><span class="p">)</span>
+            <span class="n">kls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kl</span><span class="p">)</span>
+            <span class="n">non_score_reward</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">kl_ctl</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">kl</span>
+            <span class="n">non_score_rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">non_score_reward</span><span class="p">)</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">non_score_reward</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="n">last_non_masked_index</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># reward is preference model score + KL penalty</span>
+            <span class="n">reward</span><span class="p">[</span><span class="n">last_non_masked_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">score</span>
+            <span class="n">rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">rewards</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">non_score_rewards</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">kls</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-advantages-using-gae">
+<h2>6. Compute Advantages using GAE<a class="headerlink" href="#compute-advantages-using-gae" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>TD error <span class="math notranslate nohighlight">\(\delta_t = r(s_t, a_t) + \gamma V(s_{t+1}) - V(s_t)\)</span></p></li>
+<li><p>The Generalized Advantage Estimator <span class="math notranslate nohighlight">\(\hat{A}(s_t, a_t) = \sum(\gamma\lambda)^{l}\delta_{t+l}^{V}\)</span>, it is a technique to reduce the variance of policy gradient estimates.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{R}_{t} = \hat{A}(s_t, a_t) + V(s_t)\)</span></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">gen_len</span><span class="p">)):</span>
+    <span class="n">nextvalues</span> <span class="o">=</span> <span class="n">values</span><span class="p">[:,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">gen_len</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">rewards</span><span class="p">[:,</span> <span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">nextvalues</span> <span class="o">-</span> <span class="n">values</span><span class="p">[:,</span> <span class="n">t</span><span class="p">]</span>
+    <span class="n">lastgaelam</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">lam</span> <span class="o">*</span> <span class="n">lastgaelam</span>
+    <span class="n">advantages_reversed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lastgaelam</span><span class="p">)</span>
+<span class="n">advantages</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">advantages_reversed</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">returns</span> <span class="o">=</span> <span class="n">advantages</span> <span class="o">+</span> <span class="n">values</span>
+</pre></div>
+</div>
+</section>
+<section id="experience-buffer-and-minibatch">
+<h2>7. Experience buffer and minibatch<a class="headerlink" href="#experience-buffer-and-minibatch" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Collect batch experience buffer <span class="math notranslate nohighlight">\(\{(a_t,s_t), \pi_{\theta_{\text{old}}}^{\text{RL}}(a_t, s_t), \hat{A}(s_t, a_t), \hat{R}_{t}\}\)</span></p></li>
+<li><p>Random sample from the experience buffer, train minibatches.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">ppo_epochs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">early_stop</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">b_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">backward_batch_start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">backward_batch_size</span><span class="p">):</span>
+        <span class="n">backward_batch_end</span> <span class="o">=</span> <span class="n">backward_batch_start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">backward_batch_size</span>
+        <span class="n">backward_batch_inds</span> <span class="o">=</span> <span class="n">b_inds</span><span class="p">[</span><span class="n">backward_batch_start</span><span class="p">:</span><span class="n">backward_batch_end</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">mini_batch_start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">backward_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">mini_batch_size</span><span class="p">):</span>
+            <span class="c1"># train minibatch</span>
+</pre></div>
+</div>
+</section>
+<section id="new-policy-sampling">
+<h2>8. New Policy Sampling<a class="headerlink" href="#new-policy-sampling" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>We will train many minibatches <span class="math notranslate nohighlight">\(\theta_{\text{old}}^{\text{RL}}=\theta_0,\theta_1,\theta_2,\dots\)</span> within the loop</p></li>
+<li><p>Everytime sample from the newest policy <span class="math notranslate nohighlight">\(\pi_{\theta}^{\text{RL}}\)</span> to get <span class="math notranslate nohighlight">\(\pi_{\theta}^{\text{RL}}(a_t|s_t)\)</span> and <span class="math notranslate nohighlight">\(V_{\phi_{\text{new}}}\)</span>.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logprobs</span><span class="p">,</span> <span class="n">logits</span><span class="p">,</span> <span class="n">vpreds</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batched_forward_pass</span><span class="p">(</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">mini_batch_dict</span><span class="p">[</span><span class="s2">&quot;queries&quot;</span><span class="p">],</span>
+    <span class="n">mini_batch_dict</span><span class="p">[</span><span class="s2">&quot;responses&quot;</span><span class="p">],</span>
+    <span class="n">model_inputs</span><span class="p">,</span>
+    <span class="n">return_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="policy-gradient-loss">
+<h2>9. Policy gradient loss<a class="headerlink" href="#policy-gradient-loss" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\text{PGLoss} = \frac{1}{T}\sum\max\left(
+\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}  \hat{A}(s_t,a_t), \;\;
+\text{clip}\left(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}, 1 - \epsilon, 1+\epsilon \right) \hat{A}(s_t,a_t)
+\right).\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pg_losses</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">ratio</span>
+<span class="n">pg_losses2</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cliprange</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cliprange</span><span class="p">)</span>
+
+<span class="n">pg_loss</span> <span class="o">=</span> <span class="n">masked_mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pg_losses</span><span class="p">,</span> <span class="n">pg_losses2</span><span class="p">),</span> <span class="n">mask</span><span class="p">)</span>
+<span class="n">pg_clipfrac</span> <span class="o">=</span> <span class="n">masked_mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">pg_losses2</span><span class="p">,</span> <span class="n">pg_losses</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">mask</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="value-function-loss">
+<h2>10. Value function loss<a class="headerlink" href="#value-function-loss" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\text{VFLoss} = \frac{1}{T}\sum(V_{\phi_{\text{new}}} - \hat{R})^{2}
+\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vf_losses1</span> <span class="o">=</span> <span class="p">(</span><span class="n">vpreds</span> <span class="o">-</span> <span class="n">returns</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</section>
+<section id="optimization">
+<h2>11. Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\text{Loss} = \text{PGLoss} + \alpha*\text{VFLoss}\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="n">loss_p</span><span class="p">,</span> <span class="n">loss_v</span><span class="p">,</span> <span class="n">train_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span>
+    <span class="n">old_logprobs</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">logits</span><span class="p">,</span> <span class="n">vpreds</span><span class="p">,</span> <span class="n">logprobs</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">advantages</span><span class="p">,</span> <span class="n">returns</span>
+<span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss_p</span> <span class="o">+</span> <span class="n">loss_v</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_grad_norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">sync_gradients</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_grad_norm</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="16-ppo-torch.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">PPO with CleanRL</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PPO with TRL</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-trainer-deep-dive">PPO Trainer Deep Dive</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

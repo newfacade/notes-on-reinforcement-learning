@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -39,9 +39,9 @@
     <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -65,11 +65,12 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '13-ppo';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '15-ppo';</script>
     <link rel="shortcut icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Actor-Critic Methods" href="12-actor-critic.html" />
+    <link rel="next" title="PPO with CleanRL" href="16-ppo-torch.html" />
+    <link rel="prev" title="Generalized Advantage Estimation" href="14-gae.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -182,7 +183,14 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
+
+
+
 </ul>
 
     </div>
@@ -254,7 +262,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F13-ppo.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F15-ppo.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -284,7 +292,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/13-ppo.ipynb" target="_blank"
+      <li><a href="_sources/15-ppo.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -384,7 +392,6 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-clip">PPO-Clip</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-penalty">PPO-Penalty</a></li>
 </ul>
             </nav>
         </div>
@@ -421,6 +428,9 @@ Today we’ll learn about Proximal Policy Optimization (PPO), an architecture th
 </section>
 <section id="the-ratio-function">
 <h3>The Ratio Function<a class="headerlink" href="#the-ratio-function" title="Permalink to this heading">#</a></h3>
+<p>Since</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})|_{\theta_{\text{old}}} = \frac{\nabla\pi_{\theta}(a_{t}|s_{t})|_{\theta_{\text{old}}}}{\pi_{\theta_{\text{old}}}(a_{t}|s_{t})} = \nabla_{\theta}\left(\frac{\pi_{\theta}(a_{t}|s_{t})}{\pi_{\theta_{\text{old}}}(a_{t}|s_{t})}\right)|_{\theta_{\text{old}}}\]</div>
 <p>The ratio can replace the log probability we use in the policy objective function:</p>
 <p><img alt="" src="_images/ppo3.jpeg" /></p>
 <p>As we can see, <span class="math notranslate nohighlight">\(r_{t}(\theta)\)</span> denotes the probability ratio between the current and old policy:</p>
@@ -492,35 +502,6 @@ g(\epsilon, A^{\pi_{\theta_k}}(s,a))
 <p><strong>end for</strong></p>
 </section>
 </div></section>
-<section id="ppo-penalty">
-<h2>PPO-Penalty<a class="headerlink" href="#ppo-penalty" title="Permalink to this heading">#</a></h2>
-<p>Another approach, which can be used as an alternative to the clipped surrogate objective, or in
-addition to it, is to use a penalty on KL divergence, and to adapt the penalty coefficient so that we
-achieve some target value of the KL divergence <span class="math notranslate nohighlight">\(d_{\text{targ}}\)</span> each policy update.</p>
-<p>In the simplest instantiation of this algorithm, we perform the following steps in each policy
-update:</p>
-<ul class="simple">
-<li><p>Using several epochs of minibatch SGD, optimize the KL-penalized objective</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[L^{KLPEN}(\theta) = \hat{\mathbb{E}}_{t}\left[\frac{\pi_{\theta}(a_{t}|s_{t})}{\pi_{\theta_{\text{old}}}(a_{t}|s_{t})}\hat{A}_{t} -\beta\text{KL}\left[\pi_{\theta_{\text{old}}}(\cdot|s_{t}), \pi_{\theta}(\cdot|s_{t})\right]\right]\]</div>
-<ul class="simple">
-<li><p>Compute <span class="math notranslate nohighlight">\(d=\hat{\mathbb{E}}_{t}\left[\text{KL}\left[\pi_{\theta_{\text{old}}}(\cdot|s_{t}), \pi_{\theta}(\cdot|s_{t})\right]\right]\)</span></p>
-<ul>
-<li><p>If <span class="math notranslate nohighlight">\(d&lt;d_{\text{targ}}/1.5,\beta\gets\beta/2\)</span></p></li>
-<li><p>If <span class="math notranslate nohighlight">\(d&gt;d_{\text{targ}}\times 1.5,\beta\gets\beta\times 2\)</span></p></li>
-</ul>
-</li>
-</ul>
-<p>The updated <span class="math notranslate nohighlight">\(\beta\)</span> is used for the next policy update.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The Kullback–Leibler (KL) divergence between <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> is:</p>
-<div class="math notranslate nohighlight">
-\[\text{KL}(P, Q) = \mathbb{E}_{x\sim P}\left[\log\frac{p(x)}{q(x)}\right].\]</div>
-<p>It is a way to measure if two distributions are close together or not (the smaller the closer).</p>
-</div>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -554,13 +535,22 @@ update:</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="12-actor-critic.html"
+       href="14-gae.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Actor-Critic Methods</p>
+        <p class="prev-next-title">Generalized Advantage Estimation</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="16-ppo-torch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">PPO with CleanRL</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -585,7 +575,6 @@ update:</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-clip">PPO-Clip</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-penalty">PPO-Penalty</a></li>
 </ul>
   </nav></div>
 
@@ -633,8 +622,8 @@ By The Jupyter Book Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

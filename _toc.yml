@@ -15,4 +15,8 @@ chapters:
 - file: 10-dqn-torch
 - file: 11-policy
 - file: 12-actor-critic
-- file: 13-ppo
+- file: 13-trpo
+- file: 14-gae
+- file: 15-ppo
+- file: 16-ppo-torch
+- file: 17-ppo-trl

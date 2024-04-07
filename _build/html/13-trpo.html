@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>TRPO &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '13-trpo';</script>
+    <link rel="shortcut icon" href="_static/github.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Generalized Advantage Estimation" href="14-gae.html" />
+    <link rel="prev" title="Actor-Critic Methods" href="12-actor-critic.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="01-intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/shuishen-min.jpeg" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/shuishen-min.jpeg" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01-intro.html">
+                    What is Reinforcement Learning?
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02-frame.html">The Reinforcement Learning Framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-approach.html">Two main approaches for solving RL problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-bellman.html">The Bellman Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-bellman-optimal.html">The Bellman Optimality Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-dynamic.html">Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-monte-carlo-td.html">Monte Carlo vs Temporal Difference Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-q-learning.html">Q-learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-deep-q-learning.html">Deep Q-Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">TRPO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
+
+
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F13-trpo.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/13-trpo.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>TRPO</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="trpo">
+<h1>TRPO<a class="headerlink" href="#trpo" title="Permalink to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRPO updates policies by taking the largest step possible to improve performance, while satisfying a special constraint on how close the new and old policies are allowed to be.</p>
+</div>
+<section id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Permalink to this heading">#</a></h2>
+<p>Consider an infinite-horizon discounted Markov decision
+process (MDP), defined by the tuple <span class="math notranslate nohighlight">\((\mathcal{S}, \mathcal{A}, P, r, \rho_{0},\gamma)\)</span> where <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> is a finite set of states, <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is a finite set of actions, <span class="math notranslate nohighlight">\(P: \mathcal{S}\times\mathcal{A}\times\mathcal{A}\to\mathbb{R}\)</span> is the transition probability distriarbution, <span class="math notranslate nohighlight">\(r:\mathcal{S}\to\mathbb{R}\)</span> is the reward function (difference from our previous setting), <span class="math notranslate nohighlight">\(\rho_{0}:\mathcal{S}\to\mathbb{R}\)</span> is
+the distribution of the initial state <span class="math notranslate nohighlight">\(s_{0}\)</span>, <span class="math notranslate nohighlight">\(\gamma\in(0, 1)\)</span> is the
+discount factor.</p>
+<p>Let <span class="math notranslate nohighlight">\(\pi\)</span> denote a stochastic policy <span class="math notranslate nohighlight">\(\pi:\mathcal{S}\times\mathcal{A}\to[0, 1]\)</span>, and let <span class="math notranslate nohighlight">\(\eta(\pi)\)</span> denote its expected discounted reward:</p>
+<div class="math notranslate nohighlight">
+\[\eta(\pi) = \mathbb{E}_{s_0,a_0,\dots}\left[\sum_{t=0}^{\infty}\gamma^{t}r(s_{t})\right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_0\sim\rho_0(s_0)\)</span>, <span class="math notranslate nohighlight">\(a_t\sim\pi(a_t|s_t)\)</span>, <span class="math notranslate nohighlight">\(s_{t+1}\sim P(s_{t+1}|s_{t}, a_{t})\)</span>. Let <span class="math notranslate nohighlight">\(A_{\pi}(s, a) = Q_{\pi}(s, a) - V_{\pi}(s)\)</span></p>
+<p>The following useful identity expresses the expected return
+of another policy <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> in terms of the advantage over <span class="math notranslate nohighlight">\(\pi\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\eta(\tilde{\pi}) = \eta(\pi) + \mathbb{E}_{s_0,a_0,\dots\sim\tilde{\pi}}\left[\sum_{t=0}^{\infty}\gamma^{t}A_{\pi}(s_t,a_t)\right]\]</div>
+<p>Let <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> be the discounted visitation frequencies:</p>
+<div class="math notranslate nohighlight">
+\[\rho_{\pi}(s) = P(s_0=s) + \gamma P(s_1=s) + \gamma^{2}P(s_2=s) + \dots\]</div>
+<p>We can rewrite Equation with a sum over states instead
+of timesteps:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\eta(\tilde{\pi}) &amp;= \eta(\pi) + \sum_{t=0}^{\infty}\sum_{s}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)\gamma^{t}A_{\pi}(s, a) \\
+&amp;= \eta(\pi) + \sum_{s}\sum_{t=0}^{\infty}\gamma^{t}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a) \\
+&amp;= \eta(\pi) + \sum_{s}\rho_{\tilde{\pi}}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)
+\end{aligned}
+\end{split}\]</div>
+<p>This equation implies that any policy update <span class="math notranslate nohighlight">\(\pi\to\tilde{\pi}\)</span> that
+has a nonnegative expected advantage at every state <span class="math notranslate nohighlight">\(s\)</span> is guaranteed to increase
+the policy performance <span class="math notranslate nohighlight">\(\rho\)</span>. However, the complex dependency of <span class="math notranslate nohighlight">\(rho_{\tilde{\pi}}(s)\)</span> on <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> makes it difficult to optimize directly.
+Instead, we introduce the following local approximation
+to <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[L_{\pi}(\tilde{\pi}) = \eta{\pi} + \sum_{s}\rho_{\pi}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)\]</div>
+<p>Note that <span class="math notranslate nohighlight">\(L_{\pi}\)</span> uses the visitation frequency <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> rather than <span class="math notranslate nohighlight">\(\rho_{\tilde{\pi}}\)</span>. If we have a parameterized policy <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span>, where <span class="math notranslate nohighlight">\(\pi_{\theta}(a|s)\)</span> is a differentiable function
+of the parameter vector <span class="math notranslate nohighlight">\(\theta\)</span>, then <span class="math notranslate nohighlight">\(L_{\pi}\)</span> matches <span class="math notranslate nohighlight">\(\eta\)</span> to first order:</p>
+<div class="math notranslate nohighlight">
+\[L_{\pi_{\theta_{0}}}(\pi_{\theta_{0}}) = \eta(\pi_{\theta_{0}})\]</div>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}L_{\pi_{\theta_0}}(\pi_{\theta_0})|_{\theta=\theta_0} = \nabla_{\theta}\eta(\pi_{\theta_{0}})|_{\theta=\theta_0}\]</div>
+<p>It implies that a sufficiently small step that improves <span class="math notranslate nohighlight">\(L_{\pi_{\theta_{\text{old}}}}\)</span> will also improve <span class="math notranslate nohighlight">\(\eta\)</span>, but does not give
+us any guidance on how big of a step to take.</p>
+</section>
+<section id="monotonic-improvement-guarantee">
+<h2>Monotonic Improvement Guarantee<a class="headerlink" href="#monotonic-improvement-guarantee" title="Permalink to this heading">#</a></h2>
+<p>To address the above issue, the author proposed
+a policy updating scheme, for which they could provide explicit lower bounds
+on the improvement of <span class="math notranslate nohighlight">\(\eta\)</span>. Let <span class="math notranslate nohighlight">\(\pi_{\text{old}}\)</span> denote the current policy, denote total variation divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q) = \frac{1}{2}\sum_{i}|p_{i} - q_{i}|\)</span>, define a distance measure between <span class="math notranslate nohighlight">\(\pi\)</span> and <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\text{TV}}^{\max}(\pi, \tilde{\pi}) = \max_{s}D_{\text{TV}}(\pi(\cdot|s)\left|\right|\tilde{\pi}(\cdot|s))
+\]</div>
+<p><strong>Theorem 1.</strong> Let <span class="math notranslate nohighlight">\(\alpha=D_{\text{TV}}^{\max}(\pi_{\text{old}}, \pi_{\text{new}})\)</span>. Then the following
+bound holds:</p>
+<div class="math notranslate nohighlight">
+\[\eta(\pi_{\text{new}})\ge L_{\pi_{\text{old}}}(\pi_{\text{new}}) - \frac{4\epsilon\gamma}{(1-\gamma)^2}\alpha^{2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\epsilon=\max_{s,a}|A_{\pi_{\text{old}}}(s, a)|\)</span>.</p>
+<p>Next, we note the following relationship between the total
+variation divergence and the KL divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q)^{2}\le D_{\text{KL}}(p\|q)\)</span>. Let <span class="math notranslate nohighlight">\(D_{\text{KL}}^{\max}(\pi,\tilde{\pi}) = \max_{s}D_{\text{KL}}(\pi(\cdot|s)\|\tilde{\pi}(\cdot|s))\)</span>, the following bounds the follows directly:</p>
+<div class="math notranslate nohighlight">
+\[\eta(\tilde{\pi})\ge L_{\pi}(\tilde{\pi}) - CD_{\text{KL}}^{\max}(\pi,\tilde{\pi}),\]</div>
+<div class="math notranslate nohighlight">
+\[\text{  where  }\  C=\frac{4\epsilon\gamma}{(1-\gamma)^2}.\]</div>
+<p><strong>Algorithm 1</strong> describes an approximate policy iteration
+scheme based on the policy improvement bound above. Note that for now, we assume exact evaluation of
+the advantage values <span class="math notranslate nohighlight">\(A_{\pi}\)</span>.</p>
+<hr class="docutils" />
+<p>Initialize <span class="math notranslate nohighlight">\(\pi_{0}\)</span><br>
+<strong>for</strong> <span class="math notranslate nohighlight">\(i=0,1,2,\dots\)</span> until convergence <strong>do</strong><br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Compute all advantage values <span class="math notranslate nohighlight">\(A_{\pi_{i}}(s, a)\)</span>.<br>
+<span class="math notranslate nohighlight">\(\quad\)</span>Solve the constrained optimization problem<br>
+<span class="math notranslate nohighlight">\(\quad \pi_{i+1} = \arg\max_{\pi}\left[L_{\pi_{i}}(\pi) - CD_{\text{KL}}^{\max}(\pi_{i}, \pi)\right]\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>where <span class="math notranslate nohighlight">\(C = 4\epsilon\gamma/(1-\gamma)^{2}\)</span><br>
+<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>and <span class="math notranslate nohighlight">\(L_{\pi_{i}}(\pi) = \eta(\pi_{i}) + \sum_{s}\rho_{\pi_{i}}(s)\sum_{a}\pi(a|s)A_{\pi_{i}}(s,a)\)</span><br>
+<strong>end for</strong></p>
+<hr class="docutils" />
+<p>This algorithm is a type of minorization-maximization (MM) algorithm, which is guaranteed
+to generate a monotonically improving sequence of policies. Trust region policy optimization, which we propose in the
+following section, is an approximation to Algorithm 1.</p>
+</section>
+<section id="optimization-of-parameterized-policies">
+<h2>Optimization of Parameterized Policies<a class="headerlink" href="#optimization-of-parameterized-policies" title="Permalink to this heading">#</a></h2>
+<p>The preceding section showed that <span class="math notranslate nohighlight">\(\eta(\theta) \ge L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\)</span>, with equality at <span class="math notranslate nohighlight">\(\theta_{\text{old}}=\theta\)</span>. Thus, by performing
+the following maximization, we are guaranteed to
+improve the true objective <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\underset{\theta}{\text{maximize}}\left[L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\right].\]</div>
+<p>In practice, if we used the penalty coefficient C recommended
+by the theory above, the step sizes would be very
+small. One way to take larger steps in a robust way is to use
+a constraint on the KL divergence between the new policy
+and the old policy, i.e., a trust region constraint:</p>
+<div class="math notranslate nohighlight">
+\[\underset{\theta}{\text{maximize}}L_{\theta_{\text{old}}}(\theta)\]</div>
+<div class="math notranslate nohighlight">
+\[\text{subject to  }D_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
+<p>This problem imposes a constraint that the KL divergence
+is bounded at every point in the state space. While it is
+motivated by the theory, this problem is impractical to solve
+due to the large number of constraints. Instead, we can use
+a heuristic approximation which considers the average KL
+divergence:</p>
+<div class="math notranslate nohighlight">
+\[\bar{D}_{\text{KL}}^{\rho}(\theta_1, \theta_2) :=\mathbb{E}_{s\sim\rho}\left[D_{\text{KL}}(\pi_{\theta_1}(\cdot|s)\left|\right|\pi_{\theta_2}(\cdot|s))\right]\]</div>
+</section>
+<section id="sample-based-estimation">
+<h2>Sample-Based Estimation<a class="headerlink" href="#sample-based-estimation" title="Permalink to this heading">#</a></h2>
+<p>This section describes how the objective and constraint
+functions can be approximated using Monte Carlo
+simulation. We seek to solve the following optimization problem, obtained
+by expanding <span class="math notranslate nohighlight">\(L_{\theta_{\text{old}}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\underset{\theta}{\text{maximize}}\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a)\]</div>
+<div class="math notranslate nohighlight">
+\[\text{subject to  }\bar{D}_{\text{KL}}^{\rho_{\theta_{\text{old}}}}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
+<ul>
+<li><p>We first replace <span class="math notranslate nohighlight">\(\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)[\dots]\)</span> in the objective by the expectation <span class="math notranslate nohighlight">\(\frac{1}{1-\gamma}\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}[\dots]\)</span></p></li>
+<li><p>Next, we
+replace the sum over the actions by an importance sampling
+estimator. Using <span class="math notranslate nohighlight">\(q\)</span> to denote the sampling distribution, the
+contribution of a single <span class="math notranslate nohighlight">\(s_{n}\)</span> to the loss function is</p>
+<div class="math notranslate nohighlight">
+\[\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a) = \mathbb{E}_{a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
+</li>
+</ul>
+<p>Our optimization problem is exactly
+equivalent to the following one:</p>
+<div class="math notranslate nohighlight">
+\[\underset{\theta}{\text{maximize}}\ \mathbb{E}_{s\sim\rho_{\theta_{\text{old}}},a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
+<div class="math notranslate nohighlight">
+\[\text{subject to  }\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}\left[D_{\text{KL}}(\pi_{\theta_{\text{old}}}(\cdot|s)\left|\right|\pi_{\theta}(\cdot|s))\right] \le \delta.\]</div>
+<p>In the estimation procedure, we collect a sequence of
+states by sampling <span class="math notranslate nohighlight">\(s_0\sim\rho_0\)</span> and then simulating the policy <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}\)</span> for some number of timesteps to generate a trajectory <span class="math notranslate nohighlight">\(s_0,a_0,s_1,a_1,\dots,s_T,a_T\)</span>. Hence, <span class="math notranslate nohighlight">\(q(a|s)=\pi_{\theta_{\text{old}}}\)</span>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="12-actor-critic.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Actor-Critic Methods</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="14-gae.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Generalized Advantage Estimation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
