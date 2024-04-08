@@ -187,9 +187,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">PPO with TRL</a></li>
-
-
-
 </ul>
 
     </div>
@@ -383,35 +380,38 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PPO with TRL</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-trainer-deep-dive">PPO Trainer Deep Dive</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient">Policy gradient</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#actor-critic">Actor-critic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo">PPO</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dive-into-ppo-trainer">Dive into PPO Trainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
 </ul>
 </li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -422,15 +422,23 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="ppo-with-trl">
+  <section class="tex2jax_ignore mathjax_ignore" id="ppo-with-trl">
 <h1>PPO with TRL<a class="headerlink" href="#ppo-with-trl" title="Permalink to this heading">#</a></h1>
-</section>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We split this section into three parts:<br></p>
+<ol class="arabic simple">
+<li><p>An introduction to TRL PPO Trainer<br></p></li>
+<li><p>PPO algorithm<br></p></li>
+<li><p>Dive into PPO Trainer<br></p></li>
+</ol>
+</div>
 <section id="an-introduction-to-ppo-trainer">
-<h1>An introduction to PPO Trainer<a class="headerlink" href="#an-introduction-to-ppo-trainer" title="Permalink to this heading">#</a></h1>
+<h2>An introduction to PPO Trainer<a class="headerlink" href="#an-introduction-to-ppo-trainer" title="Permalink to this heading">#</a></h2>
 <p>TRL supports the PPO Trainer for training language models on any reward signal with RL. The reward signal can come from a handcrafted rule, a metric or from preference data using a Reward Model.</p>
 <p>The first step is to train your SFT model, to ensure the data we train on is in-distribution for the PPO algorithm. In addition we need to train a Reward model which will be used to optimize the SFT model using the PPO algorithm.</p>
 <section id="how-ppo-works">
-<h2>How PPO works<a class="headerlink" href="#how-ppo-works" title="Permalink to this heading">#</a></h2>
+<h3>How PPO works<a class="headerlink" href="#how-ppo-works" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p><strong>Rollout:</strong> The language model generates a response based on query.</p></li>
 <li><p><strong>Evaluation:</strong> The query and response are evaluated with a function, model, human feedback or some combination of them. This process should yield a scalar value for each query/response pair.</p></li>
@@ -445,7 +453,7 @@ document.write(`
 <p><img alt="" src="_images/trl1.png" /></p>
 </section>
 <section id="expected-dataset-format">
-<h2>Expected dataset format<a class="headerlink" href="#expected-dataset-format" title="Permalink to this heading">#</a></h2>
+<h3>Expected dataset format<a class="headerlink" href="#expected-dataset-format" title="Permalink to this heading">#</a></h3>
 <p>The dataset should contain a query column.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
 
@@ -468,10 +476,10 @@ document.write(`
 </div>
 </section>
 <section id="using-the-ppotrainer">
-<h2>Using the PPOTrainer<a class="headerlink" href="#using-the-ppotrainer" title="Permalink to this heading">#</a></h2>
+<h3>Using the PPOTrainer<a class="headerlink" href="#using-the-ppotrainer" title="Permalink to this heading">#</a></h3>
 <p>At a high level we need to initialize the PPOTrainer with a model we wish to train. Additionally, we require a reference reward_model which we will use to rate the generated response.</p>
 <section id="initializing-the-ppotrainer">
-<h3>Initializing the PPOTrainer<a class="headerlink" href="#initializing-the-ppotrainer" title="Permalink to this heading">#</a></h3>
+<h4>Initializing the PPOTrainer<a class="headerlink" href="#initializing-the-ppotrainer" title="Permalink to this heading">#</a></h4>
 <p>The PPOConfig dataclass controls all the hyperparameters and settings for the PPO algorithm and trainer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">trl</span> <span class="kn">import</span> <span class="n">PPOConfig</span>
 
@@ -488,20 +496,19 @@ document.write(`
 <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLMWithValueHead</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
 <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
 <span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+
+<span class="c1"># pretokenize our dataset using the tokenizer</span>
+<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+    <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">sample</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">tokenize</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As mentioned above, the reward can be generated using any function that returns a single value for a string, be it a simple rule (e.g. length of string), a metric (e.g. BLEU), or a reward model based on human preferences.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
 
 <span class="n">reward_model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;text-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;lvwerra/distilbert-imdb&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Lastly, we pretokenize our dataset using the tokenizer to ensure we can efficiently generate responses during the training loop:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
-    <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">sample</span>
-
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">tokenize</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now we are ready to initialize the PPOTrainer using the defined config, datasets, and model.</p>
@@ -517,7 +524,7 @@ document.write(`
 </div>
 </section>
 <section id="starting-the-training-loop">
-<h3>Starting the training loop<a class="headerlink" href="#starting-the-training-loop" title="Permalink to this heading">#</a></h3>
+<h4>Starting the training loop<a class="headerlink" href="#starting-the-training-loop" title="Permalink to this heading">#</a></h4>
 <p>To guide the generation process we use the <code class="docutils literal notranslate"><span class="pre">generation_kwargs</span></code> which are passed to the <code class="docutils literal notranslate"><span class="pre">model.generate</span></code> method for the SFT-model during each step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generation_kwargs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;min_length&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -557,7 +564,7 @@ document.write(`
 </section>
 </section>
 <section id="logging">
-<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">#</a></h2>
+<h3>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">#</a></h3>
 <p>While training and evaluating we log the following metrics:</p>
 <ul class="simple">
 <li><p>stats: The statistics of the PPO algorithm, including the loss, entropy, etc.</p></li>
@@ -567,14 +574,39 @@ document.write(`
 </section>
 </section>
 <section id="ppo-algorithm">
-<h1>PPO algorithm<a class="headerlink" href="#ppo-algorithm" title="Permalink to this heading">#</a></h1>
+<h2>PPO algorithm<a class="headerlink" href="#ppo-algorithm" title="Permalink to this heading">#</a></h2>
+<section id="policy-gradient">
+<h3>Policy gradient<a class="headerlink" href="#policy-gradient" title="Permalink to this heading">#</a></h3>
+<p>Here, we consider the case of a stochastic, parameterized policy <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span>, We aim to maximize the expected return</p>
+<div class="math notranslate nohighlight">
+\[J(\theta) = \mathbb{E}_{\tau\sim\pi_{\theta}}[R(\tau)].\]</div>
+<p><img alt="" src="_images/policy4.png" /></p>
+<p>The simplest policy gradient:</p>
+<div class="math notranslate nohighlight">
+\[\theta_{k+1} = \theta_{k} + \alpha\nabla J(\theta)|\theta_{k}\]</div>
+<p><img alt="" src="_images/policy5.png" /></p>
 </section>
-<section id="ppo-trainer-deep-dive">
-<h1>PPO Trainer Deep Dive<a class="headerlink" href="#ppo-trainer-deep-dive" title="Permalink to this heading">#</a></h1>
+<section id="actor-critic">
+<h3>Actor-critic<a class="headerlink" href="#actor-critic" title="Permalink to this heading">#</a></h3>
+<p>Using a value function to predict <span class="math notranslate nohighlight">\(R(\tau)\)</span>:</p>
+<p><img alt="" src="_images/ac4.jpeg" /></p>
+</section>
+<section id="ppo">
+<h3>PPO<a class="headerlink" href="#ppo" title="Permalink to this heading">#</a></h3>
+<p>The derivatives of these two objective functions are the same:</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})|_{\theta_{\text{old}}} = \frac{\nabla\pi_{\theta}(a_{t}|s_{t})|_{\theta_{\text{old}}}}{\pi_{\theta_{\text{old}}}(a_{t}|s_{t})} = \nabla_{\theta}\left(\frac{\pi_{\theta}(a_{t}|s_{t})}{\pi_{\theta_{\text{old}}}(a_{t}|s_{t})}\right)|_{\theta_{\text{old}}}\]</div>
+<p><img alt="" src="_images/ppo5.jpeg" /></p>
+<p>By clipping the ratio, we ensure that we do not have a too large policy update because the current policy can’t be too different from the older one.</p>
+<p><img alt="" src="_images/ppo6.jpeg" /></p>
+</section>
+</section>
+<section id="dive-into-ppo-trainer">
+<h2>Dive into PPO Trainer<a class="headerlink" href="#dive-into-ppo-trainer" title="Permalink to this heading">#</a></h2>
 <p><img alt="" src="_images/trl2.png" /></p>
 <p>PPO in RLHF workflow:</p>
 <section id="rollout">
-<h2>1. Rollout<a class="headerlink" href="#rollout" title="Permalink to this heading">#</a></h2>
+<h3>1. Rollout<a class="headerlink" href="#rollout" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(x\)</span> is sampled from the user query dataset.</p></li>
 <li><p>With LLM model <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}^{\text{RL}}\)</span> and query <span class="math notranslate nohighlight">\(x\)</span>, generate response <span class="math notranslate nohighlight">\(y\)</span>.</p></li>
@@ -586,7 +618,7 @@ document.write(`
 </div>
 </section>
 <section id="evaluate">
-<h2>2. Evaluate<a class="headerlink" href="#evaluate" title="Permalink to this heading">#</a></h2>
+<h3>2. Evaluate<a class="headerlink" href="#evaluate" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>We use the reward model to Compute <span class="math notranslate nohighlight">\(r(x, y)\)</span>.</p></li>
 </ul>
@@ -598,7 +630,7 @@ document.write(`
 </div>
 </section>
 <section id="old-policy-logprobs-and-values">
-<h2>3. Old policy logprobs and values<a class="headerlink" href="#old-policy-logprobs-and-values" title="Permalink to this heading">#</a></h2>
+<h3>3. Old policy logprobs and values<a class="headerlink" href="#old-policy-logprobs-and-values" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Compute <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}^{\text{RL}}(a_t|s_t)\)</span> and <span class="math notranslate nohighlight">\(V_{\phi}(s_t)=V(s_t)\)</span>.</p></li>
 </ul>
@@ -618,7 +650,7 @@ document.write(`
 </div>
 </section>
 <section id="ref-sft-model-logprobs">
-<h2>4. Ref(SFT) model logprobs<a class="headerlink" href="#ref-sft-model-logprobs" title="Permalink to this heading">#</a></h2>
+<h3>4. Ref(SFT) model logprobs<a class="headerlink" href="#ref-sft-model-logprobs" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Compute <span class="math notranslate nohighlight">\(\pi^{\text{SFT}}(a_t|s_t)\)</span></p></li>
 </ul>
@@ -634,7 +666,7 @@ document.write(`
 </div>
 </section>
 <section id="compute-per-token-rewards-and-kl-penalty">
-<h2>5. Compute per token rewards and KL-penalty.<a class="headerlink" href="#compute-per-token-rewards-and-kl-penalty" title="Permalink to this heading">#</a></h2>
+<h3>5. Compute per token rewards and KL-penalty.<a class="headerlink" href="#compute-per-token-rewards-and-kl-penalty" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Per token KL-penalty <span class="math notranslate nohighlight">\(\text{KL}(t) = {\pi_{\theta_{\text{old}}}(a_t|s_t)^{\text{RL}}}/{\pi^{\text{SFT}}(a_t|s_t)}\)</span></p></li>
 <li><p>Compute <span class="math notranslate nohighlight">\(r(s_t, a_t)\)</span></p>
@@ -672,7 +704,7 @@ document.write(`
 </div>
 </section>
 <section id="compute-advantages-using-gae">
-<h2>6. Compute Advantages using GAE<a class="headerlink" href="#compute-advantages-using-gae" title="Permalink to this heading">#</a></h2>
+<h3>6. Compute Advantages using GAE<a class="headerlink" href="#compute-advantages-using-gae" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>TD error <span class="math notranslate nohighlight">\(\delta_t = r(s_t, a_t) + \gamma V(s_{t+1}) - V(s_t)\)</span></p></li>
 <li><p>The Generalized Advantage Estimator <span class="math notranslate nohighlight">\(\hat{A}(s_t, a_t) = \sum(\gamma\lambda)^{l}\delta_{t+l}^{V}\)</span>, it is a technique to reduce the variance of policy gradient estimates.</p></li>
@@ -690,7 +722,7 @@ document.write(`
 </div>
 </section>
 <section id="experience-buffer-and-minibatch">
-<h2>7. Experience buffer and minibatch<a class="headerlink" href="#experience-buffer-and-minibatch" title="Permalink to this heading">#</a></h2>
+<h3>7. Experience buffer and minibatch<a class="headerlink" href="#experience-buffer-and-minibatch" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Collect batch experience buffer <span class="math notranslate nohighlight">\(\{(a_t,s_t), \pi_{\theta_{\text{old}}}^{\text{RL}}(a_t, s_t), \hat{A}(s_t, a_t), \hat{R}_{t}\}\)</span></p></li>
 <li><p>Random sample from the experience buffer, train minibatches.</p></li>
@@ -709,7 +741,7 @@ document.write(`
 </div>
 </section>
 <section id="new-policy-sampling">
-<h2>8. New Policy Sampling<a class="headerlink" href="#new-policy-sampling" title="Permalink to this heading">#</a></h2>
+<h3>8. New Policy Sampling<a class="headerlink" href="#new-policy-sampling" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>We will train many minibatches <span class="math notranslate nohighlight">\(\theta_{\text{old}}^{\text{RL}}=\theta_0,\theta_1,\theta_2,\dots\)</span> within the loop</p></li>
 <li><p>Everytime sample from the newest policy <span class="math notranslate nohighlight">\(\pi_{\theta}^{\text{RL}}\)</span> to get <span class="math notranslate nohighlight">\(\pi_{\theta}^{\text{RL}}(a_t|s_t)\)</span> and <span class="math notranslate nohighlight">\(V_{\phi_{\text{new}}}\)</span>.</p></li>
@@ -725,11 +757,11 @@ document.write(`
 </div>
 </section>
 <section id="policy-gradient-loss">
-<h2>9. Policy gradient loss<a class="headerlink" href="#policy-gradient-loss" title="Permalink to this heading">#</a></h2>
+<h3>9. Policy gradient loss<a class="headerlink" href="#policy-gradient-loss" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
-\[\text{PGLoss} = \frac{1}{T}\sum\max\left(
+\[\text{PGLoss} = \frac{1}{T}\sum\max\left(-
 \frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}  \hat{A}(s_t,a_t), \;\;
-\text{clip}\left(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}, 1 - \epsilon, 1+\epsilon \right) \hat{A}(s_t,a_t)
+-\text{clip}\left(\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}, 1 - \epsilon, 1+\epsilon \right) \hat{A}(s_t,a_t)
 \right).\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pg_losses</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">ratio</span>
 <span class="n">pg_losses2</span> <span class="o">=</span> <span class="o">-</span><span class="n">advantages</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cliprange</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cliprange</span><span class="p">)</span>
@@ -740,7 +772,7 @@ document.write(`
 </div>
 </section>
 <section id="value-function-loss">
-<h2>10. Value function loss<a class="headerlink" href="#value-function-loss" title="Permalink to this heading">#</a></h2>
+<h3>10. Value function loss<a class="headerlink" href="#value-function-loss" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
 \text{VFLoss} = \frac{1}{T}\sum(V_{\phi_{\text{new}}} - \hat{R})^{2}
@@ -750,7 +782,7 @@ document.write(`
 </div>
 </section>
 <section id="optimization">
-<h2>11. Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading">#</a></h2>
+<h3>11. Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[\text{Loss} = \text{PGLoss} + \alpha*\text{VFLoss}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -765,6 +797,7 @@ document.write(`
 <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -822,35 +855,38 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PPO with TRL</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-ppo-trainer">An introduction to PPO Trainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-ppo-works">How PPO works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-dataset-format">Expected dataset format</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ppotrainer">Using the PPOTrainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-ppotrainer">Initializing the PPOTrainer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-trainer-deep-dive">PPO Trainer Deep Dive</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient">Policy gradient</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#actor-critic">Actor-critic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo">PPO</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dive-into-ppo-trainer">Dive into PPO Trainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rollout">1. Rollout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">2. Evaluate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#old-policy-logprobs-and-values">3. Old policy logprobs and values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ref-sft-model-logprobs">4. Ref(SFT) model logprobs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-per-token-rewards-and-kl-penalty">5. Compute per token rewards and KL-penalty.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-advantages-using-gae">6. Compute Advantages using GAE</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experience-buffer-and-minibatch">7. Experience buffer and minibatch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-policy-sampling">8. New Policy Sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
 </ul>
 </li>
 </ul>
-
   </nav></div>
 
 </div></div>
