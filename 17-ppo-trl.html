@@ -388,7 +388,6 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
@@ -409,8 +408,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pseudocode">Pseudocode</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
             </nav>
         </div>
@@ -424,6 +425,8 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ppo-with-trl">
 <h1>PPO with TRL<a class="headerlink" href="#ppo-with-trl" title="Permalink to this heading">#</a></h1>
+<p><img alt="" src="_images/trl-title.png" /></p>
+<p>TRL is a full stack library that provides a set of tools to train transformer language models with Reinforcement Learning, from the Supervised Fine-tuning step (SFT), Reward Modeling step (RM) to the Proximal Policy Optimization (PPO) step. The library is integrated with 🤗 transformers.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We split this section into three parts:<br></p>
@@ -436,7 +439,6 @@ document.write(`
 <section id="an-introduction-to-ppo-trainer">
 <h2>An introduction to PPO Trainer<a class="headerlink" href="#an-introduction-to-ppo-trainer" title="Permalink to this heading">#</a></h2>
 <p>TRL supports the PPO Trainer for training language models on any reward signal with RL. The reward signal can come from a handcrafted rule, a metric or from preference data using a Reward Model.</p>
-<p>The first step is to train your SFT model, to ensure the data we train on is in-distribution for the PPO algorithm. In addition we need to train a Reward model which will be used to optimize the SFT model using the PPO algorithm.</p>
 <section id="how-ppo-works">
 <h3>How PPO works<a class="headerlink" href="#how-ppo-works" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple">
@@ -563,15 +565,6 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="logging">
-<h3>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">#</a></h3>
-<p>While training and evaluating we log the following metrics:</p>
-<ul class="simple">
-<li><p>stats: The statistics of the PPO algorithm, including the loss, entropy, etc.</p></li>
-<li><p>batch: The batch of data used to train the SFT model.</p></li>
-<li><p>rewards: The rewards obtained from the Reward model.</p></li>
-</ul>
-</section>
 </section>
 <section id="ppo-algorithm">
 <h2>PPO algorithm<a class="headerlink" href="#ppo-algorithm" title="Permalink to this heading">#</a></h2>
@@ -671,8 +664,8 @@ document.write(`
 <li><p>Per token KL-penalty <span class="math notranslate nohighlight">\(\text{KL}(t) = {\pi_{\theta_{\text{old}}}(a_t|s_t)^{\text{RL}}}/{\pi^{\text{SFT}}(a_t|s_t)}\)</span></p></li>
 <li><p>Compute <span class="math notranslate nohighlight">\(r(s_t, a_t)\)</span></p>
 <ul>
-<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is not the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = \beta* \text{KL}(t)\)</span></p></li>
-<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = r(x, y) + \beta* \text{KL}(t)\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is not the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = -\beta* \text{KL}(t)\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(t\)</span> is the last token <span class="math notranslate nohighlight">\(r(s_t, a_t) = r(x, y) - \beta* \text{KL}(t)\)</span></p></li>
 </ul>
 </li>
 </ul>
@@ -700,6 +693,10 @@ document.write(`
             <span class="n">reward</span><span class="p">[</span><span class="n">last_non_masked_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">score</span>
             <span class="n">rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">rewards</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">non_score_rewards</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">kls</span><span class="p">)</span>
+    
+<span class="k">def</span> <span class="nf">_kl_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logprob</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">,</span> <span class="n">ref_logprob</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">kl_penalty</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">logprob</span> <span class="o">-</span> <span class="n">ref_logprob</span>
 </pre></div>
 </div>
 </section>
@@ -798,6 +795,51 @@ document.write(`
 </pre></div>
 </div>
 </section>
+<section id="pseudocode">
+<h3>Pseudocode<a class="headerlink" href="#pseudocode" title="Permalink to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ppo_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reward_model</span><span class="p">,</span> <span class="n">dataiter</span><span class="p">):</span>
+    <span class="c1"># Fix ref model</span>
+    <span class="n">ref_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
+        <span class="n">queries</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">dataiter</span><span class="p">)</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">reward_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">responses</span><span class="p">)</span>
+        
+        <span class="n">all_logprobs</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">batch_forward</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">responses</span><span class="p">)</span>
+        <span class="n">ref_logprobs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ref_model</span><span class="o">.</span><span class="n">batch_forward</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">responses</span><span class="p">)</span>
+        <span class="c1"># KL + rewards</span>
+        <span class="n">rewards</span> <span class="o">=</span> <span class="n">compute_rewards</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">all_logprobs</span><span class="p">,</span> <span class="n">ref_logprobs</span><span class="p">)</span>
+        <span class="n">all_advantages</span><span class="p">,</span> <span class="n">all_returns</span> <span class="o">=</span> <span class="n">compute_advantages</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">rewards</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ppo_epochs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_minibatches</span><span class="p">):</span>
+                <span class="n">minibatch_queries</span> <span class="o">=</span> <span class="n">queries</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span>
+                <span class="n">minibatch_responses</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span>
+                <span class="n">old_logprobs</span> <span class="o">=</span> <span class="n">all_logprobs</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span>
+                <span class="n">advantages</span> <span class="o">=</span> <span class="n">all_advantages</span><span class="p">[</span><span class="n">satrt</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span>
+                <span class="n">returns</span> <span class="o">=</span> <span class="n">all_returns</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span>
+                
+                <span class="n">logprobs</span><span class="p">,</span> <span class="n">vpreds</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">batch_forward</span><span class="p">(</span><span class="n">minibatch_queries</span><span class="p">,</span> <span class="n">minibatch_responses</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+                <span class="n">loss_p</span> <span class="o">=</span> <span class="n">policy_loss</span><span class="p">(</span><span class="n">logprobs</span><span class="p">,</span> <span class="n">old_logprobs</span><span class="p">,</span> <span class="n">advantages</span><span class="p">)</span>
+                <span class="n">loss_v</span> <span class="o">=</span> <span class="n">value_loss</span><span class="p">(</span><span class="n">vpreds</span><span class="p">,</span> <span class="n">returns</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_p</span> <span class="o">+</span> <span class="n">loss_v</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://huggingface.co/docs/trl/main/en/ppo_trainer">https://huggingface.co/docs/trl/main/en/ppo_trainer</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/learn/deep-rl-course/unit8/introduction">https://huggingface.co/learn/deep-rl-course/unit8/introduction</a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1506.02438">https://arxiv.org/abs/1506.02438</a></p></li>
+<li><p><a class="reference external" href="https://spinningup.openai.com/en/latest/algorithms/ppo.html">https://spinningup.openai.com/en/latest/algorithms/ppo.html</a></p></li>
+</ol>
 </section>
 </section>
 
@@ -863,7 +905,6 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-training-loop">Starting the training loop</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
@@ -884,8 +925,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient-loss">9. Policy gradient loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-function-loss">10. Value function loss</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization">11. Optimization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pseudocode">Pseudocode</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
   </nav></div>
 
