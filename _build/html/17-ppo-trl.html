@@ -772,7 +772,7 @@ document.write(`
 <h3>10. Value function loss<a class="headerlink" href="#value-function-loss" title="Permalink to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
-\text{VFLoss} = \frac{1}{T}\sum(V_{\phi_{\text{new}}} - \hat{R})^{2}
+\text{VFLoss} = \frac{1}{T}\sum\left(V_{\phi_{\text{new}}}(s_t) - \hat{R}_{t}\right)^{2}
 \]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vf_losses1</span> <span class="o">=</span> <span class="p">(</span><span class="n">vpreds</span> <span class="o">-</span> <span class="n">returns</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 </pre></div>
