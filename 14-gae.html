@@ -188,9 +188,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
-
-
-
 </ul>
 
     </div>
@@ -418,7 +415,7 @@ have the form</p>
 \[g = \mathbb{E}\left[\sum_{t=0}^{\infty}\Psi_{t}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]\]</div>
 <p>where <span class="math notranslate nohighlight">\(\Psi_{t}\)</span> may be one of the following:</p>
 <ol class="arabic simple">
-<li><p><span class="math notranslate nohighlight">\(\sum_{t=0}^{\infty}\)</span>: total reward of the trajectory.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sum_{t=0}^{\infty}r_t\)</span>: total reward of the trajectory.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\sum_{t'=t}^{\infty}r_{t'}\)</span>: reward following action <span class="math notranslate nohighlight">\(a_t\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\sum_{t'=t}^{\infty}r_{t'} - b(s_t)\)</span>: baselined version of
 previous formula.</p></li>
@@ -433,16 +430,82 @@ to delayed effects, at the cost of introducing bias. This parameter corresponds 
 discount factor used in discounted formulations of MDPs, , but we treat it as a variance reduction
 parameter in an undiscounted problem.</p>
 <div class="math notranslate nohighlight">
-\[V_{\pi,\gamma} := \mathbb{E}_{s_{t+1}:\infty, a_{t}:\infty}\left[\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\right]\]</div>
+\[V_{\pi,\gamma}(s_t) := \mathbb{E}_{s_{t+1}:\infty, a_{t}:\infty}\left[\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\right]\]</div>
+<div class="math notranslate nohighlight">
+\[Q_{\pi,\gamma}(s_t) := \mathbb{E}_{s_{t+1}:\infty, a_{t+1}:\infty}\left[\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\right]\]</div>
+<div class="math notranslate nohighlight">
+\[A_{\pi,\gamma}(s_t) := Q_{\pi,\gamma}(s_t) -  V_{\pi,\gamma}(s_t)\]</div>
+<p>The colon notation <span class="math notranslate nohighlight">\(a: b\)</span> refers to the inclusive range <span class="math notranslate nohighlight">\((a, a+1,\dots, b)\)</span>. The discounted approximation to the policy gradient is defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[g^{\gamma} := \mathbb{E}_{s_0:\infty,a_0:\infty}\left[\sum_{t=0}^{\infty}A_{\pi,\gamma}(a_t, s_t)\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]\]</div>
 <p>Before proceeding, we will introduce the notion of a <span class="math notranslate nohighlight">\(\gamma-\)</span>just estimator of the advantage function,
 which is an estimator that does not introduce bias when we use it in place of <span class="math notranslate nohighlight">\(A^{\pi,\gamma}\)</span>.</p>
 <p><strong>Definition 1.</strong> The estimator <span class="math notranslate nohighlight">\(\hat{A}_{t}\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just if</p>
 <div class="math notranslate nohighlight">
 \[\mathbb{E}_{s_0:\infty,a_0:\infty}\left[\hat{A}_{t}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]=\mathbb{E}_{s_0:\infty,a_0:\infty}\left[A_{\pi,\gamma}(a_t, s_t)\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right] = g^{\gamma}\]</div>
-<p><strong>Proposition 1.</strong> Suppose that <span class="math notranslate nohighlight">\(\hat{A}_{t}\)</span> can be written in the form <span class="math notranslate nohighlight">\(\hat{A}_{t} = Q_t(s_{t:\infty},a_{t:\infty}) - b_t(s_{0:t,}, a_{0:t-1})\)</span> such that for all <span class="math notranslate nohighlight">\((s_t, a_t)\)</span>, <span class="math notranslate nohighlight">\(\mathbb{E}Q_{t}=Q_{\pi,\gamma}\)</span>. Then <span class="math notranslate nohighlight">\(\hat{A}\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just.</p>
+<p>We can verify that the following expressions are
+-just
+advantage estimators for <span class="math notranslate nohighlight">\(\hat{A}_t\)</span>:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Q_{\pi,\gamma}(s_t, a_t)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(A_{\pi,\gamma}(s_t, a_t)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t + \gamma V_{\pi,\gamma}(s_{t+1}) - V_{\pi,\gamma}(s_{t})\)</span></p></li>
+</ul>
 </section>
 <section id="advantage-function-estimation">
 <h2>Advantage function estimation<a class="headerlink" href="#advantage-function-estimation" title="Permalink to this heading">#</a></h2>
+<p>This section will be concerned with producing an accurate estimate <span class="math notranslate nohighlight">\(\hat{A}_{t}\)</span> which will then be used to construct a policy gradient estimator of the
+following form:</p>
+<div class="math notranslate nohighlight">
+\[\hat{g} = \frac{1}{N}\sum_{n=1}^{N}\sum_{t=0}^{T}\hat{A}_{t}^{n}\nabla_{\theta}\log\pi_{\theta}(a_{t}^{n}|s_{t}^{n})\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> indexes over a batch of episodes.</p>
+<p>Let <span class="math notranslate nohighlight">\(V\)</span> be an approximate value function. Define</p>
+<div class="math notranslate nohighlight">
+\[\delta_{t}^{V} = r_t + \gamma V(s_{t+1}) - V(s_t)\]</div>
+<p>i.e., the TD residual. <span class="math notranslate nohighlight">\(\delta_{t}^{V}\)</span> can be considered as an estimate of the
+advantage of the action <span class="math notranslate nohighlight">\(a_t\)</span>. In fact, if we have the correct value function <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>, then it is a <span class="math notranslate nohighlight">\(\gamma\)</span>-just
+advantage estimator. However, this estimator is only <span class="math notranslate nohighlight">\(\gamma\)</span>-just for <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>, otherwise it will yield biased policy gradient
+estimates.</p>
+<p>Next, let:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{A}_{t}^{(1)} &amp;:= \delta_{t}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma V(s_{t+1})\\
+\hat{A}_{t}^{(2)} &amp;:= \delta_{t}^{V} + \gamma\delta_{t+1}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma r_{t+1} + \gamma^{2} V(s_{t+2})\\
+\hat{A}_{t}^{(k)} &amp;:= \sum_{l=0}^{k-1}\gamma^{l}\delta_{t+l}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma r_{t+1} + \dots + \gamma^{k-1}r_{t+k-1} + \gamma^{k} V(s_{t+k})\\
+\end{aligned}
+\end{split}\]</div>
+<p>We can consider <span class="math notranslate nohighlight">\(\hat{A}_{t}^{(k)}\)</span> to be an estimator of the advantage function, which is only <span class="math notranslate nohighlight">\(\gamma\)</span>-just when <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>. However,
+note that the bias generally becomes smaller as <span class="math notranslate nohighlight">\(k\to\infty\)</span>, since the term <span class="math notranslate nohighlight">\(\gamma^{k}V(s_{t+k})\)</span> becomes more
+heavily discounted, and the term <span class="math notranslate nohighlight">\(-V(s_t)\)</span> does not affect the bias.</p>
+<p>The generalized advantage estimator <span class="math notranslate nohighlight">\(\text{GAE}(\gamma, \lambda)\)</span> is defined as the exponentially-weighted average
+of these <span class="math notranslate nohighlight">\(k\)</span>-step estimators:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{A}_{t}^{\text{GAE}(\gamma, \lambda)} &amp;:= (1 - \lambda)\left(\hat{A}_{t}^{(1)} + \lambda\hat{A}_{t}^{(2)} + \lambda^{2}\hat{A}_{t}^{(3)} + \dots\right) \\
+&amp;= \sum_{l=0}^{\infty}(\gamma\lambda)^{l}\delta_{t+l}^{V}
+\end{aligned}
+\end{split}\]</div>
+<p>The construction we used above is closely
+analogous to the one used to define <span class="math notranslate nohighlight">\(\text{TD}(\lambda)\)</span>, however <span class="math notranslate nohighlight">\(\text{TD}(\lambda)\)</span> is an estimator
+of the value function, whereas here we are estimating the advantage function.</p>
+<p>There are two notable special cases of this formula, obtained by setting <span class="math notranslate nohighlight">\(\lambda=0\)</span> and <span class="math notranslate nohighlight">\(\lambda=1\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp;\text{GAE}(\gamma, 0):\hat{A}_{t} = \delta_{t} &amp;&amp;= r_t + \gamma V(s_{t+1}) - V(s_t) \\
+&amp;\text{GAE}(\gamma, 1):\hat{A}_{t} = \sum_{l=0}\gamma^{l}\delta_{t+l} &amp;&amp;= \sum_{l=0}^{\infty}\gamma^{l}r_{t+l} - V(s_t)
+\end{aligned}
+\end{split}\]</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><span class="math notranslate nohighlight">\(\text{GAE}(\gamma, 1)\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just regardless of the accuracy of <span class="math notranslate nohighlight">\(V\)</span>, but it has high variance due to the sum of
+terms. <span class="math notranslate nohighlight">\(\text{GAE}(\gamma, 0)\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just for <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span> and otherwise induces bias, but it typically has much
+lower variance. The generalized advantage estimator for <span class="math notranslate nohighlight">\(0&lt;\lambda&lt;1\)</span> makes a compromise between
+bias and variance, controlled by parameter <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+</div>
 </section>
 </section>
 

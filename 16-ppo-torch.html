@@ -186,9 +186,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">PPO with CleanRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
-
-
-
 </ul>
 
     </div>
@@ -399,6 +396,11 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ppo-with-cleanrl">
 <h1>PPO with CleanRL<a class="headerlink" href="#ppo-with-cleanrl" title="Permalink to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Now that we studied the theory behind PPO, the best way to understand how it works is to implement it from scratch.<br>
+Implementing an architecture from scratch is the best way to understand it, and it’s a good habit. We have already done it for a value-based method with Q-Learning and a Policy-based method with Reinforce.</p>
+</div>
 <section id="env">
 <h2>Env<a class="headerlink" href="#env" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -536,10 +538,12 @@ document.write(`
 <h2>Main loop<a class="headerlink" href="#main-loop" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_timesteps</span> <span class="o">=</span> <span class="mi">20000</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_timesteps</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">num_minibatches</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_envs</span> <span class="o">*</span> <span class="n">num_steps</span><span class="p">)</span>
-<span class="n">minibatch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">batch_size</span> <span class="o">//</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">minibatch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">batch_size</span> <span class="o">//</span> <span class="n">num_minibatches</span><span class="p">)</span>
 <span class="n">num_iterations</span> <span class="o">=</span> <span class="n">total_timesteps</span> <span class="o">//</span> <span class="n">batch_size</span>
+
 <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.99</span>
 <span class="n">gae_lambda</span> <span class="o">=</span> <span class="mf">0.95</span>  <span class="c1"># Use GAE for advantage computation</span>
 <span class="n">global_step</span> <span class="o">=</span> <span class="mi">0</span>
@@ -549,108 +553,153 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">fill obs, actions, logprobs, rewards, dones, values</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
-    <span class="n">global_step</span> <span class="o">+=</span> <span class="n">num_envs</span>
-    <span class="c1"># s_t</span>
-    <span class="n">obs</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_obs</span>
-    <span class="n">dones</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_done</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_iterations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    
+    <span class="c1"># fill obs, actions, logprobs, rewards, dones, values</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+        <span class="n">global_step</span> <span class="o">+=</span> <span class="n">num_envs</span>
+        <span class="c1"># s_t</span>
+        <span class="n">obs</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_obs</span>
+        <span class="n">dones</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_done</span>
+        
+        <span class="c1"># a_t, v_t</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">action</span><span class="p">,</span> <span class="n">logprob</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_action_and_value</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">actions</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">action</span>
+        <span class="n">logprobs</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">logprob</span>
 
-    <span class="c1"># a_t, v_t</span>
+        <span class="c1"># s_{t+1}, r_t</span>
+        <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">envs</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+        <span class="n">next_done</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">)</span>
+        <span class="n">rewards</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">next_obs</span><span class="p">,</span> <span class="n">next_done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">next_done</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        
+    <span class="c1"># advantage computation</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-        <span class="n">action</span><span class="p">,</span> <span class="n">logprob</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_action_and_value</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span>
-        <span class="n">values</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-    <span class="n">actions</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">action</span>
-    <span class="n">logprobs</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">logprob</span>
+        <span class="c1"># v_{T+1}</span>
+        <span class="n">next_value</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">advantages</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rewards</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">lastgaelam</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">num_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">nextnonterminal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">next_done</span>
+                <span class="n">nextvalues</span> <span class="o">=</span> <span class="n">next_value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nextnonterminal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">dones</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">nextvalues</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># r_t + gamma * v_{t+1} - v{t}</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">rewards</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">nextvalues</span> <span class="o">*</span> <span class="n">nextnonterminal</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="c1"># update lastgaelam &amp; compute advantages</span>
+            <span class="n">advantages</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">lastgaelam</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">gae_lambda</span> <span class="o">*</span> <span class="n">nextnonterminal</span> <span class="o">*</span> <span class="n">lastgaelam</span>
+        <span class="c1"># Q values</span>
+        <span class="n">returns</span> <span class="o">=</span> <span class="n">advantages</span> <span class="o">+</span> <span class="n">values</span>
 
-    <span class="c1"># s_{t+1}, r_t</span>
-    <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">envs</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
-    <span class="n">next_done</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">)</span>
-    <span class="n">rewards</span><span class="p">[</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">next_obs</span><span class="p">,</span> <span class="n">next_done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">next_done</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">advantage computation</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-    <span class="c1"># v_{T+1}</span>
-    <span class="n">next_value</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">next_obs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">advantages</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rewards</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-    <span class="n">lastgaelam</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">num_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">nextnonterminal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">next_done</span>
-            <span class="n">nextvalues</span> <span class="o">=</span> <span class="n">next_value</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">nextnonterminal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">dones</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">nextvalues</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="c1"># r_t + gamma * v_{t+1} - v{t}</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">rewards</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">nextvalues</span> <span class="o">*</span> <span class="n">nextnonterminal</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-        <span class="c1"># update lastgaelam &amp; compute advantages</span>
-        <span class="n">advantages</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">lastgaelam</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">gae_lambda</span> <span class="o">*</span> <span class="n">nextnonterminal</span> <span class="o">*</span> <span class="n">lastgaelam</span>
-    <span class="c1"># Q values</span>
-    <span class="n">returns</span> <span class="o">=</span> <span class="n">advantages</span> <span class="o">+</span> <span class="n">values</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># flatten the batch</span>
-<span class="n">b_obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">envs</span><span class="o">.</span><span class="n">single_observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">b_logprobs</span> <span class="o">=</span> <span class="n">logprobs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">b_actions</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">envs</span><span class="o">.</span><span class="n">single_action_space</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">b_advantages</span> <span class="o">=</span> <span class="n">advantages</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">b_returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">b_values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimizing the policy and value network</span>
-<span class="n">update_epochs</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">clip_coef</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">ent_coef</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">vf_coef</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">max_grad_norm</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">b_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
-<span class="n">clipfracs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">update_epochs</span><span class="p">):</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">b_inds</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">minibatch_size</span><span class="p">):</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">minibatch_size</span>
-        <span class="n">mb_inds</span> <span class="o">=</span> <span class="n">b_inds</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>  <span class="c1"># random timesteps</span>
+        
+    <span class="c1"># flatten the batch</span>
+    <span class="n">b_obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">envs</span><span class="o">.</span><span class="n">single_observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">b_logprobs</span> <span class="o">=</span> <span class="n">logprobs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b_actions</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">envs</span><span class="o">.</span><span class="n">single_action_space</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">b_advantages</span> <span class="o">=</span> <span class="n">advantages</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b_returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b_values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Optimizing the policy and value network</span>
+    <span class="n">update_epochs</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">clip_coef</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="n">ent_coef</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">vf_coef</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">max_grad_norm</span> <span class="o">=</span> <span class="mf">0.5</span>
+    
+    <span class="n">b_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">clipfracs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">update_epochs</span><span class="p">):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">b_inds</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">minibatch_size</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">minibatch_size</span>
+            <span class="n">mb_inds</span> <span class="o">=</span> <span class="n">b_inds</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">newlogprob</span><span class="p">,</span> <span class="n">entropy</span><span class="p">,</span> <span class="n">newvalue</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_action_and_value</span><span class="p">(</span><span class="n">b_obs</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">],</span> <span class="n">b_actions</span><span class="o">.</span><span class="n">long</span><span class="p">()[</span><span class="n">mb_inds</span><span class="p">])</span>
-        <span class="n">logratio</span> <span class="o">=</span> <span class="n">newlogprob</span> <span class="o">-</span> <span class="n">b_logprobs</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">]</span>
-        <span class="n">ratio</span> <span class="o">=</span> <span class="n">logratio</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
-        
-        <span class="n">mb_advantages</span> <span class="o">=</span> <span class="n">b_advantages</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">]</span>
-        
-        <span class="c1"># Policy loss</span>
-        <span class="n">pg_loss1</span> <span class="o">=</span> <span class="o">-</span><span class="n">mb_advantages</span> <span class="o">*</span> <span class="n">ratio</span>
-        <span class="n">pg_loss2</span> <span class="o">=</span> <span class="o">-</span><span class="n">mb_advantages</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clip_coef</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">clip_coef</span><span class="p">)</span>
-        <span class="n">pg_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pg_loss1</span><span class="p">,</span> <span class="n">pg_loss2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        
-        <span class="c1"># Value loss</span>
-        <span class="n">v_loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">newvalue</span> <span class="o">-</span> <span class="n">b_returns</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        
-        <span class="n">entropy_loss</span> <span class="o">=</span> <span class="n">entropy</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">pg_loss</span> <span class="o">-</span> <span class="n">ent_coef</span> <span class="o">*</span> <span class="n">entropy_loss</span> <span class="o">+</span> <span class="n">v_loss</span> <span class="o">*</span> <span class="n">vf_coef</span>
-        
-        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-        <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_grad_norm</span><span class="p">)</span>
-        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">newlogprob</span><span class="p">,</span> <span class="n">entropy</span><span class="p">,</span> <span class="n">newvalue</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_action_and_value</span><span class="p">(</span><span class="n">b_obs</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">],</span> <span class="n">b_actions</span><span class="o">.</span><span class="n">long</span><span class="p">()[</span><span class="n">mb_inds</span><span class="p">])</span>
+            <span class="n">logratio</span> <span class="o">=</span> <span class="n">newlogprob</span> <span class="o">-</span> <span class="n">b_logprobs</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">]</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">logratio</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
+
+            <span class="n">mb_advantages</span> <span class="o">=</span> <span class="n">b_advantages</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">]</span>
+
+            <span class="c1"># Policy loss</span>
+            <span class="n">pg_loss1</span> <span class="o">=</span> <span class="o">-</span><span class="n">mb_advantages</span> <span class="o">*</span> <span class="n">ratio</span>
+            <span class="n">pg_loss2</span> <span class="o">=</span> <span class="o">-</span><span class="n">mb_advantages</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">clip_coef</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">clip_coef</span><span class="p">)</span>
+            <span class="n">pg_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pg_loss1</span><span class="p">,</span> <span class="n">pg_loss2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+            <span class="c1"># Value loss</span>
+            <span class="n">v_loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">newvalue</span> <span class="o">-</span> <span class="n">b_returns</span><span class="p">[</span><span class="n">mb_inds</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+            <span class="n">entropy_loss</span> <span class="o">=</span> <span class="n">entropy</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">pg_loss</span> <span class="o">-</span> <span class="n">ent_coef</span> <span class="o">*</span> <span class="n">entropy_loss</span> <span class="o">+</span> <span class="n">v_loss</span> <span class="o">*</span> <span class="n">vf_coef</span>
+
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_grad_norm</span><span class="p">)</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 0 15.195906639099121
+1 1 14.586302757263184
+1 2 15.095952987670898
+1 3 16.335002899169922
+2 0 10.235828399658203
+2 1 8.145291328430176
+2 2 9.919469833374023
+2 3 8.310291290283203
+3 0 14.384485244750977
+3 1 9.557671546936035
+3 2 11.550650596618652
+3 3 13.196294784545898
+4 0 15.475090980529785
+4 1 11.329744338989258
+4 2 11.575265884399414
+4 3 12.216898918151855
+5 0 17.111989974975586
+5 1 20.04167366027832
+5 2 18.0026912689209
+5 3 17.139039993286133
+6 0 17.672100067138672
+6 1 17.039413452148438
+6 2 20.281112670898438
+6 3 17.588523864746094
+7 0 13.127963066101074
+7 1 13.810617446899414
+7 2 11.982034683227539
+7 3 14.697120666503906
+8 0 19.245304107666016
+8 1 18.96194839477539
+8 2 18.185470581054688
+8 3 17.695661544799805
+9 0 22.96338653564453
+9 1 23.906734466552734
+9 2 21.928604125976562
+9 3 22.954378128051758
+10 0 16.186859130859375
+10 1 17.45125961303711
+10 2 19.65501594543457
+10 3 15.642524719238281
+11 0 16.93822479248047
+11 1 15.163423538208008
+11 2 13.592549324035645
+11 3 13.926717758178711
+12 0 21.17538833618164
+12 1 21.22687530517578
+12 2 18.34033966064453
+12 3 18.781917572021484
+13 0 20.065887451171875
+13 1 17.755939483642578
+13 2 17.562976837158203
+13 3 16.334026336669922
 </pre></div>
 </div>
 </div>
