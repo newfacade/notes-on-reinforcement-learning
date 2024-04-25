@@ -407,12 +407,11 @@ necessary to define what optimal policies are.<br></p>
 <div class="math notranslate nohighlight">
 \[\pi_{1} \ge \pi_{2} \Leftrightarrow V_{\pi_1}(s) \ge V_{\pi_2}(s)\quad \forall s\in\mathcal{S}\]</div>
 <p>Some policies are not comparable!</p>
-<p>Optimal policy and optimal state-value function:</p>
+<p>Optimal state-value function <span class="math notranslate nohighlight">\(V^{\ast}(s)\)</span> shows the maximum expected discounted return that one can
+achieve from state <span class="math notranslate nohighlight">\(s\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[V^{\ast}(s) := \max_{\pi}V_{\pi}(s) = V_{\pi^{\ast}}(s)\quad\forall s\in\mathcal{S}\]</div>
-<p><span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> is a policy whose value function is the maximum out of all policy simultaneously for all states.</p>
-<p><span class="math notranslate nohighlight">\(V^{\ast}(s)\)</span> shows the maximum expected discounted return that one can
-achieve from state <span class="math notranslate nohighlight">\(s\)</span> with optimal play.</p>
+\[V^{\ast}(s) := \max_{\pi}V_{\pi}(s).\]</div>
+<p>Optimal policy <span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> is a policy whose state-value function is the maximum out of all policy simultaneously for all states.</p>
 <p>This definition leads to many questions:</p>
 <ul class="simple">
 <li><p>Existence: Does the optimal policy exist?</p></li>
@@ -423,9 +422,12 @@ achieve from state <span class="math notranslate nohighlight">\(s\)</span> with 
 <h2>Bellman optimality equation<a class="headerlink" href="#bellman-optimality-equation" title="Permalink to this heading">#</a></h2>
 <p>Bellman optimality equation (BOE):</p>
 <div class="math notranslate nohighlight">
-\[
-v(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)v(s')\right]
-\]</div>
+\[\begin{split}
+\begin{aligned}
+v(s) &amp;= \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s,a)\left[R(s,a,s') + \gamma v(s')\right] \\
+&amp;= \underset{a}{\max}\sum_{s'\in\mathcal{S}}P(s'|s,a)\left[R(s,a,s') + \gamma v(s')\right]
+\end{aligned}
+\end{split}\]</div>
 <p>Matrix form:</p>
 <div class="math notranslate nohighlight">
 \[v=\underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v) = f(v)\]</div>
@@ -441,7 +443,7 @@ v(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gam
 \[d(Tx, Ty)\le qd(x, y)\]</div>
 <p>for all <span class="math notranslate nohighlight">\(x, y\in X\)</span>.</p>
 <div class="proof theorem admonition" id="theorem-0">
-<p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Banach fixed-point theorem)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 2 </span> (Banach fixed-point theorem)</p>
 <section class="theorem-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\((X, d)\)</span> be a non-empty complete metric space with a contraction mapping <span class="math notranslate nohighlight">\(T: X\to X\)</span>. Then <span class="math notranslate nohighlight">\(T\)</span> admits a unique fixed-point <span class="math notranslate nohighlight">\(x^{\ast}\)</span> in <span class="math notranslate nohighlight">\(X\)</span> (i.e. <span class="math notranslate nohighlight">\(T(x^{\ast})=x^{\ast}\)</span>). Furthermore, <span class="math notranslate nohighlight">\(x^{\ast}\)</span> can be found as follows: start with an arbitrary element <span class="math notranslate nohighlight">\(x_{0}\in X\)</span> and define a sequence <span class="math notranslate nohighlight">\(\{x_{n}\}_{n\in\mathbb{N}}\)</span> by <span class="math notranslate nohighlight">\(x_{n}=T(x_{n-1})\)</span> for <span class="math notranslate nohighlight">\(n\ge 1\)</span>. Then <span class="math notranslate nohighlight">\(\lim_{n\to\infty}x_{n}=x^{\ast}\)</span>.</p>
 </section>
@@ -449,7 +451,7 @@ v(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gam
 <p>Proof. Omit.</p>
 </div>
 <div class="proof theorem admonition" id="theorem-1">
-<p class="admonition-title"><span class="caption-number">Theorem 2 </span></p>
+<p class="admonition-title"><span class="caption-number">Theorem 3 </span></p>
 <section class="theorem-content" id="proof-content">
 <p>The function <span class="math notranslate nohighlight">\(f(v) = \underset{\pi}{\max}(r_{\pi} + \gamma P_{\pi}v)\)</span> is a contraction mapping. In particular, for any <span class="math notranslate nohighlight">\(v_{1},v_{2}\in\mathbb{R}^{|\mathcal{S}|}\)</span>, it holds that</p>
 <div class="math notranslate nohighlight">
@@ -496,7 +498,7 @@ equal to one, it follows that</p>
 <div class="math notranslate nohighlight">
 \[\pi^{\ast} = \arg\max_{\pi}(r_{\pi}+\gamma P_{\pi}v^{\ast}).\]</div>
 <div class="proof theorem admonition" id="theorem-2">
-<p class="admonition-title"><span class="caption-number">Theorem 3 </span></p>
+<p class="admonition-title"><span class="caption-number">Theorem 4 </span></p>
 <section class="theorem-content" id="proof-content">
 <p>The solution <span class="math notranslate nohighlight">\(v^{\ast}\)</span> is the optimal state value, and <span class="math notranslate nohighlight">\(\pi^{\ast}\)</span> is an optimal policy.</p>
 </section>
@@ -513,10 +515,11 @@ equal to one, it follows that</p>
 <p>Repeated applying the above inequality gives <span class="math notranslate nohighlight">\(v^{\ast} - v_{\pi} \ge \gamma P_{\pi}(v^{\ast} - v_{\pi}) \ge \gamma^{2} P_{\pi}^{2}(v^{\ast} - v_{\pi})\ge \dots\)</span>. It follows that</p>
 <div class="math notranslate nohighlight">
 \[v^{\ast} - v_{\pi} \ge \lim_{n\to\infty}\gamma^{n} P_{\pi}^{n}(v^{\ast} - v_{\pi})=0\]</div>
+<p>where the last equality is true because <span class="math notranslate nohighlight">\(\gamma&lt;1\)</span> and <span class="math notranslate nohighlight">\(\|P_{\pi}^{n}(v^{\ast} - v_{\pi})\|_{\infty} \le\dots\le \|(v^{\ast} - v_{\pi})\|_{\infty}\)</span>.</p>
 </div>
 <p>Now we have:</p>
 <div class="math notranslate nohighlight">
-\[V^{\ast}(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\left[R(s,a,s') + \gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\ast}(s')\right]\]</div>
+\[V^{\ast}(s) = \underset{\pi}{\max} \sum_{a\in\mathcal{A}}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s,a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Now, it is clear why we must study the BOE: its solution corresponds to optimal state
@@ -530,15 +533,15 @@ values and optimal policies.<br></p>
 \[Q^{\ast}(s, a) = \max_{\pi}Q_{\pi}(s, a)\]</div>
 <p>It is easy to see from relation between V and Q function that:</p>
 <div class="math notranslate nohighlight">
-\[Q^{\ast}(s, a) := \sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
+\[Q^{\ast}(s, a) = \sum_{s'\in\mathcal{S}}P(s'|s, a)\left[R(s,a,s') + \gamma V^{\ast}(s')\right]\]</div>
 <div class="proof theorem admonition" id="theorem-3">
-<p class="admonition-title"><span class="caption-number">Theorem 4 </span></p>
+<p class="admonition-title"><span class="caption-number">Theorem 5 </span></p>
 <section class="theorem-content" id="proof-content">
 <p>For any <span class="math notranslate nohighlight">\(s\in\mathcal{S}\)</span>, the deterministic policy:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\pi_{\text{greedy}}(a|s) =
 \begin{cases}
-1,\quad &amp;a=\arg\max_{a'}Q^{\ast}(a',s)\\
+1,\quad &amp;a=\arg\max_{a'}Q^{\ast}(s, a')\\
 0,\quad &amp;\text{otherwise}
 \end{cases}\end{split}\]</div>
 <p>is an optimal policy for solving the BOE.</p>
