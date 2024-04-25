@@ -186,7 +186,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="16-ppo-torch.html">PPO with CleanRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
 </ul>
 
@@ -384,6 +383,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-between-v-and-q-function">Relation between V and Q function</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-equation-of-the-state-value-function">Bellman equation of the state-value function</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-equation-of-the-action-value-function">Bellman equation of the action-value function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-form-solution-of-the-bellman-equation">Closed-form solution of the Bellman equation</a></li>
 </ul>
             </nav>
         </div>
@@ -422,6 +422,45 @@ document.write(`
 <p>The Bellman equation can also be expressed in terms of action values:</p>
 <div class="math notranslate nohighlight">
 \[Q_{\pi}(s, a) = \mathbb{E}_{\pi}[R_{t+1} + \gamma * Q_{\pi}(S_{t+1}, A_{t+1})|S_{t}=s, A_{t}=a]\]</div>
+</section>
+<section id="closed-form-solution-of-the-bellman-equation">
+<h2>Closed-form solution of the Bellman equation<a class="headerlink" href="#closed-form-solution-of-the-bellman-equation" title="Permalink to this heading">#</a></h2>
+<p>Bellman equation:</p>
+<div class="math notranslate nohighlight">
+\[
+V_{\pi}(s) = \sum_{a\in\mathcal{A}}\pi(a|s)\sum_{s'\in\mathcal{S}}P(s'|s,a)\left[R(s,a,s') + \gamma V_{\pi}(s')\right]
+\]</div>
+<p>can be expressed in the matrix form:</p>
+<div class="math notranslate nohighlight">
+\[v_{\pi} = r_{\pi} + \gamma P_{\pi}v_{\pi}.\]</div>
+<p>Next we will proof that <span class="math notranslate nohighlight">\(I - \gamma P_{\pi}\)</span> is invertible, so state-values <span class="math notranslate nohighlight">\(v_{\pi} = (I - \gamma P_{\pi})^{-1}r_{\pi}\)</span> is the unique solution of the Bellman equation.</p>
+<div class="proof theorem admonition" id="theorem-0">
+<p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Gershgorin circle theorem)</p>
+<section class="theorem-content" id="proof-content">
+<p>Let <span class="math notranslate nohighlight">\(A\)</span> be a <span class="math notranslate nohighlight">\(n\times n\)</span> matrix, with entries <span class="math notranslate nohighlight">\(a_{ij}\)</span>. Let</p>
+<div class="math notranslate nohighlight">
+\[R_i = \sum_{j\ne i}|a_{ij}|.\]</div>
+<p>Let <span class="math notranslate nohighlight">\(D(a_{ii}, R_i)\)</span> be a closed disc centered at <span class="math notranslate nohighlight">\(a_{ii}\)</span> with radius <span class="math notranslate nohighlight">\(R_{i}\)</span>. Such a disc is called a Gershgorin disc. Then every eigenvalue of <span class="math notranslate nohighlight">\(A\)</span> lies within at least one of the Gershgorin discs.</p>
+</section>
+</div><div class="proof admonition" id="proof">
+<p>Proof. Let <span class="math notranslate nohighlight">\(\lambda\)</span> be an eigenvalue of <span class="math notranslate nohighlight">\(A\)</span> with corresponding eigenvector <span class="math notranslate nohighlight">\(x\)</span>. Find <span class="math notranslate nohighlight">\(i\)</span> such that the element of <span class="math notranslate nohighlight">\(x\)</span> with the largest absolute value is <span class="math notranslate nohighlight">\(x_{i}\)</span>. Since <span class="math notranslate nohighlight">\(Ax=\lambda x\)</span>, in particular we take the <span class="math notranslate nohighlight">\(i\)</span>-th component of that equation to get:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j}a_{ij}x_j = \lambda x_{i}.\]</div>
+<p>Taking <span class="math notranslate nohighlight">\(a_{ii}\)</span> to the other side:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j\ne i}a_{ij}x_j = (\lambda - a_{ii}) x_{i}.\]</div>
+<p>Therefore:</p>
+<div class="math notranslate nohighlight">
+\[|\lambda - a_{ii}| = \left|\sum_{j\ne i}\frac{a_{ij}x_j}{x_i}\right|\le \sum_{j\ne i}|a_{ij}| = R_{i}.\]</div>
+</div>
+<p>Now according to the Gershgorin circle
+theorem, every eigenvalue of <span class="math notranslate nohighlight">\(I - \gamma P_{\pi}\)</span> lies within at least one of the Gershgorin
+circles. The <span class="math notranslate nohighlight">\(i\)</span>-th Gershgorin circle has a center at <span class="math notranslate nohighlight">\(1-\gamma p_{\pi}(s_i|s_i)\)</span> and
+a radius equal to <span class="math notranslate nohighlight">\(\sum_{j\ne i}\gamma p_{\pi}(s_j|s_i)\)</span>. Since <span class="math notranslate nohighlight">\(\gamma&lt;1\)</span>, we know that
+the radius is less than the magnitude of the center:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j\ne i}\gamma p_{\pi}(s_j|s_i) &lt; 1-\gamma p_{\pi}(s_i|s_i).\]</div>
+<p>Therefore, all Gershgorin circles do not encircle the origin, and hence no eigenvalue <span class="math notranslate nohighlight">\(I - \gamma P_{\pi}\)</span> is zero.</p>
 </section>
 </section>
 
@@ -491,6 +530,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-between-v-and-q-function">Relation between V and Q function</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-equation-of-the-state-value-function">Bellman equation of the state-value function</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bellman-equation-of-the-action-value-function">Bellman equation of the action-value function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-form-solution-of-the-bellman-equation">Closed-form solution of the Bellman equation</a></li>
 </ul>
   </nav></div>
 
