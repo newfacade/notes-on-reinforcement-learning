@@ -186,7 +186,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">PPO with TRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
 
     </div>
@@ -398,9 +398,7 @@ document.write(`
 <h1>Monte Carlo vs Temporal Difference Learning<a class="headerlink" href="#monte-carlo-vs-temporal-difference-learning" title="Permalink to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Remember that an RL agent learns by interacting with its environment. The idea is that given the experience and the received reward, the agent will update its value function or policy.<br>
-Monte Carlo and Temporal Difference Learning are two different strategies on how to train our value function or our policy function. Both of them use experience to solve the RL problem.<br>
-On one hand, Monte Carlo uses an entire episode of experience before learning. On the other hand, Temporal Difference uses only a step to learn.<br>
+<p>Monte Carlo and Temporal Difference Learning are two different strategies on how to train our value function. On one hand, Monte Carlo uses an entire episode of experience before learning. On the other hand, Temporal Difference uses only a step to learn.<br>
 We’ll explain both of them using a value-based method example.</p>
 </div>
 <section id="monte-carlo-learning-at-the-end-of-the-episode">

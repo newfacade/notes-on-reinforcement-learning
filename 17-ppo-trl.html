@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>PPO with TRL &#8212; My sample book</title>
+    <title>Reinforcement Learning From Human Feedback &#8212; My sample book</title>
   
   
   
@@ -185,7 +185,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">PPO with TRL</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reinforcement Learning From Human Feedback</a></li>
 </ul>
 
     </div>
@@ -369,7 +369,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>PPO with TRL</h1>
+    <h1>Reinforcement Learning From Human Feedback</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -422,19 +422,21 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="ppo-with-trl">
-<h1>PPO with TRL<a class="headerlink" href="#ppo-with-trl" title="Permalink to this heading">#</a></h1>
-<p><img alt="" src="_images/trl-title.png" /></p>
-<p>TRL is a full stack library that provides a set of tools to train transformer language models with Reinforcement Learning, from the Supervised Fine-tuning step (SFT), Reward Modeling step (RM) to the Proximal Policy Optimization (PPO) step. The library is integrated with 🤗 transformers.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="reinforcement-learning-from-human-feedback">
+<h1>Reinforcement Learning From Human Feedback<a class="headerlink" href="#reinforcement-learning-from-human-feedback" title="Permalink to this heading">#</a></h1>
+<p><strong>System, Mathematics and Code in TRL PPO</strong></p>
+<p><strong>Authors: Yunhui Xia, Wei Shen</strong></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We split this section into three parts:<br></p>
+<p>TRL is a full stack library that provides a set of tools to train transformer language models with Reinforcement Learning, from the Supervised Fine-tuning step (SFT), Reward Modeling step (RM) to the Proximal Policy Optimization (PPO) step. The library is integrated with 🤗 transformers.<br>
+In this blog, we will introduce both system architecture, code and mathematics of PPO in TRL. Specifically, we split this blog into three parts:<br></p>
 <ol class="arabic simple">
-<li><p>An introduction to TRL PPO Trainer<br></p></li>
-<li><p>PPO algorithm<br></p></li>
-<li><p>Dive into PPO Trainer<br></p></li>
+<li><p>An introduction to TRL PPO system architecture,<br></p></li>
+<li><p>Mathematics in PPO algorithm,<br></p></li>
+<li><p>Code in PPO Trainer.</p></li>
 </ol>
 </div>
+<p><img alt="" src="_images/trl-title.png" /></p>
 <section id="an-introduction-to-ppo-trainer">
 <h2>An introduction to PPO Trainer<a class="headerlink" href="#an-introduction-to-ppo-trainer" title="Permalink to this heading">#</a></h2>
 <p>TRL supports the PPO Trainer for training language models on any reward signal with RL. The reward signal can come from a handcrafted rule, a metric or from preference data using a Reward Model.</p>
