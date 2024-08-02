@@ -64,7 +64,7 @@
     <link rel="icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TRPO" href="13-trpo.html" />
+    <link rel="next" title="Generalized Advantage Estimation" href="13-gae.html" />
     <link rel="prev" title="Policy Gradient" href="11-policy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -193,8 +193,8 @@
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Actor-Critic Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
@@ -400,8 +400,8 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
@@ -471,9 +471,23 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 \[\Delta{w} = \beta(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1}) - \hat{q}_{w}(s_{t}, a_{t}))\nabla_{w}\hat{q}_{w}(s_{t}, a_{t})\]</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If we fix the TD target.</p>
+<p>Objective function of the critic:</p>
 <div class="math notranslate nohighlight">
-\[\Delta{w} = \frac{\beta}{2}\nabla_{w}(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1}) - \hat{q}_{w}(s_{t}, a_{t}))^{2}\]</div>
+\[
+J(w) = \frac{1}{2}(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))^{2}
+\]</div>
+<p>To minimize <span class="math notranslate nohighlight">\(J(w)\)</span>, we can use the gradient descent algorithm:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\Delta{w} &amp;= -\beta\nabla_{w}J(w) \\
+&amp;= -\beta\nabla_{w}\left(\frac{1}{2}(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))^{2}\right) \\
+&amp;= \beta(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))\nabla_{w}\hat{q}_{w}(s_{t},a_{t})
+\end{aligned}
+\end{split}\]</div>
+<p>It requires the true action value <span class="math notranslate nohighlight">\(q_{\pi_{\theta}}(s_{t}, a_{t})\)</span>, which
+is unknown and must be estimated. In the spirit of TD learning, <span class="math notranslate nohighlight">\(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1})\)</span> can be
+used as an approximation of <span class="math notranslate nohighlight">\(q_{\pi_{\theta}}(s_{t}, a_{t})\)</span>.</p>
 </div>
 </section>
 <section id="adding-advantage-in-actor-critic-a2c">
@@ -492,6 +506,25 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 </section>
 <section id="pytorch-example">
 <h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Link to this heading">#</a></h2>
+<section id="env">
+<h3>Env<a class="headerlink" href="#env" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4, 2)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="model">
 <h3>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
@@ -545,25 +578,6 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="env">
-<h3>Env<a class="headerlink" href="#env" title="Link to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-
-<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
-<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([-0.02383879, -0.02015088,  0.03142257, -0.04080841], dtype=float32),
- {})
 </pre></div>
 </div>
 </div>
@@ -772,11 +786,11 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
       </div>
     </a>
     <a class="right-next"
-       href="13-trpo.html"
+       href="13-gae.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TRPO</p>
+        <p class="prev-next-title">Generalized Advantage Estimation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -804,8 +818,8 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>

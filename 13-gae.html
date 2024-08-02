@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>TRPO &#8212; My sample book</title>
+    <title>Generalized Advantage Estimation &#8212; My sample book</title>
   
   
   
@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -60,11 +60,11 @@
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '13-trpo';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '13-gae';</script>
     <link rel="icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Generalized Advantage Estimation" href="14-gae.html" />
+    <link rel="next" title="TRPO" href="14-trpo.html" />
     <link rel="prev" title="Actor-Critic Methods" href="12-actor-critic.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -193,8 +193,8 @@
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">TRPO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
@@ -268,7 +268,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F13-trpo.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2F13-gae.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -298,7 +298,7 @@
       
       
       
-      <li><a href="_sources/13-trpo.ipynb" target="_blank"
+      <li><a href="_sources/13-gae.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -382,7 +382,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>TRPO</h1>
+    <h1>Generalized Advantage Estimation</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -393,9 +393,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantage-function-estimation">Advantage function estimation</a></li>
 </ul>
             </nav>
         </div>
@@ -407,145 +405,112 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="trpo">
-<h1>TRPO<a class="headerlink" href="#trpo" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="generalized-advantage-estimation">
+<h1>Generalized Advantage Estimation<a class="headerlink" href="#generalized-advantage-estimation" title="Link to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>TRPO updates policies by taking the largest step possible to improve performance, while satisfying a special constraint on how close the new and old policies are allowed to be.</p>
+<p>Generalized Advantage Estimation (GAE) described an advantage estimator, with two separate parameters <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\lambda\)</span>, both of which contribute
+to the bias-variance tradeoff when using an approximate value function.</p>
 </div>
 <section id="preliminaries">
 <h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Link to this heading">#</a></h2>
-<p>Consider an infinite-horizon discounted Markov decision
-process (MDP), defined by the tuple <span class="math notranslate nohighlight">\((\mathcal{S}, \mathcal{A}, P, r, \rho_{0},\gamma)\)</span> where <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> is a finite set of states, <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is a finite set of actions, <span class="math notranslate nohighlight">\(P: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\to\mathbb{R}\)</span> is the transition probability distriarbution, <span class="math notranslate nohighlight">\(r:\mathcal{S}\to\mathbb{R}\)</span> is the reward function (difference from our previous setting), <span class="math notranslate nohighlight">\(\rho_{0}:\mathcal{S}\to\mathbb{R}\)</span> is
-the distribution of the initial state <span class="math notranslate nohighlight">\(s_{0}\)</span>, <span class="math notranslate nohighlight">\(\gamma\in(0, 1)\)</span> is the
-discount factor.</p>
-<p>Let <span class="math notranslate nohighlight">\(\pi\)</span> denote a stochastic policy <span class="math notranslate nohighlight">\(\pi:\mathcal{S}\times\mathcal{A}\to[0, 1]\)</span>, and let <span class="math notranslate nohighlight">\(\eta(\pi)\)</span> denote its expected discounted reward:</p>
+<p>There are several different related expressions for the policy gradient, which
+have the form</p>
 <div class="math notranslate nohighlight">
-\[\eta(\pi) = \mathbb{E}_{s_0,a_0,\dots}\left[\sum_{t=0}^{\infty}\gamma^{t}r(s_{t})\right]\]</div>
-<p>where <span class="math notranslate nohighlight">\(s_0\sim\rho_0(s_0)\)</span>, <span class="math notranslate nohighlight">\(a_t\sim\pi(a_t|s_t)\)</span>, <span class="math notranslate nohighlight">\(s_{t+1}\sim P(s_{t+1}|s_{t}, a_{t})\)</span>. Let <span class="math notranslate nohighlight">\(A_{\pi}(s, a) = Q_{\pi}(s, a) - V_{\pi}(s)\)</span></p>
-<p>The following useful identity expresses the expected return
-of another policy <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> in terms of the advantage over <span class="math notranslate nohighlight">\(\pi\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\eta(\tilde{\pi}) = \eta(\pi) + \mathbb{E}_{s_0,a_0,\dots\sim\tilde{\pi}}\left[\sum_{t=0}^{\infty}\gamma^{t}A_{\pi}(s_t,a_t)\right]\]</div>
-<p>Let <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> be the discounted visitation frequencies:</p>
-<div class="math notranslate nohighlight">
-\[\rho_{\pi}(s) = P(s_0=s) + \gamma P(s_1=s) + \gamma^{2}P(s_2=s) + \dots\]</div>
-<p>We can rewrite Equation with a sum over states instead
-of timesteps:</p>
+\[g = \mathbb{E}\left[\sum_{t=0}^{\infty}\Psi_{t}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Psi_{t}\)</span> may be one of the following:</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(\sum_{t=0}^{\infty}r_t\)</span>: total reward of the trajectory.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sum_{t'=t}^{\infty}r_{t'}\)</span>: reward following action <span class="math notranslate nohighlight">\(a_t\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sum_{t'=t}^{\infty}r_{t'} - b(s_t)\)</span>: baselined version of
+previous formula.</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q_{\pi}(s_t, a_t)\)</span>: state-action value function.</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_{\pi}(s_t, a_t)\)</span>: advantage function.</p></li>
+<li><p><span class="math notranslate nohighlight">\(r_{t} + V_{\pi}(s_{t+1}) - V_{\pi}(s_t)\)</span>: TD residual.</p></li>
+</ol>
+<p>The choice <span class="math notranslate nohighlight">\(\Psi_{t} = A_{\pi}(s_t, a_t)\)</span> yields almost the lowest possible variance, though in practice, the
+advantage function is not known and must be estimated.</p>
+<p>We will introduce a parameter <span class="math notranslate nohighlight">\(\gamma\)</span> that allows us to reduce variance by downweighting rewards corresponding
+to delayed effects, at the cost of introducing bias. This parameter corresponds to the
+discount factor used in discounted formulations of MDPs, , but we treat it as a variance reduction
+parameter in an undiscounted problem.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
-\eta(\tilde{\pi}) &amp;= \eta(\pi) + \sum_{t=0}^{\infty}\sum_{s}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)\gamma^{t}A_{\pi}(s, a) \\
-&amp;= \eta(\pi) + \sum_{s}\sum_{t=0}^{\infty}\gamma^{t}P(s_{t}=s|\tilde{\pi})\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a) \\
-&amp;= \eta(\pi) + \sum_{s}\rho_{\tilde{\pi}}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)
+V_{\pi,\gamma}(s_t) :=&amp; \mathbb{E}_{s_{t+1}:\infty, a_{t}:\infty}\left[\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\right]\\
+Q_{\pi,\gamma}(s_t, a_t) :=&amp; \mathbb{E}_{s_{t+1}:\infty, a_{t+1}:\infty}\left[\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\right]\\
+A_{\pi,\gamma}(s_t, a_t) :=&amp; Q_{\pi,\gamma}(s_t, a_t) -  V_{\pi,\gamma}(s_t)
 \end{aligned}
 \end{split}\]</div>
-<p>This equation implies that any policy update <span class="math notranslate nohighlight">\(\pi\to\tilde{\pi}\)</span> that
-has a nonnegative expected advantage at every state <span class="math notranslate nohighlight">\(s\)</span> is guaranteed to increase
-the policy performance <span class="math notranslate nohighlight">\(\rho\)</span>. However, the complex dependency of <span class="math notranslate nohighlight">\(rho_{\tilde{\pi}}(s)\)</span> on <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> makes it difficult to optimize directly.
-Instead, we introduce the following local approximation
-to <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
+<p>The colon notation <span class="math notranslate nohighlight">\(a: b\)</span> refers to the inclusive range <span class="math notranslate nohighlight">\((a, a+1,\dots, b)\)</span>. The discounted approximation to the policy gradient is defined as follows:</p>
 <div class="math notranslate nohighlight">
-\[L_{\pi}(\tilde{\pi}) = \eta{\pi} + \sum_{s}\rho_{\pi}(s)\sum_{a}\tilde{\pi}(a|s)A_{\pi}(s, a)\]</div>
-<p>Note that <span class="math notranslate nohighlight">\(L_{\pi}\)</span> uses the visitation frequency <span class="math notranslate nohighlight">\(\rho_{\pi}\)</span> rather than <span class="math notranslate nohighlight">\(\rho_{\tilde{\pi}}\)</span>. If we have a parameterized policy <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span>, where <span class="math notranslate nohighlight">\(\pi_{\theta}(a|s)\)</span> is a differentiable function
-of the parameter vector <span class="math notranslate nohighlight">\(\theta\)</span>, then <span class="math notranslate nohighlight">\(L_{\pi}\)</span> matches <span class="math notranslate nohighlight">\(\eta\)</span> to first order:</p>
+\[g^{\gamma} := \mathbb{E}_{s_0:\infty,a_0:\infty}\left[\sum_{t=0}^{\infty}A_{\pi,\gamma}(a_t, s_t)\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]\]</div>
+<p>Before proceeding, we will introduce the notion of a <span class="math notranslate nohighlight">\(\gamma-\)</span>just estimator of the advantage function,
+which is an estimator that does not introduce bias when we use it in place of <span class="math notranslate nohighlight">\(A^{\pi,\gamma}\)</span>.</p>
+<p><strong>Definition 1.</strong> The estimator <span class="math notranslate nohighlight">\(\hat{A}_{t}\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just if</p>
 <div class="math notranslate nohighlight">
-\[L_{\pi_{\theta_{0}}}(\pi_{\theta_{0}}) = \eta(\pi_{\theta_{0}})\]</div>
-<div class="math notranslate nohighlight">
-\[\nabla_{\theta}L_{\pi_{\theta_0}}(\pi_{\theta_0})|_{\theta=\theta_0} = \nabla_{\theta}\eta(\pi_{\theta_{0}})|_{\theta=\theta_0}\]</div>
-<p>It implies that a sufficiently small step that improves <span class="math notranslate nohighlight">\(L_{\pi_{\theta_{\text{old}}}}\)</span> will also improve <span class="math notranslate nohighlight">\(\eta\)</span>, but does not give
-us any guidance on how big of a step to take.</p>
-</section>
-<section id="monotonic-improvement-guarantee">
-<h2>Monotonic Improvement Guarantee<a class="headerlink" href="#monotonic-improvement-guarantee" title="Link to this heading">#</a></h2>
-<p>To address the above issue, the author proposed
-a policy updating scheme, for which they could provide explicit lower bounds
-on the improvement of <span class="math notranslate nohighlight">\(\eta\)</span>. Let <span class="math notranslate nohighlight">\(\pi_{\text{old}}\)</span> denote the current policy, denote total variation divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q) = \frac{1}{2}\sum_{i}|p_{i} - q_{i}|\)</span>, define a distance measure between <span class="math notranslate nohighlight">\(\pi\)</span> and <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[
-D_{\text{TV}}^{\max}(\pi, \tilde{\pi}) = \max_{s}D_{\text{TV}}(\pi(\cdot|s)\left|\right|\tilde{\pi}(\cdot|s))
-\]</div>
-<p><strong>Theorem 1.</strong> Let <span class="math notranslate nohighlight">\(\alpha=D_{\text{TV}}^{\max}(\pi_{\text{old}}, \pi_{\text{new}})\)</span>. Then the following
-bound holds:</p>
-<div class="math notranslate nohighlight">
-\[\eta(\pi_{\text{new}})\ge L_{\pi_{\text{old}}}(\pi_{\text{new}}) - \frac{4\epsilon\gamma}{(1-\gamma)^2}\alpha^{2}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\epsilon=\max_{s,a}|A_{\pi_{\text{old}}}(s, a)|\)</span>.</p>
-<p>Next, we note the following relationship between the total
-variation divergence and the KL divergence <span class="math notranslate nohighlight">\(D_{\text{TV}}(p\|q)^{2}\le D_{\text{KL}}(p\|q)\)</span>. Let <span class="math notranslate nohighlight">\(D_{\text{KL}}^{\max}(\pi,\tilde{\pi}) = \max_{s}D_{\text{KL}}(\pi(\cdot|s)\|\tilde{\pi}(\cdot|s))\)</span>, the following bounds the follows directly:</p>
-<div class="math notranslate nohighlight">
-\[\eta(\tilde{\pi})\ge L_{\pi}(\tilde{\pi}) - CD_{\text{KL}}^{\max}(\pi,\tilde{\pi}),\]</div>
-<div class="math notranslate nohighlight">
-\[\text{  where  }\  C=\frac{4\epsilon\gamma}{(1-\gamma)^2}.\]</div>
-<p><strong>Algorithm 1</strong> describes an approximate policy iteration
-scheme based on the policy improvement bound above. Note that for now, we assume exact evaluation of
-the advantage values <span class="math notranslate nohighlight">\(A_{\pi}\)</span>.</p>
-<hr class="docutils" />
-<p>Initialize <span class="math notranslate nohighlight">\(\pi_{0}\)</span><br>
-<strong>for</strong> <span class="math notranslate nohighlight">\(i=0,1,2,\dots\)</span> until convergence <strong>do</strong><br>
-<span class="math notranslate nohighlight">\(\quad\)</span>Compute all advantage values <span class="math notranslate nohighlight">\(A_{\pi_{i}}(s, a)\)</span>.<br>
-<span class="math notranslate nohighlight">\(\quad\)</span>Solve the constrained optimization problem<br>
-<span class="math notranslate nohighlight">\(\quad \pi_{i+1} = \arg\max_{\pi}\left[L_{\pi_{i}}(\pi) - CD_{\text{KL}}^{\max}(\pi_{i}, \pi)\right]\)</span><br>
-<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>where <span class="math notranslate nohighlight">\(C = 4\epsilon\gamma/(1-\gamma)^{2}\)</span><br>
-<span class="math notranslate nohighlight">\(\quad\)</span><span class="math notranslate nohighlight">\(\quad\)</span>and <span class="math notranslate nohighlight">\(L_{\pi_{i}}(\pi) = \eta(\pi_{i}) + \sum_{s}\rho_{\pi_{i}}(s)\sum_{a}\pi(a|s)A_{\pi_{i}}(s,a)\)</span><br>
-<strong>end for</strong></p>
-<hr class="docutils" />
-<p>This algorithm is a type of minorization-maximization (MM) algorithm, which is guaranteed
-to generate a monotonically improving sequence of policies. Trust region policy optimization, which we propose in the
-following section, is an approximation to Algorithm 1.</p>
-</section>
-<section id="optimization-of-parameterized-policies">
-<h2>Optimization of Parameterized Policies<a class="headerlink" href="#optimization-of-parameterized-policies" title="Link to this heading">#</a></h2>
-<p>The preceding section showed that <span class="math notranslate nohighlight">\(\eta(\theta) \ge L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\)</span>, with equality at <span class="math notranslate nohighlight">\(\theta_{\text{old}}=\theta\)</span>. Thus, by performing
-the following maximization, we are guaranteed to
-improve the true objective <span class="math notranslate nohighlight">\(\eta\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\underset{\theta}{\text{maximize}}\left[L_{\theta_{\text{old}}}(\theta) - CD_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\right].\]</div>
-<p>In practice, if we used the penalty coefficient C recommended
-by the theory above, the step sizes would be very
-small. One way to take larger steps in a robust way is to use
-a constraint on the KL divergence between the new policy
-and the old policy, i.e., a trust region constraint:</p>
-<div class="math notranslate nohighlight">
-\[\underset{\theta}{\text{maximize}}L_{\theta_{\text{old}}}(\theta)\]</div>
-<div class="math notranslate nohighlight">
-\[\text{subject to  }D_{\text{KL}}^{\max}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
-<p>This problem imposes a constraint that the KL divergence
-is bounded at every point in the state space. While it is
-motivated by the theory, this problem is impractical to solve
-due to the large number of constraints. Instead, we can use
-a heuristic approximation which considers the average KL
-divergence:</p>
-<div class="math notranslate nohighlight">
-\[\bar{D}_{\text{KL}}^{\rho}(\theta_1, \theta_2) :=\mathbb{E}_{s\sim\rho}\left[D_{\text{KL}}(\pi_{\theta_1}(\cdot|s)\left|\right|\pi_{\theta_2}(\cdot|s))\right]\]</div>
-</section>
-<section id="sample-based-estimation">
-<h2>Sample-Based Estimation<a class="headerlink" href="#sample-based-estimation" title="Link to this heading">#</a></h2>
-<p>This section describes how the objective and constraint
-functions can be approximated using Monte Carlo
-simulation. We seek to solve the following optimization problem, obtained
-by expanding <span class="math notranslate nohighlight">\(L_{\theta_{\text{old}}}\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\underset{\theta}{\text{maximize}}\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a)\]</div>
-<div class="math notranslate nohighlight">
-\[\text{subject to  }\bar{D}_{\text{KL}}^{\rho_{\theta_{\text{old}}}}(\theta_{\text{old}}, \theta)\le\delta.\]</div>
-<ul>
-<li><p>We first replace <span class="math notranslate nohighlight">\(\sum_{s}\rho_{\pi_{\theta_{\text{old}}}}(s)[\dots]\)</span> in the objective by the expectation <span class="math notranslate nohighlight">\(\frac{1}{1-\gamma}\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}[\dots]\)</span></p></li>
-<li><p>Next, we
-replace the sum over the actions by an importance sampling
-estimator. Using <span class="math notranslate nohighlight">\(q\)</span> to denote the sampling distribution, the
-contribution of a single <span class="math notranslate nohighlight">\(s_{n}\)</span> to the loss function is</p>
-<div class="math notranslate nohighlight">
-\[\sum_{a}\pi_{\theta}(a|s)A_{\pi_{\theta_{\text{old}}}}(s,a) = \mathbb{E}_{a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
-</li>
+\[\mathbb{E}_{s_0:\infty,a_0:\infty}\left[\hat{A}_{t}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right]=\mathbb{E}_{s_0:\infty,a_0:\infty}\left[A_{\pi,\gamma}(a_t, s_t)\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\right] = g^{\gamma}\]</div>
+<p>We can verify that the following expressions are
+<span class="math notranslate nohighlight">\(\gamma\)</span>-just
+advantage estimators for <span class="math notranslate nohighlight">\(\hat{A}_t\)</span>:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\sum_{l=0}^{\infty}\gamma^{l}r_{t+l}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(Q_{\pi,\gamma}(s_t, a_t)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(A_{\pi,\gamma}(s_t, a_t)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t + \gamma V_{\pi,\gamma}(s_{t+1}) - V_{\pi,\gamma}(s_{t})\)</span></p></li>
 </ul>
-<p>Our optimization problem is exactly
-equivalent to the following one:</p>
+</section>
+<section id="advantage-function-estimation">
+<h2>Advantage function estimation<a class="headerlink" href="#advantage-function-estimation" title="Link to this heading">#</a></h2>
+<p>This section will be concerned with producing an accurate estimate <span class="math notranslate nohighlight">\(\hat{A}_{t}\)</span> which will then be used to construct a policy gradient estimator of the
+following form:</p>
 <div class="math notranslate nohighlight">
-\[\underset{\theta}{\text{maximize}}\ \mathbb{E}_{s\sim\rho_{\theta_{\text{old}}},a\sim q}\left[\frac{\pi_{\theta}(a|s_n)}{q(a|s_n)}A_{\theta_{\text{old}}}(s_n,a)\right]\]</div>
+\[\hat{g} = \frac{1}{N}\sum_{n=1}^{N}\sum_{t=0}^{T}\hat{A}_{t}^{n}\nabla_{\theta}\log\pi_{\theta}(a_{t}^{n}|s_{t}^{n})\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> indexes over a batch of episodes.</p>
+<p>Let <span class="math notranslate nohighlight">\(V\)</span> be an approximate value function. Define</p>
 <div class="math notranslate nohighlight">
-\[\text{subject to  }\mathbb{E}_{s\sim\rho_{\theta_{\text{old}}}}\left[D_{\text{KL}}(\pi_{\theta_{\text{old}}}(\cdot|s)\left|\right|\pi_{\theta}(\cdot|s))\right] \le \delta.\]</div>
-<p>In the estimation procedure, we collect a sequence of
-states by sampling <span class="math notranslate nohighlight">\(s_0\sim\rho_0\)</span> and then simulating the policy <span class="math notranslate nohighlight">\(\pi_{\theta_{\text{old}}}\)</span> for some number of timesteps to generate a trajectory <span class="math notranslate nohighlight">\(s_0,a_0,s_1,a_1,\dots,s_T,a_T\)</span>. Hence, <span class="math notranslate nohighlight">\(q(a|s)=\pi_{\theta_{\text{old}}}\)</span>.</p>
+\[\delta_{t}^{V} = r_t + \gamma V(s_{t+1}) - V(s_t)\]</div>
+<p>i.e., the TD residual. <span class="math notranslate nohighlight">\(\delta_{t}^{V}\)</span> can be considered as an estimate of the
+advantage of the action <span class="math notranslate nohighlight">\(a_t\)</span>. In fact, if we have the correct value function <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>, then it is a <span class="math notranslate nohighlight">\(\gamma\)</span>-just
+advantage estimator. However, this estimator is only <span class="math notranslate nohighlight">\(\gamma\)</span>-just for <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>, otherwise it will yield biased policy gradient
+estimates.</p>
+<p>Next, let:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{A}_{t}^{(1)} &amp;:= \delta_{t}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma V(s_{t+1})\\
+\hat{A}_{t}^{(2)} &amp;:= \delta_{t}^{V} + \gamma\delta_{t+1}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma r_{t+1} + \gamma^{2} V(s_{t+2})\\
+\hat{A}_{t}^{(k)} &amp;:= \sum_{l=0}^{k-1}\gamma^{l}\delta_{t+l}^{V} &amp;&amp;=-V(s_t) + r_t + \gamma r_{t+1} + \dots + \gamma^{k-1}r_{t+k-1} + \gamma^{k} V(s_{t+k})\\
+\end{aligned}
+\end{split}\]</div>
+<p>We can consider <span class="math notranslate nohighlight">\(\hat{A}_{t}^{(k)}\)</span> to be an estimator of the advantage function, which is only <span class="math notranslate nohighlight">\(\gamma\)</span>-just when <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span>. However,
+note that the bias generally becomes smaller as <span class="math notranslate nohighlight">\(k\to\infty\)</span>, since the term <span class="math notranslate nohighlight">\(\gamma^{k}V(s_{t+k})\)</span> becomes more
+heavily discounted, and the term <span class="math notranslate nohighlight">\(-V(s_t)\)</span> does not affect the bias.</p>
+<p>The generalized advantage estimator <span class="math notranslate nohighlight">\(\text{GAE}(\gamma, \lambda)\)</span> is defined as the exponentially-weighted average
+of these <span class="math notranslate nohighlight">\(k\)</span>-step estimators:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\hat{A}_{t}^{\text{GAE}(\gamma, \lambda)} &amp;:= (1 - \lambda)\left(\hat{A}_{t}^{(1)} + \lambda\hat{A}_{t}^{(2)} + \lambda^{2}\hat{A}_{t}^{(3)} + \dots\right) \\
+&amp;= \sum_{l=0}^{\infty}(\gamma\lambda)^{l}\delta_{t+l}^{V}
+\end{aligned}
+\end{split}\]</div>
+<p>There are two notable special cases of this formula, obtained by setting <span class="math notranslate nohighlight">\(\lambda=0\)</span> and <span class="math notranslate nohighlight">\(\lambda=1\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp;\text{GAE}(\gamma, 0):\hat{A}_{t} = \delta_{t} &amp;&amp;= r_t + \gamma V(s_{t+1}) - V(s_t) \\
+&amp;\text{GAE}(\gamma, 1):\hat{A}_{t} = \sum_{l=0}\gamma^{l}\delta_{t+l} &amp;&amp;= \sum_{l=0}^{\infty}\gamma^{l}r_{t+l} - V(s_t)
+\end{aligned}
+\end{split}\]</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><span class="math notranslate nohighlight">\(\text{GAE}(\gamma, 1)\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just regardless of the accuracy of <span class="math notranslate nohighlight">\(V\)</span>, but it has high variance due to the sum of
+terms. <span class="math notranslate nohighlight">\(\text{GAE}(\gamma, 0)\)</span> is <span class="math notranslate nohighlight">\(\gamma-\)</span>just for <span class="math notranslate nohighlight">\(V=V_{\pi,\gamma}\)</span> and otherwise induces bias, but it typically has much
+lower variance. The generalized advantage estimator for <span class="math notranslate nohighlight">\(0&lt;\lambda&lt;1\)</span> makes a compromise between
+bias and variance, controlled by parameter <span class="math notranslate nohighlight">\(\lambda\)</span>.<br/>
+Taking <span class="math notranslate nohighlight">\(\gamma&lt;1\)</span> introduces bias into the policy gradient estimate, regardless of the value function’s accuracy.</p>
+</div>
 </section>
 </section>
 
@@ -589,11 +554,11 @@ states by sampling <span class="math notranslate nohighlight">\(s_0\sim\rho_0\)<
       </div>
     </a>
     <a class="right-next"
-       href="14-gae.html"
+       href="14-trpo.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Generalized Advantage Estimation</p>
+        <p class="prev-next-title">TRPO</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -614,9 +579,7 @@ states by sampling <span class="math notranslate nohighlight">\(s_0\sim\rho_0\)<
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preliminaries">Preliminaries</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monotonic-improvement-guarantee">Monotonic Improvement Guarantee</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-of-parameterized-policies">Optimization of Parameterized Policies</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-based-estimation">Sample-Based Estimation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantage-function-estimation">Advantage function estimation</a></li>
 </ul>
   </nav></div>
 

@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -193,8 +193,8 @@
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Policy Gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
@@ -500,13 +500,22 @@ document.write(`
 <h2>Don’t Let the Past Distract You<a class="headerlink" href="#dont-let-the-past-distract-you" title="Link to this heading">#</a></h2>
 <p>Examine our most recent expression for the policy gradient:</p>
 <div class="math notranslate nohighlight">
-\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})R(\tau)\right]\]</div>
+\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})R(\tau)\right].\]</div>
 <p>Taking a step with this gradient pushes up the log-probabilities of each action in proportion to <span class="math notranslate nohighlight">\(R(\tau)\)</span>, the sum of all rewards ever obtained. But this doesn’t make much sense.</p>
 <p>Agents should really only reinforce actions on the basis of their consequences. Rewards obtained before taking an action have no bearing on how good that action was: only rewards that come after.</p>
-<p>It turns out that this intuition shows up in the math, and we can show that the policy gradient can also be expressed by</p>
+<p>It turns out that this intuition shows up in the math, and we can show that the policy gradient can also be expressed by:</p>
 <div class="math notranslate nohighlight">
-\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})\right]\]</div>
-<p>In this form, actions are only reinforced based on rewards obtained after they are taken. We’ll call this form the “reward-to-go policy gradient”, it is a lower-variance estimate than the simplest policy gradient.</p>
+\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})\right].\]</div>
+<p>In this form, actions are only reinforced based on rewards obtained after they are taken. We’ll call this form the “reward-to-go policy gradient”, because the sum of rewards after a point in a trajectory,</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{R}_{t} = \sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})
+\]</div>
+<p>is called the reward-to-go from that point, and this policy gradient expression depends on the reward-to-go from state-action pairs.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>A key problem with policy gradients is how many sample trajectories are needed to get a low-variance sample estimate for them. The formula we started with included terms for reinforcing actions proportional to past rewards, all of which had zero mean, but nonzero variance: as a result, they would just add noise to sample estimates of the policy gradient. By removing them, we reduce the number of sample trajectories needed.</p>
+</div>
 <p>A proof of this claim is in Appendix A.</p>
 </section>
 <section id="pytorch-example">
