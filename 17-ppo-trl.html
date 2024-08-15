@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -405,7 +405,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient">Policy gradient</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#actor-critic">Actor-critic</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">Importance sampling</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo">PPO</a></li>
 </ul>
 </li>
@@ -600,13 +599,27 @@ In this blog, we will introduce both system architecture, code and mathematics o
 <p>Using a value function to predict <span class="math notranslate nohighlight">\(R(\tau)\)</span>:</p>
 <p><img alt="" src="_images/ac4.jpeg" /></p>
 </section>
-<section id="importance-sampling">
-<h3>Importance sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h3>
-<p><img alt="" src="_images/import1.png" /></p>
-<p><img alt="" src="_images/import2.png" /></p>
-</section>
 <section id="ppo">
 <h3>PPO<a class="headerlink" href="#ppo" title="Link to this heading">#</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Off policy: The agent learned and the agent interacting with the environment is different. Our goal is to use the sample from <span class="math notranslate nohighlight">\(\theta_{\text{old}}\)</span> to train <span class="math notranslate nohighlight">\(\theta\)</span>, <span class="math notranslate nohighlight">\(\theta_{\text{old}}\)</span> is fixed, so we can reuse the sample data.</p>
+</div>
+<p>Using importance sampling:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\nabla_{\theta}J(\theta) &amp;= \mathbb{E}_{(s_t,a_t)\sim\pi_{\theta}}\left[A_{\theta}(s_t,a_t)\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\\
+&amp;= \mathbb{E}_{(s_t,a_t)\sim\pi_{\theta_{\text{old}}}}\left[\frac{\pi_{\theta}(s_t, a_t)}{\pi_{\theta_{\text{old}}}(s_t,a_t)}A_{\theta}(s_t,a_t)\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\\
+&amp;\approx \mathbb{E}_{(s_t,a_t)\sim\pi_{\theta_{\text{old}}}}\left[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}A_{\theta_{\text{old}}}(s_t,a_t)\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\\
+&amp;= \mathbb{E}_{(s_t,a_t)\sim\pi_{\theta_{\text{old}}}}\left[\frac{\nabla\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}A_{\theta_{\text{old}}}(s_t,a_t)\right]
+\end{aligned}
+\end{split}\]</div>
+<p>So the off policy objective can be expressed as:</p>
+<div class="math notranslate nohighlight">
+\[
+J(\theta) = \mathbb{E}_{(s_t,a_t)\sim\pi_{\theta_{\text{old}}}}\left[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}A_{\theta_{\text{old}}}(s_t,a_t)\right]
+\]</div>
 <p><img alt="" src="_images/ppo5.jpeg" /></p>
 <p>By clipping the ratio, we ensure that we do not have a too large policy update because the current policy can’t be too different from the older one.</p>
 <p><img alt="" src="_images/ppo6.jpeg" /></p>
@@ -935,7 +948,6 @@ In this blog, we will introduce both system architecture, code and mathematics o
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo-algorithm">PPO algorithm</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-gradient">Policy gradient</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#actor-critic">Actor-critic</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">Importance sampling</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppo">PPO</a></li>
 </ul>
 </li>

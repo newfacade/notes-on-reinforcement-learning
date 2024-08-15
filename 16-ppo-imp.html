@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -471,7 +471,7 @@ and breaks it into mini-batches to compute the gradient and update the policy.</
 </section>
 <section id="value-function-loss-clipping">
 <h3>Value Function Loss Clipping<a class="headerlink" href="#value-function-loss-clipping" title="Link to this heading">#</a></h3>
-<p>PPO clips the value function like the PPO’s clipped surrogate objective. Given the <span class="math notranslate nohighlight">\(V_\text{target}\)</span><code class="docutils literal notranslate"> <span class="pre">=</span> <span class="pre">returns</span> <span class="pre">=</span> <span class="pre">advantages</span> <span class="pre">+</span> <span class="pre">values</span></code>, PPO fits the the value network by minimizing the following loss:</p>
+<p>PPO clips the value function like the PPO’s clipped surrogate objective. Given the <span class="math notranslate nohighlight">\(V_\text{target}\)</span> = <code class="docutils literal notranslate"><span class="pre">returns</span></code> = <code class="docutils literal notranslate"><span class="pre">advantages</span> <span class="pre">+</span> <span class="pre">values</span></code>, PPO fits the the value network by minimizing the following loss:</p>
 <div class="math notranslate nohighlight">
 \[
 \mathcal{L}_{\text{value}} = \max\left[(V_{\theta_{t}}  - V_{\text{target}})^{2}, \left(\text{clip}(V_{\theta_{t}}, V_{\theta_{t-1}}-\epsilon, V_{\theta_{t-1}}+\epsilon) - V_{\text{target}}\right)^{2}\right]
