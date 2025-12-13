@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Actor-Critic Methods &#8212; My sample book</title>
   
@@ -15,61 +14,57 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '12-actor-critic';</script>
-    <link rel="shortcut icon" href="_static/github.ico"/>
+    <link rel="icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TRPO" href="13-trpo.html" />
+    <link rel="next" title="Generalized Advantage Estimation" href="13-gae.html" />
     <link rel="prev" title="Policy Gradient" href="11-policy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -80,28 +75,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -123,12 +113,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -143,6 +141,7 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="01-intro.html">
@@ -161,7 +160,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -183,9 +193,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11-policy.html">Policy Gradient</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Actor-Critic Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16-ppo-imp.html">PPO Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
 
@@ -202,7 +213,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -211,14 +222,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -340,6 +351,7 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -350,6 +362,7 @@ document.write(`
 `);
 </script>
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -357,9 +370,9 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -388,8 +401,8 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
@@ -403,10 +416,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="actor-critic-methods">
-<h1>Actor-Critic Methods<a class="headerlink" href="#actor-critic-methods" title="Permalink to this heading">#</a></h1>
+<h1>Actor-Critic Methods<a class="headerlink" href="#actor-critic-methods" title="Link to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In Policy-Based methods, we aim to optimize the policy directly without using a value function. We saw that Reinforce worked well. However, because we use Monte-Carlo sampling to estimate return, we have significant variance in policy gradient estimation.<br>
@@ -417,7 +430,7 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 </ul>
 </div>
 <section id="the-problem-of-variance-in-reinforce">
-<h2>The Problem of Variance in Reinforce<a class="headerlink" href="#the-problem-of-variance-in-reinforce" title="Permalink to this heading">#</a></h2>
+<h2>The Problem of Variance in Reinforce<a class="headerlink" href="#the-problem-of-variance-in-reinforce" title="Link to this heading">#</a></h2>
 <p>In Reinforce, we want to increase the probability of actions in a trajectory proportionally to how high the return is.</p>
 <p><img alt="" src="_images/actor1.jpeg" /></p>
 <p>This return <span class="math notranslate nohighlight">\(R(\tau)\)</span> is calculated using a Monte-Carlo sampling. We collect a trajectory and calculate the discounted return, and use this score to increase or decrease the probability of every action taken in that trajectory.</p>
@@ -427,9 +440,9 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 <p>The solution is to mitigate the variance by using a large number of trajectories. However, increasing the batch size significantly reduces sample efficiency. So we need to find additional mechanisms to reduce the variance.</p>
 </section>
 <section id="advantage-actor-critic-a2c">
-<h2>Advantage Actor-Critic (A2C)<a class="headerlink" href="#advantage-actor-critic-a2c" title="Permalink to this heading">#</a></h2>
+<h2>Advantage Actor-Critic (A2C)<a class="headerlink" href="#advantage-actor-critic-a2c" title="Link to this heading">#</a></h2>
 <section id="reducing-variance-with-actor-critic-methods">
-<h3>Reducing variance with Actor-Critic methods<a class="headerlink" href="#reducing-variance-with-actor-critic-methods" title="Permalink to this heading">#</a></h3>
+<h3>Reducing variance with Actor-Critic methods<a class="headerlink" href="#reducing-variance-with-actor-critic-methods" title="Link to this heading">#</a></h3>
 <p>The solution to reducing the variance of the Reinforce algorithm and training our agent faster and better is to use a combination of Policy-Based and Value-Based methods: the Actor-Critic method.</p>
 <p>To understand the Actor-Critic, imagine you’re playing a video game. You can play with a friend that will provide you with some feedback. You’re the Actor and your friend is the Critic.</p>
 <p><img alt="" src="_images/ac3.jpeg" /></p>
@@ -441,7 +454,7 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 </ul>
 </section>
 <section id="the-actor-critic-process">
-<h3>The Actor-Critic Process<a class="headerlink" href="#the-actor-critic-process" title="Permalink to this heading">#</a></h3>
+<h3>The Actor-Critic Process<a class="headerlink" href="#the-actor-critic-process" title="Link to this heading">#</a></h3>
 <p>Let’s see the training process to understand how the Actor and Critic are optimized:</p>
 <ul class="simple">
 <li><p>At each timestep <span class="math notranslate nohighlight">\(t\)</span>, we get the current state <span class="math notranslate nohighlight">\(S_{t}\)</span> from the environment and pass it as input through our Actor and Critic.</p></li>
@@ -459,13 +472,27 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 \[\Delta{w} = \beta(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1}) - \hat{q}_{w}(s_{t}, a_{t}))\nabla_{w}\hat{q}_{w}(s_{t}, a_{t})\]</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If we fix the TD target.</p>
+<p>Objective function of the critic:</p>
 <div class="math notranslate nohighlight">
-\[\Delta{w} = \frac{\beta}{2}\nabla_{w}(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1}) - \hat{q}_{w}(s_{t}, a_{t}))^{2}\]</div>
+\[
+J(w) = \frac{1}{2}(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))^{2}
+\]</div>
+<p>To minimize <span class="math notranslate nohighlight">\(J(w)\)</span>, we can use the gradient descent algorithm:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\Delta{w} &amp;= -\beta\nabla_{w}J(w) \\
+&amp;= -\beta\nabla_{w}\left(\frac{1}{2}(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))^{2}\right) \\
+&amp;= \beta(q_{\pi_{\theta}}(s_{t}, a_{t}) - \hat{q}_{w}(s_{t},a_{t}))\nabla_{w}\hat{q}_{w}(s_{t},a_{t})
+\end{aligned}
+\end{split}\]</div>
+<p>It requires the true action value <span class="math notranslate nohighlight">\(q_{\pi_{\theta}}(s_{t}, a_{t})\)</span>, which
+is unknown and must be estimated. In the spirit of TD learning, <span class="math notranslate nohighlight">\(r_{t+1} + \gamma\hat{q}_{w}(s_{t+1}, a_{t+1})\)</span> can be
+used as an approximation of <span class="math notranslate nohighlight">\(q_{\pi_{\theta}}(s_{t}, a_{t})\)</span>.</p>
 </div>
 </section>
 <section id="adding-advantage-in-actor-critic-a2c">
-<h3>Adding Advantage in Actor-Critic (A2C)<a class="headerlink" href="#adding-advantage-in-actor-critic-a2c" title="Permalink to this heading">#</a></h3>
+<h3>Adding Advantage in Actor-Critic (A2C)<a class="headerlink" href="#adding-advantage-in-actor-critic-a2c" title="Link to this heading">#</a></h3>
 <p>We can stabilize learning further by using the Advantage function as Critic instead of the Action value function.</p>
 <p>The idea is that the Advantage function calculates the relative advantage of an action compared to the others possible at a state: how taking that action at a state is better compared to the average value of the state. It’s subtracting the mean value of the state from the state action pair:</p>
 <p><img alt="" src="_images/ac5.jpeg" /></p>
@@ -479,9 +506,28 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 </section>
 </section>
 <section id="pytorch-example">
-<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Permalink to this heading">#</a></h2>
+<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Link to this heading">#</a></h2>
+<section id="env">
+<h3>Env<a class="headerlink" href="#env" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4, 2)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="model">
-<h3>Model<a class="headerlink" href="#model" title="Permalink to this heading">#</a></h3>
+<h3>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -538,27 +584,8 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 </div>
 </div>
 </section>
-<section id="env">
-<h3>Env<a class="headerlink" href="#env" title="Permalink to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-
-<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
-<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([-0.02383879, -0.02015088,  0.03142257, -0.04080841], dtype=float32),
- {})
-</pre></div>
-</div>
-</div>
-</div>
-</section>
 <section id="one-episode">
-<h3>One episode<a class="headerlink" href="#one-episode" title="Permalink to this heading">#</a></h3>
+<h3>One episode<a class="headerlink" href="#one-episode" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
@@ -640,7 +667,7 @@ So today we’ll study Actor-Critic methods, a hybrid architecture combining val
 <p><code class="docutils literal notranslate"><span class="pre">value_loss</span></code> = <span class="math notranslate nohighlight">\(\sum_{i=0}^{T}|R_{t} - \hat{V}_{w}(s_{t})|\)</span></p>
 </section>
 <section id="main-loop">
-<h3>Main loop<a class="headerlink" href="#main-loop" title="Permalink to this heading">#</a></h3>
+<h3>Main loop<a class="headerlink" href="#main-loop" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
@@ -747,8 +774,8 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
               
               
               
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="prev-next-footer d-print-none">
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="11-policy.html"
@@ -760,11 +787,11 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
       </div>
     </a>
     <a class="right-next"
-       href="13-trpo.html"
+       href="13-gae.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TRPO</p>
+        <p class="prev-next-title">Generalized Advantage Estimation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -776,6 +803,7 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -791,8 +819,8 @@ Solved! Running reward is now 815.4286146729273 and the last episode runs to 999
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
@@ -818,9 +846,10 @@ By The Jupyter Book Community
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -844,8 +873,8 @@ By The Jupyter Book Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>

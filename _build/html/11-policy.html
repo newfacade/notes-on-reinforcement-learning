@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Policy Gradient &#8212; My sample book</title>
   
@@ -15,58 +14,54 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '11-policy';</script>
-    <link rel="shortcut icon" href="_static/github.ico"/>
+    <link rel="icon" href="_static/github.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Actor-Critic Methods" href="12-actor-critic.html" />
@@ -80,28 +75,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -123,12 +113,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -143,6 +141,7 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="01-intro.html">
@@ -161,7 +160,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -183,9 +193,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="10-dqn-torch.html">Deep Q-Learning with Pytorch</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Policy Gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="12-actor-critic.html">Actor-Critic Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13-trpo.html">TRPO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="14-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-gae.html">Generalized Advantage Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-trpo.html">TRPO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="15-ppo.html">Proximal Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16-ppo-imp.html">PPO Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="17-ppo-trl.html">Reinforcement Learning From Human Feedback</a></li>
 </ul>
 
@@ -202,7 +213,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -211,14 +222,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -340,6 +351,7 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -350,6 +362,7 @@ document.write(`
 `);
 </script>
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -357,9 +370,9 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -381,19 +394,20 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-methods">The policy-gradient methods</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantages-and-disadvantages-of-policy-gradient-methods">The advantages and disadvantages of policy-gradient methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantages-and-disadvantages-of-policy-gradient-methods">Advantages and disadvantages of policy-gradient methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-theorem">The Policy Gradient Theorem</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-algorithm-monte-carlo-reinforce">The Reinforce algorithm (Monte Carlo Reinforce)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dont-let-the-past-distract-you">Don’t Let the Past Distract You</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-in-policy-gradients">Baselines in Policy Gradients</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-forms-of-the-policy-gradient">Other Forms of the Policy Gradient</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-a-proof-for-dont-let-the-past-distract-you">Appendix A: Proof for Don’t Let the Past Distract You</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-b-baselines-in-policy-gradients">Appendix B: Baselines in Policy Gradients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-c-other-forms-of-the-policy-gradient">Appendix C: Other Forms of the Policy Gradient</a></li>
 </ul>
             </nav>
         </div>
@@ -403,10 +417,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="policy-gradient">
-<h1>Policy Gradient<a class="headerlink" href="#policy-gradient" title="Permalink to this heading">#</a></h1>
+<h1>Policy Gradient<a class="headerlink" href="#policy-gradient" title="Link to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Since the beginning of the course, we have only studied value-based methods, where we estimate a value function as an intermediate step towards finding an optimal policy. Finding an optimal value function leads to having an optimal policy:</p>
@@ -415,7 +429,7 @@ document.write(`
 <p>With policy-based methods, we want to optimize the policy directly without having an intermediate step of learning a value function.</p>
 </div>
 <section id="the-policy-gradient-methods">
-<h2>The policy-gradient methods<a class="headerlink" href="#the-policy-gradient-methods" title="Permalink to this heading">#</a></h2>
+<h2>The policy-gradient methods<a class="headerlink" href="#the-policy-gradient-methods" title="Link to this heading">#</a></h2>
 <p>In policy-based methods, we directly learn to approximate <span class="math notranslate nohighlight">\(\pi^{\ast}\)</span>.</p>
 <ul class="simple">
 <li><p>The idea is to parameterize the policy. For instance, using a neural network <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span>, this policy will output a probability distribution over actions (stochastic policy).</p></li>
@@ -423,13 +437,13 @@ document.write(`
 </ul>
 <p><img alt="" src="_images/policy2.png" /></p>
 </section>
-<section id="the-advantages-and-disadvantages-of-policy-gradient-methods">
-<h2>The advantages and disadvantages of policy-gradient methods<a class="headerlink" href="#the-advantages-and-disadvantages-of-policy-gradient-methods" title="Permalink to this heading">#</a></h2>
-<p>There are multiple advantages over value-based methods. Let’s see some of them:</p>
+<section id="advantages-and-disadvantages-of-policy-gradient-methods">
+<h2>Advantages and disadvantages of policy-gradient methods<a class="headerlink" href="#advantages-and-disadvantages-of-policy-gradient-methods" title="Link to this heading">#</a></h2>
+<p>Policy-gradient methods have multiple advantages over value-based methods:</p>
 <ul class="simple">
 <li><p>Policy-gradient methods can learn a stochastic policy while value functions can’t.</p></li>
-<li><p>Policy-gradient methods are more effective in high-dimensional action spaces and continuous actions spaces. The problem with Deep Q-learning is that their predictions assign a score for each possible action, at each time step, given the current state. Instead, with policy-gradient methods, we output a probability distribution over actions.</p></li>
-<li><p>Policy-gradient methods have better convergence properties. In value-based methods, we use an aggressive operator to change the value function: we take the maximum over Q-estimates. Consequently, the action probabilities may change dramatically for an arbitrarily small change in the estimated action values if that change results in a different action having the maximal value.</p></li>
+<li><p>Policy-gradient methods are more effective in high-dimensional action spaces and continuous actions spaces.</p></li>
+<li><p>Policy-gradient methods have better convergence properties.</p></li>
 </ul>
 <p>Naturally, policy-gradient methods also have some disadvantages:</p>
 <ul class="simple">
@@ -439,19 +453,19 @@ document.write(`
 </ul>
 </section>
 <section id="the-policy-gradient-theorem">
-<h2>The Policy Gradient Theorem<a class="headerlink" href="#the-policy-gradient-theorem" title="Permalink to this heading">#</a></h2>
+<h2>The Policy Gradient Theorem<a class="headerlink" href="#the-policy-gradient-theorem" title="Link to this heading">#</a></h2>
 <p>The objective function outputs the expected cumulative reward:</p>
 <div class="math notranslate nohighlight">
 \[J(\theta) = \mathbb{E}_{\tau\sim\pi}[R(\tau)]\]</div>
 <p>It can be formulated as:</p>
 <p><img alt="" src="_images/policy3.png" /></p>
-<p>Policy-gradient is an optimization problem: we want to find the values of <span class="math notranslate nohighlight">\(\theta\)</span> that maximize our objective function <span class="math notranslate nohighlight">\(J(\theta)\)</span>,  so we need to use gradient-ascent:</p>
+<p>Policy-gradient is an optimization problem: we want to find the values of <span class="math notranslate nohighlight">\(\theta\)</span> that maximize our objective function <span class="math notranslate nohighlight">\(J(\theta)\)</span>,  so we can use gradient-ascent:</p>
 <div class="math notranslate nohighlight">
 \[\theta\leftarrow\theta + \alpha * \nabla J(\theta)\]</div>
 <p>However, there are two problems with computing the derivative of <span class="math notranslate nohighlight">\(J(\theta)\)</span>:</p>
 <ol class="arabic simple">
 <li><p>We can’t calculate the true gradient of the objective function since it requires calculating the probability of each possible trajectory, which is computationally super expensive. So we want to calculate a gradient estimation with a sample-based estimate.</p></li>
-<li><p>To differentiate this objective function, we need to differentiate the state distribution, this is attached to the environment. The problem is that we can’t differentiate it because we might not know about it.</p></li>
+<li><p>To differentiate this objective function, we need to differentiate the state distribution, this is attached to the environment.</p></li>
 </ol>
 <p>Fortunately we’re going to use a solution called the Policy Gradient Theorem that will help us to reformulate the objective function into a differentiable function that does not involve the differentiation of the state distribution.</p>
 <p><img alt="" src="_images/policy4.png" /></p>
@@ -459,18 +473,18 @@ document.write(`
 <p>Proof. We have:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
-\nabla J(\theta) &amp;= \nabla_{\theta}\sum_{\tau}P(\tau;\theta)R(\tau)\\
+\nabla_{\theta} J(\theta) &amp;= \nabla_{\theta}\sum_{\tau}P(\tau;\theta)R(\tau)\\
 &amp;=\sum_{\tau}\nabla_{\theta}P(\tau;\theta)R(\tau)\\
 &amp;=\sum_{\tau}P(\tau;\theta)\frac{\nabla_{\theta}P(\tau;\theta)}{P(\tau;\theta)}R(\tau)\\
-&amp;=\sum_{\tau}P(\tau;\theta)\nabla{\log P(\tau;\theta)}R(\tau)\\
-&amp;=\sum_{\tau}P(\tau;\theta)\nabla\left[\log \mu(s_{0})\Pi_{t=0}^{H}P(s_{t+1}|s_{t}, a_{t})\pi_{\theta}(a_{t}|s_{t})\right]R(\tau)\\
-&amp;=\sum_{\tau}P(\tau;\theta)\sum_{t=0}^{H}\nabla \pi_{\theta}(a_{t}|s_{t})R(\tau)\\
+&amp;=\sum_{\tau}P(\tau;\theta)\nabla_{\theta}{\log P(\tau;\theta)}R(\tau)\\
+&amp;=\sum_{\tau}P(\tau;\theta)\nabla_{\theta}\left[\log \mu(s_{0})\Pi_{t=0}^{H}P(s_{t+1}|s_{t}, a_{t})\pi_{\theta}(a_{t}|s_{t})\right]R(\tau)\\
+&amp;=\sum_{\tau}P(\tau;\theta)\sum_{t=0}^{H}\nabla_{\theta} \log\pi_{\theta}(a_{t}|s_{t})R(\tau)\\
 &amp;=\mathbb{E}_{\pi_{\theta}}\left[\nabla_{\theta}\log \pi_{\theta}(a_{t}|s_{t})R(\tau)\right]
 \end{aligned}\end{split}\]</div>
 </div>
 </section>
 <section id="the-reinforce-algorithm-monte-carlo-reinforce">
-<h2>The Reinforce algorithm (Monte Carlo Reinforce)<a class="headerlink" href="#the-reinforce-algorithm-monte-carlo-reinforce" title="Permalink to this heading">#</a></h2>
+<h2>The Reinforce algorithm (Monte Carlo Reinforce)<a class="headerlink" href="#the-reinforce-algorithm-monte-carlo-reinforce" title="Link to this heading">#</a></h2>
 <p>In a loop:</p>
 <ul class="simple">
 <li><p>Use the policy <span class="math notranslate nohighlight">\(\pi_{\theta}\)</span> to collect some episodes</p></li>
@@ -484,86 +498,50 @@ document.write(`
 </ul>
 </section>
 <section id="dont-let-the-past-distract-you">
-<h2>Don’t Let the Past Distract You<a class="headerlink" href="#dont-let-the-past-distract-you" title="Permalink to this heading">#</a></h2>
+<h2>Don’t Let the Past Distract You<a class="headerlink" href="#dont-let-the-past-distract-you" title="Link to this heading">#</a></h2>
 <p>Examine our most recent expression for the policy gradient:</p>
 <div class="math notranslate nohighlight">
-\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})R(\tau)\right]\]</div>
+\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})R(\tau)\right].\]</div>
 <p>Taking a step with this gradient pushes up the log-probabilities of each action in proportion to <span class="math notranslate nohighlight">\(R(\tau)\)</span>, the sum of all rewards ever obtained. But this doesn’t make much sense.</p>
 <p>Agents should really only reinforce actions on the basis of their consequences. Rewards obtained before taking an action have no bearing on how good that action was: only rewards that come after.</p>
-<p>It turns out that this intuition shows up in the math, and we can show that the policy gradient can also be expressed by</p>
+<p>It turns out that this intuition shows up in the math, and we can show that the policy gradient can also be expressed by:</p>
 <div class="math notranslate nohighlight">
-\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})\right]\]</div>
-<p>In this form, actions are only reinforced based on rewards obtained after they are taken. We’ll call this form the “reward-to-go policy gradient”, it is a lower-variance estimate than the simplest policy gradient.</p>
-<p>The proof of this claim depends on the <strong>EGLP lemma</strong>: Suppose that <span class="math notranslate nohighlight">\(P_{\theta}\)</span> is a parameterized probability distribution over a random variable, <span class="math notranslate nohighlight">\(x\)</span>. Then:</p>
+\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})\right].\]</div>
+<p>In this form, actions are only reinforced based on rewards obtained after they are taken. We’ll call this form the “reward-to-go policy gradient”, because the sum of rewards after a point in a trajectory,</p>
 <div class="math notranslate nohighlight">
-\[\mathbb{E}_{x\sim P_{\theta}}\left[\nabla_{\theta}\log P_{\theta}(x)\right] = 0\]</div>
-<div class="proof admonition" id="proof">
-<p>Proof. Recall that all probability distributions are normalized:</p>
-<div class="math notranslate nohighlight">
-\[\int_{x}P_{\theta}(x) = 1\]</div>
-<p>Take the gradient of both sides of the normalization condition:</p>
-<div class="math notranslate nohighlight">
-\[\nabla_{\theta}\int_{x}P_{\theta}(x) = \nabla_{\theta}1 = 0\]</div>
-<p>Use the log derivative trick to get:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{aligned}
-0 &amp;= \nabla_{\theta}\int_{x}P_{\theta}(x) \\
- &amp;= \int_{x}\nabla_{\theta}P_{\theta}(x) \\
- &amp;= \int_{x}P_{\theta}(x)\nabla_{\theta}\log P_{\theta}(x)
-\end{aligned}\end{split}\]</div>
+\[
+\hat{R}_{t} = \sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1})
+\]</div>
+<p>is called the reward-to-go from that point, and this policy gradient expression depends on the reward-to-go from state-action pairs.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>A key problem with policy gradients is how many sample trajectories are needed to get a low-variance sample estimate for them. The formula we started with included terms for reinforcing actions proportional to past rewards, all of which had zero mean, but nonzero variance: as a result, they would just add noise to sample estimates of the policy gradient. By removing them, we reduce the number of sample trajectories needed.</p>
 </div>
-</section>
-<section id="baselines-in-policy-gradients">
-<h2>Baselines in Policy Gradients<a class="headerlink" href="#baselines-in-policy-gradients" title="Permalink to this heading">#</a></h2>
-<p>An immediate consequence of the EGLP lemma is that for any function <span class="math notranslate nohighlight">\(b\)</span> which only depends on state,</p>
-<div class="math notranslate nohighlight">
-\[\mathbb{E}_{a_{t}\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi(a_t|s_t)b(s_t)\right]\]</div>
-<p>This allows us to add or subtract any number of terms like this from our expression for the policy gradient, without changing it in expectation:</p>
-<div class="math notranslate nohighlight">
-\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\left(\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1}) - b(s_{t})\right)\right]\]</div>
-<p>Any function <span class="math notranslate nohighlight">\(b\)</span> used in this way is called a baseline.</p>
-<p>The most common choice of baseline is the on-policy value function <span class="math notranslate nohighlight">\(V^{\pi}(s_t)\)</span>. Recall that this is the average return an agent gets if it starts in state <span class="math notranslate nohighlight">\(s_t\)</span> and then acts according to policy <span class="math notranslate nohighlight">\(\pi\)</span> for the rest of its life. Empirically, the choice <span class="math notranslate nohighlight">\(b(s_t) = V^{\pi}(s_t)\)</span> has the desirable effect of reducing variance in the sample estimate for the policy gradient. This results in faster and more stable policy learning.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In practice, <span class="math notranslate nohighlight">\(V^{\pi}(s_t)\)</span> cannot be computed exactly, so it has to be approximated. This is usually done with a neural network, <span class="math notranslate nohighlight">\(V_{\phi}(s_t)\)</span>, which is updated concurrently with the policy (so that the value network always approximates the value function of the most recent policy).</p>
-<p>The simplest method for learning <span class="math notranslate nohighlight">\(V_{\phi}\)</span>, used in most implementations of policy optimization algorithms,  is to minimize a mean-squared-error objective:</p>
-<div class="math notranslate nohighlight">
-\[\phi_{k} = \arg\underset{\phi}{\min}\underset{s_t, \hat{R}_{t}\sim\pi_{k}}{\mathbb{E}}\left[\left(V_{\phi}(s_t) - \hat{R}_{t}\right)^{2}\right]\]</div>
-<p>where <span class="math notranslate nohighlight">\(\pi_k\)</span> is the policy at epoch <span class="math notranslate nohighlight">\(k\)</span>. This is done with one or more steps of gradient descent, starting from the previous value parameters <span class="math notranslate nohighlight">\(\phi_{k-1}\)</span>.</p>
-</div>
-</section>
-<section id="other-forms-of-the-policy-gradient">
-<h2>Other Forms of the Policy Gradient<a class="headerlink" href="#other-forms-of-the-policy-gradient" title="Permalink to this heading">#</a></h2>
-<p>What we have seen so far is that the policy gradient has the general form</p>
-<div class="math notranslate nohighlight">
-\[\nabla_{\theta} J(\pi_{\theta}) = \underset{{\tau \sim \pi_{\theta}}}{\mathbb{E}}\left[{\sum_{t=0}^{T} \nabla_{\theta} \log \pi_{\theta}(a_t |s_t) \Phi_t}\right],\]</div>
-<p>where <span class="math notranslate nohighlight">\(\Phi_t\)</span> could be any of</p>
-<div class="math notranslate nohighlight">
-\[\Phi_t = R(\tau),\]</div>
-<p>or</p>
-<div class="math notranslate nohighlight">
-\[\Phi_t = \sum_{t'=t}^T R(s_{t'}, a_{t'}, s_{t'+1}),\]</div>
-<p>or</p>
-<div class="math notranslate nohighlight">
-\[\Phi_t = \sum_{t'=t}^T R(s_{t'}, a_{t'}, s_{t'+1}) - b(s_t).\]</div>
-<p>All of these choices lead to the same expected value for the policy gradient, despite having different variances. It turns out that there are two more valid choices of weights <span class="math notranslate nohighlight">\(\Phi_t\)</span> which are important to know.</p>
-<ol class="arabic">
-<li><p>On-Policy Action-Value Function. The choice</p>
-<div class="math notranslate nohighlight">
-\[\Phi_t = Q^{\pi_{\theta}}(s_t, a_t)\]</div>
-<p>is also valid.</p>
-</li>
-<li><p>The Advantage Function defined by <span class="math notranslate nohighlight">\(A^{\pi}(s_t,a_t) = Q^{\pi}(s_t,a_t) - V^{\pi}(s_t)\)</span>, describes how much better or worse it is than other actions on average (relative to the current policy). This choice,</p>
-<div class="math notranslate nohighlight">
-\[\Phi_t = A^{\pi_{\theta}}(s_t, a_t)\]</div>
-<p>is also valid.</p>
-</li>
-</ol>
+<p>A proof of this claim is in Appendix A.</p>
 </section>
 <section id="pytorch-example">
-<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Permalink to this heading">#</a></h2>
+<h2>Pytorch example<a class="headerlink" href="#pytorch-example" title="Link to this heading">#</a></h2>
+<section id="env">
+<h3>Env<a class="headerlink" href="#env" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4, 2)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="policy-network">
-<h3>Policy network<a class="headerlink" href="#policy-network" title="Permalink to this heading">#</a></h3>
+<h3>Policy network<a class="headerlink" href="#policy-network" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -603,27 +581,8 @@ document.write(`
 <p>*<code class="docutils literal notranslate"><span class="pre">self.saved_log_probs</span></code> saves <span class="math notranslate nohighlight">\(\left[\pi_{\theta}(a_{0}|s_{0}), \pi_{\theta}(a_{1}|s_{1}),\dots,\pi_{\theta}(a_{T}|s_{T})\right]\)</span></p>
 <p>*<code class="docutils literal notranslate"><span class="pre">self.rewards</span></code> saves <span class="math notranslate nohighlight">\(\left[r_{0},r_{1},\dots,r_{T}\right]\)</span></p>
 </section>
-<section id="env">
-<h3>Env<a class="headerlink" href="#env" title="Permalink to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-
-<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
-<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([ 0.00118216,  0.04504637, -0.03558404,  0.04486495], dtype=float32),
- {})
-</pre></div>
-</div>
-</div>
-</div>
-</section>
 <section id="one-episode">
-<h3>One episode<a class="headerlink" href="#one-episode" title="Permalink to this heading">#</a></h3>
+<h3>One episode<a class="headerlink" href="#one-episode" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -671,7 +630,7 @@ document.write(`
 <p><code class="docutils literal notranslate"><span class="pre">policy_loss</span></code> = <span class="math notranslate nohighlight">\(\sum_{i=0}^{T}-\log\pi_{\theta}(a_{t}|s_{t})R_{t}\)</span></p>
 </section>
 <section id="main-loop">
-<h3>Main loop<a class="headerlink" href="#main-loop" title="Permalink to this heading">#</a></h3>
+<h3>Main loop<a class="headerlink" href="#main-loop" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
@@ -710,32 +669,156 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/xiayunhui/anaconda3/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/xiayunhui/miniconda3/lib/python3.12/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
   if not isinstance(terminated, (bool, np.bool8)):
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Episode 10	Last reward: 45.00	Average reward: 15.06
-Episode 20	Last reward: 35.00	Average reward: 27.11
-Episode 30	Last reward: 98.00	Average reward: 40.73
-Episode 40	Last reward: 30.00	Average reward: 42.89
-Episode 50	Last reward: 39.00	Average reward: 50.75
-Episode 60	Last reward: 92.00	Average reward: 66.16
-Episode 70	Last reward: 331.00	Average reward: 107.18
-Episode 80	Last reward: 103.00	Average reward: 154.36
-Episode 90	Last reward: 48.00	Average reward: 113.81
-Episode 100	Last reward: 96.00	Average reward: 99.90
-Episode 110	Last reward: 172.00	Average reward: 155.10
-Episode 120	Last reward: 239.00	Average reward: 206.40
-Episode 130	Last reward: 196.00	Average reward: 224.19
-Episode 140	Last reward: 194.00	Average reward: 251.26
-Episode 150	Last reward: 372.00	Average reward: 239.45
-Episode 160	Last reward: 305.00	Average reward: 362.52
-Solved! Running reward is now 649.4581415449471 and the last episode runs to 5964 time steps!
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Episode 10	Last reward: 13.00	Average reward: 14.12
+Episode 20	Last reward: 15.00	Average reward: 15.92
+Episode 30	Last reward: 19.00	Average reward: 23.73
+Episode 40	Last reward: 77.00	Average reward: 31.66
+Episode 50	Last reward: 36.00	Average reward: 37.63
+Episode 60	Last reward: 139.00	Average reward: 53.00
+Episode 70	Last reward: 65.00	Average reward: 57.67
+Episode 80	Last reward: 124.00	Average reward: 64.87
+Episode 90	Last reward: 68.00	Average reward: 89.74
+Episode 100	Last reward: 67.00	Average reward: 92.94
+Episode 110	Last reward: 58.00	Average reward: 85.80
+Episode 120	Last reward: 64.00	Average reward: 89.75
+Episode 130	Last reward: 97.00	Average reward: 101.48
+Episode 140	Last reward: 398.00	Average reward: 169.40
+Episode 150	Last reward: 302.00	Average reward: 216.14
+Episode 160	Last reward: 302.00	Average reward: 401.73
+Episode 170	Last reward: 121.00	Average reward: 300.78
+Episode 180	Last reward: 643.00	Average reward: 309.24
+Episode 190	Last reward: 223.00	Average reward: 326.53
+Episode 200	Last reward: 235.00	Average reward: 298.82
+Episode 210	Last reward: 348.00	Average reward: 270.26
+Solved! Running reward is now 499.12600625382424 and the last episode runs to 1580 time steps!
 </pre></div>
 </div>
 </div>
 </div>
 </section>
+</section>
+<section id="appendix-a-proof-for-dont-let-the-past-distract-you">
+<h2>Appendix A: Proof for Don’t Let the Past Distract You<a class="headerlink" href="#appendix-a-proof-for-dont-let-the-past-distract-you" title="Link to this heading">#</a></h2>
+<p>The proof of this claim depends on the <strong>EGLP lemma</strong>: Suppose that <span class="math notranslate nohighlight">\(P_{\theta}\)</span> is a parameterized probability distribution over a random variable, <span class="math notranslate nohighlight">\(x\)</span>. Then:</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{E}_{x\sim P_{\theta}}\left[\nabla_{\theta}\log P_{\theta}(x)\right] = 0\]</div>
+<div class="proof admonition" id="proof">
+<p>Proof. Recall that all probability distributions are normalized:</p>
+<div class="math notranslate nohighlight">
+\[\int_{x}P_{\theta}(x) = 1\]</div>
+<p>Take the gradient of both sides of the normalization condition:</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}\int_{x}P_{\theta}(x) = \nabla_{\theta}1 = 0\]</div>
+<p>Use the log derivative trick to get:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+0 &amp;= \nabla_{\theta}\int_{x}P_{\theta}(x) \\
+ &amp;= \int_{x}\nabla_{\theta}P_{\theta}(x) \\
+ &amp;= \int_{x}P_{\theta}(x)\nabla_{\theta}\log P_{\theta}(x)
+\end{aligned}\end{split}\]</div>
+</div>
+<p>Expand out <span class="math notranslate nohighlight">\(R(\tau)\)</span> in the expression for the simplest policy gradient to obtain:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\nabla_{\theta}J(\pi_{\theta}) &amp;= \mathbb{E}_{\tau\sim\pi_{\theta}}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)R(\tau)\right] \\
+&amp;= \mathbb{E}_{\tau\sim\pi_{\theta}}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\sum_{t'=0}^{T}R(s_{t'},a_{t'},s_{t'+1})\right] \\
+&amp;= \sum_{t=0}^{T}\sum_{t'=0}^{T}\mathbb{E}_{\tau\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)R(s_{t'},a_{t'},s_{t'+1})\right]
+\end{aligned}
+\end{split}\]</div>
+<p>and consider the term</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}_{\tau\sim\pi_{\theta}}[f(t,t')] = \mathbb{E}_{\tau\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)R(s_{t'},a_{t'},s_{t'+1})\right]
+\]</div>
+<p>We will show that for the case of <span class="math notranslate nohighlight">\(t'&lt;t\)</span> (the reward comes before the action being reinforced), this term is zero.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\mathbb{E}_{\tau\sim\pi_{\theta}}[f(t,t')] &amp;= \int_{\tau}P(\tau|\pi_{\theta})f(t,t')\\
+&amp;=\int_{s_t,a_t,s_{t'},a_{t'},s_{t'+1}}P(s_t,a_t,s_{t'},a_{t'},s_{t'+1}|\pi_{\theta})f(t,t')\\
+&amp;= \mathbb{E}_{s_t,a_t,s_{t'},a_{t'},s_{t'+1}\sim\pi_{\theta}}[f(t,t')]\\
+&amp;= \mathbb{E}_{s_{t'},a_{t'},s_{t'+1}\sim\pi_{\theta}}\left[\mathbb{E}_{s_t,a_t\sim\pi_{\theta}}\left[f(t,t')|s_{t'},a_{t'},s_{t'+1}\right]\right]\\
+&amp;= \mathbb{E}_{s_{t'},a_{t'},s_{t'+1}\sim\pi_{\theta}}\left[\mathbb{E}_{s_t,a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)R(s_{t'},a_{t'},s_{t'+1})|s_{t'},a_{t'},s_{t'+1}\right]\right]\\
+&amp;= \mathbb{E}_{s_{t'},a_{t'},s_{t'+1}\sim\pi_{\theta}}\left[R(s_{t'},a_{t'},s_{t'+1})\mathbb{E}_{s_t,a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)|s_{t'},a_{t'},s_{t'+1}\right]\right]
+\end{aligned}
+\end{split}\]</div>
+<p>At this point, we will only worry about the innermost expectation,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}_{s_t,a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)|s_{t'},a_{t'},s_{t'+1}\right] = \int_{s_t,a_t}P(s_t,a_t|\pi_{\theta},s_{t'},a_{t'},s_{t'+1})\nabla_{\theta}\log\pi_{\theta}(a_t|s_t).
+\]</div>
+<p>We now have to make a distinction between two cases: If <span class="math notranslate nohighlight">\(t'&lt;t\)</span>, the case where the reward happened before the action, then the conditional probabilities for actions at <span class="math notranslate nohighlight">\(a_{t}\)</span> come from the policy:</p>
+<div class="math notranslate nohighlight">
+\[
+P(s_t,a_t|\pi_{\theta},s_{t'},a_{t'},s_{t'+1}) = \pi_{\theta}(a_t|s_t)P(s_t|\pi_{\theta},s_{t'},a_{t'},s_{t'+1})
+\]</div>
+<p>the innermost expectation can be broken down farther into</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\mathbb{E}_{s_t,a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)|s_{t'},a_{t'},s_{t'+1}\right] &amp;= \int_{s_t,a_t}P(s_t,a_t|\pi_{\theta},s_{t'},a_{t'},s_{t'+1})\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\\
+&amp;= \int_{s_t}P(s_t|\pi_{\theta},s_{t'},a_{t'},s_{t'+1})\int_{a_t}\pi_{\theta}(a_t|s_t)\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)\\
+&amp;= \mathbb{E}_{s_t\sim\pi_{\theta}}\left[\mathbb{E}_{a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)|s_t\right]|s_{t'},a_{t'},s_{t'+1}\right]
+\end{aligned}
+\end{split}\]</div>
+<p>The EGLP lemma says that</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}_{a_t\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)|s_t\right] = 0
+\]</div>
+<p>allowing us to conclude that for <span class="math notranslate nohighlight">\(t'&lt;t, \mathbb{E}_{\tau\sim\pi_{\theta}}[f(t,t')] = 0\)</span>.</p>
+</section>
+<section id="appendix-b-baselines-in-policy-gradients">
+<h2>Appendix B: Baselines in Policy Gradients<a class="headerlink" href="#appendix-b-baselines-in-policy-gradients" title="Link to this heading">#</a></h2>
+<p>An immediate consequence of the EGLP lemma is that for any function <span class="math notranslate nohighlight">\(b\)</span> which only depends on state,</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{E}_{a_{t}\sim\pi_{\theta}}\left[\nabla_{\theta}\log\pi(a_t|s_t)b(s_t)\right] = 0\]</div>
+<p>This allows us to add or subtract any number of terms like this from our expression for the policy gradient, without changing it in expectation:</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\tau\sim\theta}\left[\sum_{t=0}^{T}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\left(\sum_{t'=t}^{T}R(s_{t'},a_{t'},s_{t'+1}) - b(s_{t})\right)\right]\]</div>
+<p>Any function <span class="math notranslate nohighlight">\(b\)</span> used in this way is called a baseline.</p>
+<p>The most common choice of baseline is the on-policy value function <span class="math notranslate nohighlight">\(V^{\pi}(s_t)\)</span>. Recall that this is the average return an agent gets if it starts in state <span class="math notranslate nohighlight">\(s_t\)</span> and then acts according to policy <span class="math notranslate nohighlight">\(\pi\)</span> for the rest of its life. Empirically, the choice <span class="math notranslate nohighlight">\(b(s_t) = V^{\pi}(s_t)\)</span> has the desirable effect of reducing variance in the sample estimate for the policy gradient. This results in faster and more stable policy learning.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In practice, <span class="math notranslate nohighlight">\(V^{\pi}(s_t)\)</span> cannot be computed exactly, so it has to be approximated. This is usually done with a neural network, <span class="math notranslate nohighlight">\(V_{\phi}(s_t)\)</span>, which is updated concurrently with the policy (so that the value network always approximates the value function of the most recent policy).</p>
+<p>The simplest method for learning <span class="math notranslate nohighlight">\(V_{\phi}\)</span>, used in most implementations of policy optimization algorithms,  is to minimize a mean-squared-error objective:</p>
+<div class="math notranslate nohighlight">
+\[\phi_{k} = \arg\underset{\phi}{\min}\underset{s_t, \hat{R}_{t}\sim\pi_{k}}{\mathbb{E}}\left[\left(V_{\phi}(s_t) - \hat{R}_{t}\right)^{2}\right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\pi_k\)</span> is the policy at epoch <span class="math notranslate nohighlight">\(k\)</span>. This is done with one or more steps of gradient descent, starting from the previous value parameters <span class="math notranslate nohighlight">\(\phi_{k-1}\)</span>.</p>
+</div>
+</section>
+<section id="appendix-c-other-forms-of-the-policy-gradient">
+<h2>Appendix C: Other Forms of the Policy Gradient<a class="headerlink" href="#appendix-c-other-forms-of-the-policy-gradient" title="Link to this heading">#</a></h2>
+<p>What we have seen so far is that the policy gradient has the general form</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\theta} J(\pi_{\theta}) = \underset{{\tau \sim \pi_{\theta}}}{\mathbb{E}}\left[{\sum_{t=0}^{T} \nabla_{\theta} \log \pi_{\theta}(a_t |s_t) \Phi_t}\right],\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Phi_t\)</span> could be any of</p>
+<div class="math notranslate nohighlight">
+\[\Phi_t = R(\tau),\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\Phi_t = \sum_{t'=t}^T R(s_{t'}, a_{t'}, s_{t'+1}),\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\Phi_t = \sum_{t'=t}^T R(s_{t'}, a_{t'}, s_{t'+1}) - b(s_t).\]</div>
+<p>All of these choices lead to the same expected value for the policy gradient, despite having different variances. It turns out that there are two more valid choices of weights <span class="math notranslate nohighlight">\(\Phi_t\)</span> which are important to know.</p>
+<ol class="arabic">
+<li><p>On-Policy Action-Value Function. The choice</p>
+<div class="math notranslate nohighlight">
+\[\Phi_t = Q^{\pi_{\theta}}(s_t, a_t)\]</div>
+<p>is also valid. See <a class="reference external" href="https://spinningup.openai.com/en/latest/spinningup/extra_pg_proof2.html">this page</a> for an (optional) proof of this claim.</p>
+</li>
+<li><p>The Advantage Function defined by <span class="math notranslate nohighlight">\(A^{\pi}(s_t,a_t) = Q^{\pi}(s_t,a_t) - V^{\pi}(s_t)\)</span>, describes how much better or worse it is than other actions on average (relative to the current policy). This choice,</p>
+<div class="math notranslate nohighlight">
+\[\Phi_t = A^{\pi_{\theta}}(s_t, a_t)\]</div>
+<p>is also valid.</p>
+</li>
+</ol>
 </section>
 </section>
 
@@ -766,8 +849,8 @@ Solved! Running reward is now 649.4581415449471 and the last episode runs to 596
               
               
               
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="prev-next-footer d-print-none">
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="10-dqn-torch.html"
@@ -796,6 +879,7 @@ Solved! Running reward is now 649.4581415449471 and the last episode runs to 596
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -803,19 +887,20 @@ Solved! Running reward is now 649.4581415449471 and the last episode runs to 596
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-methods">The policy-gradient methods</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-advantages-and-disadvantages-of-policy-gradient-methods">The advantages and disadvantages of policy-gradient methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantages-and-disadvantages-of-policy-gradient-methods">Advantages and disadvantages of policy-gradient methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-policy-gradient-theorem">The Policy Gradient Theorem</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-algorithm-monte-carlo-reinforce">The Reinforce algorithm (Monte Carlo Reinforce)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dont-let-the-past-distract-you">Don’t Let the Past Distract You</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-in-policy-gradients">Baselines in Policy Gradients</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-forms-of-the-policy-gradient">Other Forms of the Policy Gradient</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-example">Pytorch example</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#env">Env</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-network">Policy network</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-episode">One episode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#main-loop">Main loop</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-a-proof-for-dont-let-the-past-distract-you">Appendix A: Proof for Don’t Let the Past Distract You</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-b-baselines-in-policy-gradients">Appendix B: Baselines in Policy Gradients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appendix-c-other-forms-of-the-policy-gradient">Appendix C: Other Forms of the Policy Gradient</a></li>
 </ul>
   </nav></div>
 
@@ -837,9 +922,10 @@ By The Jupyter Book Community
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -863,8 +949,8 @@ By The Jupyter Book Community
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>
